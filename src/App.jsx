@@ -665,7 +665,7 @@ function Hero({ visible, mouseRef }) {
         {/* CTA Buttons — View Projects + Download CV */}
         <div data-reveal style={{ transitionDelay: '300ms' }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#projects"
+            href="/cv.pdf"
             onClick={(e) => {
               e.preventDefault()
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
