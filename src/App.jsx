@@ -118,7 +118,7 @@ const PROJECTS = [
     title: 'Expense Tracker',
     desc: 'A sleek, automated mobile application designed for seamless financial management and budget organization.',
     fullDesc: 'Expense Tracker is a comprehensive mobile financial management tool that enables users to effortlessly log, categorize, and analyze their daily transactions on the go. It features an intuitive mobile interface, real-time budget monitoring, and visual data insights tailored for a seamless smartphone experience.',
-    tech: ['Laravel', 'MySQL', 'Tailwind'],
+    tech: ['Flutter', 'Dart', 'Firebase'],
     github: 'https://github.com/Praddddd/money_manager.git',
     year: '2026',
     img: expensetrackerImg,
