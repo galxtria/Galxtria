@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import kosthubImg from './assets/images/kosthub_web.png'
-import mymusicImg from './assets/images/mymusic_web.png'
-import expensetrackerImg from './assets/images/expensetracker_web.png'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import kosthubImg from './assets/images/kosthub_web.webp'
+import mymusicImg from './assets/images/mymusic_web.webp'
+import expensetrackerImg from './assets/images/expensetracker_web.webp'
 
 // ─────────────────────────────────────────────────────────────────────
 // HOOKS
@@ -53,6 +53,17 @@ function useMousePosition() {
   }, [])
 
   return pos
+}
+
+/** Detect mobile / low-perf device — runs once */
+function useIsMobile() {
+  return useMemo(() => {
+    if (typeof window === 'undefined') return false
+    const isTouchPrimary = window.matchMedia('(hover: none)').matches
+    const isNarrow = window.innerWidth < 768
+    const lowCores = (navigator.hardwareConcurrency || 4) <= 4
+    return isTouchPrimary || (isNarrow && lowCores)
+  }, [])
 }
 
 /** Magnetic element hook */
@@ -306,13 +317,12 @@ function SplashScreen({ onFinish }) {
 // INTERACTIVE BACKGROUND — Ambient orbs with mouse tracking
 // ─────────────────────────────────────────────────────────────────────
 
-function Background({ mouseRef }) {
+function Background({ mouseRef, isMobile }) {
   const orb1 = useRef(null)
   const orb2 = useRef(null)
-  const orb3 = useRef(null)
 
   useEffect(() => {
-    if (window.matchMedia('(hover: none)').matches) return
+    if (isMobile) return
 
     let raf
     const animate = () => {
@@ -321,66 +331,67 @@ function Background({ mouseRef }) {
       const o1y = (ny - 0.5) * 30
       const o2x = (nx - 0.5) * -50
       const o2y = (ny - 0.5) * -35
-      const o3x = (nx - 0.5) * 25
-      const o3y = (ny - 0.5) * -20
 
       if (orb1.current) orb1.current.style.transform = `translate(${o1x}px, ${o1y}px)`
       if (orb2.current) orb2.current.style.transform = `translate(${o2x}px, ${o2y}px)`
-      if (orb3.current) orb3.current.style.transform = `translate(${o3x}px, ${o3y}px)`
 
       raf = requestAnimationFrame(animate)
     }
     raf = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(raf)
-  }, [mouseRef])
+  }, [mouseRef, isMobile])
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      {/* Animated ambient orbs — ALL PURPLE spectrum */}
+      {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
         ref={orb1}
-        className="absolute top-[-10%] left-[15%] w-[700px] h-[700px] rounded-full opacity-[0.07]"
+        className={`absolute top-[-10%] left-[15%] rounded-full opacity-[0.07] ${isMobile ? 'w-[400px] h-[400px]' : 'w-[700px] h-[700px]'}`}
         style={{
           background: 'radial-gradient(circle, rgba(124,58,237,1) 0%, transparent 70%)',
-          filter: 'blur(120px)',
-          animation: 'orb-drift-1 25s ease-in-out infinite',
-          transition: 'transform 1.5s ease-out',
-          willChange: 'transform',
+          filter: isMobile ? 'blur(60px)' : 'blur(120px)',
+          animation: isMobile ? 'none' : 'orb-drift-1 25s ease-in-out infinite',
+          transition: isMobile ? 'none' : 'transform 1.5s ease-out',
+          willChange: isMobile ? 'auto' : 'transform',
         }}
       />
+      {/* Ambient orb 2 */}
       <div
         ref={orb2}
-        className="absolute bottom-[-15%] right-[5%] w-[600px] h-[600px] rounded-full opacity-[0.05]"
+        className={`absolute bottom-[-15%] right-[5%] rounded-full opacity-[0.05] ${isMobile ? 'w-[350px] h-[350px]' : 'w-[600px] h-[600px]'}`}
         style={{
           background: 'radial-gradient(circle, rgba(168,85,247,1) 0%, transparent 70%)',
-          filter: 'blur(100px)',
-          animation: 'orb-drift-2 30s ease-in-out infinite',
-          transition: 'transform 1.5s ease-out',
-          willChange: 'transform',
+          filter: isMobile ? 'blur(50px)' : 'blur(100px)',
+          animation: isMobile ? 'none' : 'orb-drift-2 30s ease-in-out infinite',
+          transition: isMobile ? 'none' : 'transform 1.5s ease-out',
+          willChange: isMobile ? 'auto' : 'transform',
         }}
       />
-      <div
-        ref={orb3}
-        className="absolute top-[35%] left-[55%] w-[500px] h-[500px] rounded-full opacity-[0.04]"
-        style={{
-          background: 'radial-gradient(circle, rgba(192,132,252,1) 0%, transparent 70%)',
-          filter: 'blur(100px)',
-          animation: 'orb-drift-3 22s ease-in-out infinite',
-          transition: 'transform 1.5s ease-out',
-          willChange: 'transform',
-        }}
-      />
+      {/* Orb 3 — desktop only */}
+      {!isMobile && (
+        <div
+          className="absolute top-[35%] left-[55%] w-[500px] h-[500px] rounded-full opacity-[0.04]"
+          style={{
+            background: 'radial-gradient(circle, rgba(192,132,252,1) 0%, transparent 70%)',
+            filter: 'blur(100px)',
+            animation: 'orb-drift-3 22s ease-in-out infinite',
+            willChange: 'transform',
+          }}
+        />
+      )}
 
-      {/* Noise grain texture */}
-      <div
-        className="absolute inset-[-50%] opacity-[0.025]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '128px 128px',
-          animation: 'grain-shift 8s steps(10) infinite',
-        }}
-      />
+      {/* Noise grain texture — desktop only (very GPU-heavy) */}
+      {!isMobile && (
+        <div
+          className="absolute inset-[-50%] opacity-[0.025]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat',
+            backgroundSize: '128px 128px',
+            animation: 'grain-shift 8s steps(10) infinite',
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -536,11 +547,11 @@ function Navbar({ visible }) {
 // HERO — with parallax shapes, shimmer text fix, Download CV button
 // ─────────────────────────────────────────────────────────────────────
 
-function Hero({ visible, mouseRef }) {
+function Hero({ visible, mouseRef, isMobile }) {
   const parallaxRef = useRef(null)
 
   useEffect(() => {
-    if (window.matchMedia('(hover: none)').matches) return
+    if (isMobile) return
 
     let raf
     const animate = () => {
@@ -559,7 +570,7 @@ function Hero({ visible, mouseRef }) {
     }
     raf = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(raf)
-  }, [mouseRef])
+  }, [mouseRef, isMobile])
 
   return (
     <section
@@ -575,54 +586,54 @@ function Hero({ visible, mouseRef }) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[600px] h-[400px] bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.08)_0%,_transparent_65%)] pointer-events-none" />
 
       {/* Floating parallax shapes behind text */}
-      <div ref={parallaxRef} className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        {/* React icon silhouette — top left */}
-        <div
-          className="absolute top-[18%] left-[12%] w-16 h-16 opacity-[0.06]"
-          style={{ transition: 'transform 0.6s ease-out', animation: 'float-gentle 6s ease-in-out infinite' }}
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-purple-400">
-            <path d="M12 10.11c1.03 0 1.87.84 1.87 1.89 0 1-.84 1.85-1.87 1.85S10.13 13 10.13 12c0-1.05.84-1.89 1.87-1.89M7.37 20c.63.38 2.01-.2 3.6-1.7-.52-.59-1.03-1.23-1.51-1.9a22.7 22.7 0 01-2.4-.36c-.51 2.14-.32 3.61.31 3.96m.71-5.74l-.29-.51c-.11.29-.22.58-.29.86.27.06.57.11.88.16l-.3-.51m6.54-.76l.81-1.5-.81-1.5c-.3-.53-.62-1-.91-1.47C13.17 9 12.6 9 12 9s-1.17 0-1.71.03c-.29.47-.61.94-.91 1.47L8.57 12l.81 1.5c.3.53.62 1 .91 1.47.54.03 1.11.03 1.71.03s1.17 0 1.71-.03c.29-.47.61-.94.91-1.47M12 6.78c-.19.22-.39.45-.59.72h1.18c-.2-.27-.4-.5-.59-.72m0 10.44c.19-.22.39-.45.59-.72h-1.18c.2.27.4.5.59.72M16.62 4c-.62-.38-2 .2-3.59 1.7.52.59 1.03 1.23 1.51 1.9.82.08 1.63.2 2.4.36.51-2.14.32-3.61-.32-3.96m-.7 5.74l.29.51c.11-.29.22-.58.29-.86-.27-.06-.57-.11-.88-.16l.3.51m1.45-7.05c1.47.84 1.63 3.05 1.01 5.63 2.54.75 4.37 1.99 4.37 3.68s-1.83 2.93-4.37 3.68c.62 2.58.46 4.79-1.01 5.63-1.46.84-3.45-.12-5.37-1.95-1.92 1.83-3.91 2.79-5.38 1.95-1.46-.84-1.62-3.05-1-5.63-2.54-.75-4.37-1.99-4.37-3.68s1.83-2.93 4.37-3.68c-.62-2.58-.46-4.79 1-5.63 1.47-.84 3.46.12 5.38 1.95 1.92-1.83 3.91-2.79 5.37-1.95M17.08 12c.34.75.64 1.5.89 2.26 2.1-.63 3.28-1.53 3.28-2.26s-1.18-1.63-3.28-2.26c-.25.76-.55 1.51-.89 2.26M6.92 12c-.34-.75-.64-1.5-.89-2.26-2.1.63-3.28 1.53-3.28 2.26s1.18 1.63 3.28 2.26c.25-.76.55-1.51.89-2.26m9 2.26l-.3.51c.31-.05.61-.1.88-.16-.07-.28-.18-.57-.29-.86l-.29.51m-2.89 4.04c1.59 1.5 2.97 2.08 3.59 1.7.64-.35.83-1.82.32-3.96-.77.16-1.58.28-2.4.36-.48.67-.99 1.31-1.51 1.9M8.08 9.74l.3-.51c-.31.05-.61.1-.88.16.07.28.18.57.29.86l.29-.51m2.89-4.04C9.38 4.2 8 3.62 7.37 4c-.63.35-.82 1.82-.31 3.96a22.7 22.7 0 012.4-.36c.48-.67.99-1.31 1.51-1.9z"/>
-          </svg>
+      {/* Floating parallax shapes — desktop only (5 rAF-animated shapes are too heavy for mobile) */}
+      {!isMobile && (
+        <div ref={parallaxRef} className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div
+            className="absolute top-[18%] left-[12%] w-16 h-16 opacity-[0.06]"
+            style={{ transition: 'transform 0.6s ease-out', animation: 'float-gentle 6s ease-in-out infinite' }}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-purple-400">
+              <path d="M12 10.11c1.03 0 1.87.84 1.87 1.89 0 1-.84 1.85-1.87 1.85S10.13 13 10.13 12c0-1.05.84-1.89 1.87-1.89M7.37 20c.63.38 2.01-.2 3.6-1.7-.52-.59-1.03-1.23-1.51-1.9a22.7 22.7 0 01-2.4-.36c-.51 2.14-.32 3.61.31 3.96m.71-5.74l-.29-.51c-.11.29-.22.58-.29.86.27.06.57.11.88.16l-.3-.51m6.54-.76l.81-1.5-.81-1.5c-.3-.53-.62-1-.91-1.47C13.17 9 12.6 9 12 9s-1.17 0-1.71.03c-.29.47-.61.94-.91 1.47L8.57 12l.81 1.5c.3.53.62 1 .91 1.47.54.03 1.11.03 1.71.03s1.17 0 1.71-.03c.29-.47.61-.94.91-1.47M12 6.78c-.19.22-.39.45-.59.72h1.18c-.2-.27-.4-.5-.59-.72m0 10.44c.19-.22.39-.45.59-.72h-1.18c.2.27.4.5.59.72M16.62 4c-.62-.38-2 .2-3.59 1.7.52.59 1.03 1.23 1.51 1.9.82.08 1.63.2 2.4.36.51-2.14.32-3.61-.32-3.96m-.7 5.74l.29.51c.11-.29.22-.58.29-.86-.27-.06-.57-.11-.88-.16l.3.51m1.45-7.05c1.47.84 1.63 3.05 1.01 5.63 2.54.75 4.37 1.99 4.37 3.68s-1.83 2.93-4.37 3.68c.62 2.58.46 4.79-1.01 5.63-1.46.84-3.45-.12-5.37-1.95-1.92 1.83-3.91 2.79-5.38 1.95-1.46-.84-1.62-3.05-1-5.63-2.54-.75-4.37-1.99-4.37-3.68s1.83-2.93 4.37-3.68c-.62-2.58-.46-4.79 1-5.63 1.47-.84 3.46.12 5.38 1.95 1.92-1.83 3.91-2.79 5.37-1.95M17.08 12c.34.75.64 1.5.89 2.26 2.1-.63 3.28-1.53 3.28-2.26s-1.18-1.63-3.28-2.26c-.25.76-.55 1.51-.89 2.26M6.92 12c-.34-.75-.64-1.5-.89-2.26-2.1.63-3.28 1.53-3.28 2.26s1.18 1.63 3.28 2.26c.25-.76.55-1.51.89-2.26m9 2.26l-.3.51c.31-.05.61-.1.88-.16-.07-.28-.18-.57-.29-.86l-.29.51m-2.89 4.04c1.59 1.5 2.97 2.08 3.59 1.7.64-.35.83-1.82.32-3.96-.77.16-1.58.28-2.4.36-.48.67-.99 1.31-1.51 1.9M8.08 9.74l.3-.51c-.31.05-.61.1-.88.16.07.28.18.57.29.86l.29-.51m2.89-4.04C9.38 4.2 8 3.62 7.37 4c-.63.35-.82 1.82-.31 3.96a22.7 22.7 0 012.4-.36c.48-.67.99-1.31 1.51-1.9z"/>
+            </svg>
+          </div>
+          <div
+            className="absolute top-[22%] right-[15%] w-14 h-14 opacity-[0.05]"
+            style={{ transition: 'transform 0.6s ease-out', animation: 'float-gentle 7s ease-in-out infinite 1s' }}
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-fuchsia-400">
+              <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/>
+            </svg>
+          </div>
+          <div
+            className="absolute top-[55%] left-[8%] w-24 h-24 rounded-full opacity-[0.04]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168,85,247,0.6), rgba(192,132,252,0.4))',
+              filter: 'blur(20px)',
+              transition: 'transform 0.6s ease-out',
+              animation: 'float-gentle 8s ease-in-out infinite 0.5s',
+            }}
+          />
+          <div
+            className="absolute bottom-[25%] right-[10%] w-20 h-20 rounded-lg opacity-[0.03] rotate-45"
+            style={{
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.5), rgba(124,58,237,0.3))',
+              filter: 'blur(15px)',
+              transition: 'transform 0.6s ease-out',
+              animation: 'float-gentle 9s ease-in-out infinite 2s',
+            }}
+          />
+          <div
+            className="absolute top-[35%] right-[30%] w-10 h-10 rounded-full opacity-[0.05]"
+            style={{
+              background: 'radial-gradient(circle, rgba(217,70,239,0.6), transparent)',
+              filter: 'blur(10px)',
+              transition: 'transform 0.6s ease-out',
+              animation: 'float-gentle 5s ease-in-out infinite 1.5s',
+            }}
+          />
         </div>
-        {/* Tailwind icon silhouette — top right (now purple) */}
-        <div
-          className="absolute top-[22%] right-[15%] w-14 h-14 opacity-[0.05]"
-          style={{ transition: 'transform 0.6s ease-out', animation: 'float-gentle 7s ease-in-out infinite 1s' }}
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-fuchsia-400">
-            <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/>
-          </svg>
-        </div>
-        {/* Abstract shapes — blurred geometric (all purple, no blue) */}
-        <div
-          className="absolute top-[55%] left-[8%] w-24 h-24 rounded-full opacity-[0.04]"
-          style={{
-            background: 'linear-gradient(135deg, rgba(168,85,247,0.6), rgba(192,132,252,0.4))',
-            filter: 'blur(20px)',
-            transition: 'transform 0.6s ease-out',
-            animation: 'float-gentle 8s ease-in-out infinite 0.5s',
-          }}
-        />
-        <div
-          className="absolute bottom-[25%] right-[10%] w-20 h-20 rounded-lg opacity-[0.03] rotate-45"
-          style={{
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.5), rgba(124,58,237,0.3))',
-            filter: 'blur(15px)',
-            transition: 'transform 0.6s ease-out',
-            animation: 'float-gentle 9s ease-in-out infinite 2s',
-          }}
-        />
-        <div
-          className="absolute top-[35%] right-[30%] w-10 h-10 rounded-full opacity-[0.05]"
-          style={{
-            background: 'radial-gradient(circle, rgba(217,70,239,0.6), transparent)',
-            filter: 'blur(10px)',
-            transition: 'transform 0.6s ease-out',
-            animation: 'float-gentle 5s ease-in-out infinite 1.5s',
-          }}
-        />
-      </div>
+      )}
 
       <div className="text-center max-w-5xl mx-auto relative z-10">
         {/* Role pill — glassmorphism badge */}
@@ -631,7 +642,7 @@ function Hero({ visible, mouseRef }) {
           data-reveal
           style={{ transitionDelay: '0ms' }}
         >
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.05] backdrop-blur-2xl border border-purple-500/30 text-purple-300 text-xs font-semibold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)]">
+          <span className={`inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.05] border border-purple-500/30 text-purple-300 text-xs font-semibold tracking-[0.2em] uppercase ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_0_20px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)]'}`}>
             <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
             Frontend Developer
           </span>
@@ -670,7 +681,7 @@ function Hero({ visible, mouseRef }) {
               e.preventDefault()
               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
             }}
-            className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white/[0.06] backdrop-blur-2xl border border-white/[0.1] text-white text-sm font-semibold hover:bg-white/[0.1] hover:border-purple-500/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)] active:scale-[0.97] transition-all duration-300 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]"
+            className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-semibold hover:bg-white/[0.1] hover:border-purple-500/30 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)]'}`}
           >
             View Projects
             <svg
@@ -685,7 +696,7 @@ function Hero({ visible, mouseRef }) {
           <a
             href="/cv.pdf"
             download
-            className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-transparent backdrop-blur-2xl border border-white/20 text-zinc-300 text-sm font-semibold hover:bg-white/10 hover:text-white hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.3)] active:scale-[0.97] transition-all duration-300"
+            className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-transparent border border-white/20 text-zinc-300 text-sm font-semibold hover:bg-white/10 hover:text-white hover:border-white/30 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.3)]'}`}
           >
             <svg
               width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -756,6 +767,8 @@ function ProjectModal({ project, onClose }) {
           <img
             src={project.img}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -854,6 +867,8 @@ function ProjectCard({ project, onSelect, index }) {
           <img
             src={project.img}
             alt={project.title}
+            loading="lazy"
+            decoding="async"
             className={`w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isHovered ? 'scale-110' : 'scale-100'
             }`}
@@ -1488,6 +1503,7 @@ function Contact() {
 
 function App() {
   const [loaded, setLoaded] = useState(false)
+  const isMobile = useIsMobile()
   const mouseRef = useMousePosition()
 
   const handleSplashFinish = useCallback(() => setLoaded(true), [])
@@ -1551,11 +1567,11 @@ function App() {
       {!loaded && <SplashScreen onFinish={handleSplashFinish} />}
 
       <CustomCursor />
-      <Background mouseRef={mouseRef} />
+      <Background mouseRef={mouseRef} isMobile={isMobile} />
       <Navbar visible={loaded} />
 
       <main className={`relative z-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-        <Hero visible={loaded} mouseRef={mouseRef} />
+        <Hero visible={loaded} mouseRef={mouseRef} isMobile={isMobile} />
         <Projects />
         <About />
         <TerminalStack />
