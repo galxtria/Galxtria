@@ -106,13 +106,13 @@ const NAV_LINKS = ['Home', 'Projects', 'About', 'Contact']
 
 const PROJECTS = [
   {
-    title: 'KostHub App',
-    desc: 'Boarding house management system engineered for financial efficiency and real-time room tracking across multiple properties.',
-    fullDesc: 'KostHub is a comprehensive boarding house management platform designed for property owners managing multiple locations. It features real-time room occupancy tracking, automated financial reporting with income/expense analytics, tenant management with digital contracts, and push notification alerts for payment reminders. The system includes a dashboard with visual analytics for occupancy rates, revenue trends, and maintenance scheduling.',
-    tech: ['Java', 'Android', 'Firebase', 'Material UI'],
-    github: 'https://github.com/Praddddd/KostHub.git',
-    year: '2026',
-    img: kosthubImg,
+    title: 'My Music',
+    desc: 'Automated music player application with intelligent playlist organization and seamless audio playback.',
+    fullDesc: 'My Music is a feature-rich music player application that leverages intelligent algorithms for playlist curation and seamless audio playback. It includes auto-generated playlists based on listening habits, crossfade transitions, equalizer controls, and a sleek responsive interface. The backend handles music library indexing, metadata parsing, and user preference storage for personalized recommendations.',
+    tech: ['Laravel', 'MySQL', 'Tailwind'],
+    github: 'https://github.com/Praddddd/MyMusic.git',
+    year: '2025',
+    img: mymusicImg,
   },
   {
     title: 'Expense Tracker',
@@ -124,21 +124,32 @@ const PROJECTS = [
     img: expensetrackerImg,
   },
   {
-    title: 'My Music',
-    desc: 'Automated music player application with intelligent playlist organization and seamless audio playback.',
-    fullDesc: 'My Music is a feature-rich music player application that leverages intelligent algorithms for playlist curation and seamless audio playback. It includes auto-generated playlists based on listening habits, crossfade transitions, equalizer controls, and a sleek responsive interface. The backend handles music library indexing, metadata parsing, and user preference storage for personalized recommendations.',
-    tech: ['Laravel', 'MySQL', 'Tailwind'],
-    github: 'https://github.com/Praddddd/MyMusic.git',
-    year: '2025',
-    img: mymusicImg,
+    title: 'KostHub App',
+    desc: 'Boarding house management system engineered for financial efficiency and real-time room tracking across multiple properties.',
+    fullDesc: 'KostHub is a comprehensive boarding house management platform designed for property owners managing multiple locations. It features real-time room occupancy tracking, automated financial reporting with income/expense analytics, tenant management with digital contracts, and push notification alerts for payment reminders. The system includes a dashboard with visual analytics for occupancy rates, revenue trends, and maintenance scheduling.',
+    tech: ['Java', 'Android', 'Firebase', 'Material UI'],
+    github: 'https://github.com/Praddddd/KostHub.git',
+    year: '2026',
+    img: kosthubImg,
   },
 ]
 
 const TECH_STACK = [
-  { name: 'React', color: '#A78BFA', keyword: 'import' },
-  { name: 'Tailwind CSS', color: '#C084FC', keyword: 'apply' },
-  { name: 'Next.js', color: '#E9D5FF', keyword: 'export' },
-  { name: 'Figma', color: '#A259FF', keyword: 'design' },
+  // Original stack
+  { name: 'React', color: '#61DAFB', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+  { name: 'Tailwind CSS', color: '#06B6D4', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg' },
+  { name: 'Next.js', color: '#FFFFFF', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg' },
+  { name: 'Figma', color: '#F24E1E', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
+  { name: 'TypeScript', color: '#3178C6', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg' },
+  { name: 'Node.js', color: '#68A063', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg' },
+  // Added stack
+  { name: 'Java', color: '#ED8B00', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg' },
+  { name: 'Python', color: '#3776AB', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
+  { name: 'PHP', color: '#777BB4', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg' },
+  { name: 'Dart', color: '#0175C2', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg' },
+  { name: 'JavaScript', color: '#F7DF1E', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
+  { name: 'Laravel', color: '#FF2D20', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg' },
+  { name: 'Flutter', color: '#02569B', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg' },
 ]
 
 // Terminal boot sequence lines
@@ -164,7 +175,6 @@ function CustomCursor() {
   const expanded = useRef(false)
 
   useEffect(() => {
-    // Check for touch device
     if (window.matchMedia('(hover: none)').matches) return
 
     const dot = dotRef.current
@@ -178,7 +188,7 @@ function CustomCursor() {
 
     const onOver = (e) => {
       const t = e.target
-      if (t.closest('a, button, [data-magnetic], .project-card-hover, .tech-card-spotlight')) {
+      if (t.closest('a, button, [data-magnetic], .project-card-hover, .hex-item')) {
         if (!expanded.current) {
           expanded.current = true
           dot.classList.add('expanded')
@@ -189,7 +199,7 @@ function CustomCursor() {
 
     const onOut = (e) => {
       const t = e.relatedTarget
-      if (!t || !t.closest('a, button, [data-magnetic], .project-card-hover, .tech-card-spotlight')) {
+      if (!t || !t.closest('a, button, [data-magnetic], .project-card-hover, .hex-item')) {
         if (expanded.current) {
           expanded.current = false
           dot.classList.remove('expanded')
@@ -206,14 +216,11 @@ function CustomCursor() {
     const lerp = (a, b, t) => a + (b - a) * t
 
     const animate = () => {
-      pos.current.x = lerp(pos.current.x, target.current.x, 0.15)
-      pos.current.y = lerp(pos.current.y, target.current.y, 0.15)
+      pos.current.x = lerp(pos.current.x, target.current.x, 0.18)
+      pos.current.y = lerp(pos.current.y, target.current.y, 0.18)
 
-      const dotW = dot.offsetWidth / 2
-      const ringW = ring.offsetWidth / 2
-
-      dot.style.transform = `translate(${pos.current.x - dotW}px, ${pos.current.y - dotW}px)`
-      ring.style.transform = `translate(${target.current.x - ringW}px, ${target.current.y - ringW}px)`
+      dot.style.transform = `translate3d(${pos.current.x - 4}px, ${pos.current.y - 4}px, 0)`
+      ring.style.transform = `translate3d(${target.current.x - 16}px, ${target.current.y - 16}px, 0)`
 
       raf = requestAnimationFrame(animate)
     }
@@ -408,7 +415,6 @@ function Navbar({ visible }) {
   const navContainerRef = useRef(null)
   const itemRefs = useRef({})
 
-  // Update active link on scroll
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50)
@@ -648,19 +654,19 @@ function Hero({ visible, mouseRef, isMobile }) {
           </span>
         </div>
 
-        {/* Name — massive gradient text (all purple spectrum, no blue) */}
-        <div
-          className="mb-6"
-          data-reveal
-          style={{ transitionDelay: '100ms' }}
-        >
-          <h1
-            className="text-[clamp(4rem,12vw,10rem)] font-black tracking-tighter leading-[0.9] bg-gradient-to-r from-fuchsia-400 via-purple-400 to-violet-500 bg-clip-text text-transparent hero-shimmer-text"
-            style={{ filter: 'drop-shadow(0 0 40px rgba(139,92,246,0.25))' }}
-          >
-            Galxtria
-          </h1>
-        </div>
+         {/* Name — massive gradient text (all purple spectrum, no blue) */}
+         <div
+           className="mb-6"
+           data-reveal
+           style={{ transitionDelay: '100ms' }}
+         >
+           <h1
+             className="text-[clamp(4rem,12vw,10rem)] font-black tracking-tighter leading-[0.9] bg-gradient-to-r from-purple-300 via-purple-400 to-violet-400 bg-clip-text text-transparent"
+             style={{ filter: 'drop-shadow(0 0 30px rgba(139,92,246,0.15))' }}
+           >
+             Galxtria
+           </h1>
+         </div>
 
         {/* Tagline */}
         <p
@@ -674,23 +680,23 @@ function Hero({ visible, mouseRef, isMobile }) {
         </p>
 
         {/* CTA Buttons — View Projects + Download CV */}
-        <div data-reveal style={{ transitionDelay: '300ms' }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="/cv.pdf"
-            onClick={(e) => {
-              e.preventDefault()
-              document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-semibold hover:bg-white/[0.1] hover:border-purple-500/30 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)]'}`}
-          >
-            View Projects
-            <svg
-              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-              className="group-hover:translate-x-0.5 transition-transform duration-200"
-            >
-              <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
-            </svg>
-          </a>
+         <div data-reveal style={{ transitionDelay: '300ms' }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+           <a
+             href="/cv.pdf"
+             onClick={(e) => {
+               e.preventDefault()
+               document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+             }}
+             className={`group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/50 text-white text-sm font-semibold hover:from-purple-500 hover:to-violet-500 hover:border-purple-400 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_0_30px_rgba(168,85,247,0.3),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5),0_8px_40px_rgba(0,0,0,0.4)]'}`}
+           >
+             View Projects
+             <svg
+               width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+               className="group-hover:translate-x-0.5 transition-transform duration-200"
+             >
+               <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
+             </svg>
+           </a>
 
           {/* Download CV — elegant outline glassmorphism button */}
           <a
@@ -830,8 +836,9 @@ function ProjectModal({ project, onClose }) {
 // PROJECTS — Premium Horizontal Scroll Carousel
 // ─────────────────────────────────────────────────────────────────────
 
-function ProjectCard({ project, onSelect, index }) {
+function ProjectCard({ project, onSelect, index, total }) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   return (
     <div
@@ -863,16 +870,20 @@ function ProjectCard({ project, onSelect, index }) {
         />
 
         {/* Project image */}
-        <div className="relative h-[220px] sm:h-[260px] overflow-hidden">
-          <img
-            src={project.img}
-            alt={project.title}
-            loading="lazy"
-            decoding="async"
-            className={`w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isHovered ? 'scale-110' : 'scale-100'
-            }`}
-          />
+         <div className="relative h-[220px] sm:h-[260px] overflow-hidden">
+           {!imageLoaded && (
+             <div className="absolute inset-0 bg-gradient-to-r from-white/[0.05] via-white/[0.1] to-white/[0.05] animate-pulse" />
+           )}
+           <img
+             src={project.img}
+             alt={project.title}
+             loading="lazy"
+             decoding="async"
+             onLoad={() => setImageLoaded(true)}
+             className={`w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+               isHovered ? 'scale-110' : 'scale-100'
+             }`}
+           />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -939,6 +950,7 @@ function Projects() {
   const { ref: headRef, revealed: headRevealed } = useStaggerReveal(0.2)
   const { ref: carouselWrapRef, revealed: carouselRevealed } = useStaggerReveal(0.1)
   const [activeProject, setActiveProject] = useState(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
   const scrollRef = useRef(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
@@ -948,6 +960,12 @@ function Projects() {
     if (!el) return
     setCanScrollLeft(el.scrollLeft > 10)
     setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10)
+    
+    const cardWidth = window.innerWidth >= 768 ? 600 : window.innerWidth * 0.85
+    const gap = 24
+    const scrollPosition = el.scrollLeft
+    const index = Math.round(scrollPosition / (cardWidth + gap))
+    setCurrentIndex(Math.max(0, Math.min(index, PROJECTS.length - 1)))
   }, [])
 
   useEffect(() => {
@@ -984,11 +1002,16 @@ function Projects() {
           >
             <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-3">Selected Work</p>
             <div className="flex items-end justify-between gap-4">
-              <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter text-white">
-                Projects
-              </h2>
-              {/* Desktop navigation arrows */}
-              <div data-reveal className="hidden md:flex items-center gap-2">
+               <div>
+                 <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter text-white">
+                   Projects
+                 </h2>
+                 <p data-reveal className="text-sm text-zinc-500 mt-2">
+                   {String(currentIndex + 1).padStart(2, '0')} / {String(PROJECTS.length).padStart(2, '0')}
+                 </p>
+               </div>
+               {/* Desktop navigation arrows */}
+               <div data-reveal className="hidden md:flex items-center gap-2">
                 <button
                   onClick={() => scroll(-1)}
                   disabled={!canScrollLeft}
@@ -1031,15 +1054,16 @@ function Projects() {
         >
           <div
             ref={scrollRef}
-            className="carousel-scroll flex gap-6 overflow-x-auto snap-x snap-mandatory px-6 md:px-[calc((100vw-600px)/2)] pb-4"
+            className="carousel-scroll flex gap-6 overflow-x-auto snap-x snap-mandatory px-6 pr-[max(1.5rem,calc(100vw-85vw-1.5rem))] pb-4"
           >
             {PROJECTS.map((p, i) => (
-              <ProjectCard
-                key={p.title}
-                project={p}
-                onSelect={setActiveProject}
-                index={i}
-              />
+               <ProjectCard
+                 key={p.title}
+                 project={p}
+                 onSelect={setActiveProject}
+                 index={i}
+                 total={PROJECTS.length}
+               />
             ))}
             {/* End spacer for clean edge alignment */}
             <div className="shrink-0 w-4 md:w-0" aria-hidden="true" />
@@ -1130,6 +1154,13 @@ const ABOUT_LINES = [
   { text: 'that feel intuitive, precise, and effortless to use.', highlight: false },
 ]
 
+const TIMELINE = [
+  { year: '2021', title: 'SMK RPL Started', desc: 'Began programming journey at SMK' },
+  { year: '2024', title: 'SMK Graduated', desc: 'Completed RPL (Rekayasa Perangkat Lunak) program' },
+  { year: '2024', title: 'University Enrolled', desc: 'Started higher education journey' },
+  { year: '2026', title: 'Present', desc: 'Building projects & growing skills' },
+]
+
 function About() {
   const { ref: headRef, revealed: headRevealed } = useStaggerReveal(0.15)
   const { ref: bodyRef, revealed: bodyRevealed } = useStaggerReveal(0.1)
@@ -1152,49 +1183,77 @@ function About() {
           </h2>
         </div>
 
-        {/* Typographic layout + Globe */}
-        <div
-          ref={bodyRef}
-          className={`transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-            bodyRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
-            {/* Statement — line-by-line reveal */}
-            <div className="lg:col-span-3">
-              <div className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight leading-[1.4]">
-                {ABOUT_LINES.map((line, i) => (
-                  <span
-                    key={i}
-                    data-reveal
-                    className={`inline-block ${line.highlight ? 'text-zinc-200' : 'text-zinc-500'}`}
-                    style={{ transitionDelay: `${i * 120}ms` }}
-                  >
-                    {line.text}{' '}
-                  </span>
-                ))}
-              </div>
-            </div>
+        {/* Typographic layout + Globe + Timeline */}
+         <div
+           ref={bodyRef}
+           className={`transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+             bodyRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+           }`}
+         >
+           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
+             {/* Statement — line-by-line reveal */}
+             <div className="lg:col-span-3">
+               <div className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight leading-[1.4]">
+                 {ABOUT_LINES.map((line, i) => (
+                   <span
+                     key={i}
+                     data-reveal
+                     className={`inline-block ${line.highlight ? 'text-zinc-200' : 'text-zinc-500'}`}
+                     style={{ transitionDelay: `${i * 120}ms` }}
+                   >
+                     {line.text}{' '}
+                   </span>
+                 ))}
+               </div>
+             </div>
 
-            {/* Detail column with globe */}
-            <div className="lg:col-span-2 flex flex-col gap-6 pt-1">
-              {/* Wireframe globe */}
-              <div className="mb-4 hidden lg:block" data-reveal style={{ transitionDelay: '0ms' }}>
-                <WireframeGlobe />
-              </div>
+             {/* Detail column with globe */}
+             <div className="lg:col-span-2 flex flex-col gap-6 pt-1">
+               {/* Wireframe globe */}
+               <div className="mb-4 hidden lg:block" data-reveal style={{ transitionDelay: '0ms' }}>
+                 <WireframeGlobe />
+               </div>
 
-              <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '200ms' }}>
-                Every project starts with understanding the user deeply — the flows,
-                the edge cases, and the moments that make or break an experience. From there,
-                I build interfaces that feel alive.
-              </p>
-              <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '300ms' }}>
-                I obsess over typography, spacing, animation timing, and component architecture,
-                always optimising for clarity, speed, and pixel-perfect craft.
-              </p>
-            </div>
-          </div>
-        </div>
+               <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '200ms' }}>
+                 Every project starts with understanding the user deeply — the flows,
+                 the edge cases, and the moments that make or break an experience. From there,
+                 I build interfaces that feel alive.
+               </p>
+               <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '300ms' }}>
+                 I obsess over typography, spacing, animation timing, and component architecture,
+                 always optimising for clarity, speed, and pixel-perfect craft.
+               </p>
+             </div>
+           </div>
+
+           {/* Timeline */}
+           <div className="mt-16 pt-16 border-t border-white/[0.05]">
+             <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-8">Timeline</p>
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+               {TIMELINE.map((item, i) => (
+                 <div
+                   key={i}
+                   data-reveal
+                   style={{ transitionDelay: `${i * 120}ms` }}
+                   className="relative pl-6"
+                 >
+                   {/* Dot */}
+                   <div className="absolute left-0 top-1 w-3 h-3 rounded-full bg-purple-500/60 border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)]" />
+                   
+                   <div className="text-[11px] font-semibold tracking-[0.2em] text-purple-400 uppercase mb-1">
+                     {item.year}
+                   </div>
+                   <h4 className="text-sm font-semibold text-white mb-1">
+                     {item.title}
+                   </h4>
+                   <p className="text-xs text-zinc-500">
+                     {item.desc}
+                   </p>
+                 </div>
+               ))}
+             </div>
+           </div>
+         </div>
       </div>
     </section>
   )
@@ -1204,155 +1263,179 @@ function About() {
 // CORE STACK — Terminal/IDE Window with Boot Sequence + Scanline
 // ─────────────────────────────────────────────────────────────────────
 
-function TerminalStack() {
+// ─────────────────────────────────────────────────────────────────────
+// HEXAGON GRID — Tech Stack Visualization
+// ─────────────────────────────────────────────────────────────────────
+
+const TECH_ICONS = {
+  'React': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2"/><path d="M12 2C9 7 3 9 3 12s6 5 9 10c3-5 9-7 9-10S15 7 12 2z" stroke="currentColor" fill="none" strokeWidth="1.5"/></svg>,
+  'Tailwind CSS': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 20h6v-6h8v6h6L12 2z"/></svg>,
+  'Next.js': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 20h6v-6h8v6h6L12 2z"/></svg>,
+  'Figma': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><circle cx="7" cy="7" r="3" opacity="0.5"/><circle cx="17" cy="7" r="3" opacity="0.5"/><circle cx="7" cy="17" r="3" opacity="0.5"/></svg>,
+  'TypeScript': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><text x="12" y="17" fontSize="9" fontWeight="bold" fill="white" textAnchor="middle">TS</text></svg>,
+  'Node.js': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10c0 5 10 8 10 8s10-3 10-8V7L12 2z"/></svg>,
+  'Java': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 12c0-2 2-4 4-4s4 2 4 4-2 4-4 4-4-2-4-4z"/><path d="M12 20s-3-1-3-3v-3h6v3c0 2-3 3-3 3z"/></svg>,
+  'Python': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="9" r="3"/><circle cx="15" cy="9" r="3"/><path d="M12 18c-2 0-4-1-4-3v-2h8v2c0 2-2 3-4 3z"/></svg>,
+  'PHP': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><text x="12" y="17" fontSize="11" fontWeight="bold" fill="currentColor" textAnchor="middle">PHP</text></svg>,
+  'Dart': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 8v8l10 6 10-6V8L12 2z"/></svg>,
+  'JavaScript': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor"/><text x="12" y="17" fontSize="9" fontWeight="bold" fill="white" textAnchor="middle">JS</text></svg>,
+  'Laravel': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 6v12l9 4 9-4V6L12 2z"/></svg>,
+  'Flutter': () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="12,2 2,22 12,16 22,22"/></svg>,
+}
+
+function HexagonGrid() {
   const { ref, revealed } = useStaggerReveal(0.1)
-  const [bootLines, setBootLines] = useState(0)
-  const [typedLines, setTypedLines] = useState(0)
-  const bootDone = bootLines >= TERMINAL_BOOT.length
-
-  // Boot sequence animation
-  useEffect(() => {
-    if (!revealed) return
-    const timers = TERMINAL_BOOT.map((line, i) =>
-      setTimeout(() => setBootLines(i + 1), line.delay)
-    )
-    return () => timers.forEach(clearTimeout)
-  }, [revealed])
-
-  // Tech stack typing — starts after boot completes
-  useEffect(() => {
-    if (!bootDone) return
-    const startDelay = setTimeout(() => {
-      const interval = setInterval(() => {
-        setTypedLines((prev) => {
-          if (prev >= TECH_STACK.length) {
-            clearInterval(interval)
-            return prev
-          }
-          return prev + 1
-        })
-      }, 180)
-      return () => clearInterval(interval)
-    }, 300)
-    return () => clearTimeout(startDelay)
-  }, [bootDone])
 
   return (
     <section className="px-6 py-24 md:py-32 relative">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div
           ref={ref}
           className={`transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
             revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <p data-reveal className="text-center text-[11px] font-semibold tracking-[0.3em] text-zinc-600 uppercase mb-10">
-            Core Stack
+          <p data-reveal className="text-center text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-4">
+            Core Technologies
           </p>
+          <h2 data-reveal className="text-center text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tighter text-white mb-14">
+            Tech Stack
+          </h2>
 
-          {/* Terminal Window */}
-          <div data-reveal className="rounded-xl border border-white/[0.1] bg-white/[0.03] backdrop-blur-2xl overflow-hidden shadow-[0_16px_64px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.03)] relative" style={{ transitionDelay: '100ms' }}>
-            {/* Scanline effect overlay */}
-            <div className="terminal-scanline absolute inset-0 pointer-events-none z-20" />
-
-            {/* Title bar — macOS style */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-white/[0.02] relative z-10">
-              <div className="flex items-center gap-[6px]">
-                <div className="w-[10px] h-[10px] rounded-full bg-[#FF5F57] shadow-[0_0_4px_rgba(255,95,87,0.3)]" />
-                <div className="w-[10px] h-[10px] rounded-full bg-[#FEBC2E] shadow-[0_0_4px_rgba(254,188,46,0.3)]" />
-                <div className="w-[10px] h-[10px] rounded-full bg-[#28C840] shadow-[0_0_4px_rgba(40,200,64,0.3)]" />
-              </div>
-              <div className="flex-1 text-center">
-                <span className="text-[11px] font-medium text-zinc-500 tracking-wide">stack.config.ts — galxtria</span>
-              </div>
-              <div className="w-[52px]" /> {/* Spacer for symmetry */}
-            </div>
-
-            {/* Terminal body */}
-            <div className="p-5 sm:p-6 font-mono text-[12px] sm:text-[13px] leading-[1.9] min-h-[340px] relative z-10">
-              {/* Boot sequence */}
-              <div className="mb-4 space-y-0.5">
-                {TERMINAL_BOOT.map((line, i) => (
-                  <div
-                    key={i}
-                    className={`transition-all duration-200 ${
-                      i < bootLines
-                        ? 'opacity-100 translate-x-0'
-                        : 'opacity-0 translate-x-2'
-                    }`}
-                  >
-                    {line.text && (
-                      <span className={line.status ? 'text-emerald-400/80' : 'text-zinc-500'}>
-                        {line.text}
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Divider between boot and code */}
-              {bootDone && (
-                <div className="border-t border-white/[0.04] my-3 transition-opacity duration-300" />
-              )}
-
-              {/* Comment header — appears after boot */}
-              {bootDone && (
-                <>
-                  <div className="text-zinc-600 mb-1">
-                    <span className="text-zinc-700">{'// '}</span>
-                    <span className="italic">galxtria — frontend toolkit</span>
-                  </div>
-                  <div className="text-zinc-700 mb-4">
-                    <span>{'// '}</span>
-                    <span className="italic">curated technologies I build with</span>
-                  </div>
-                </>
-              )}
-
-              {/* Stack entries — typed in after boot */}
-              {bootDone && (
-                <div className="space-y-1">
-                  {TECH_STACK.map((tech, i) => (
-                    <div
-                      key={tech.name}
-                      className={`flex items-center gap-0 transition-all duration-300 ${
-                        i < typedLines
-                          ? 'opacity-100 translate-x-0'
-                          : 'opacity-0 translate-x-3'
-                      }`}
-                      style={{ transitionDelay: `${i * 50}ms` }}
-                    >
-                      <span className="text-zinc-600 w-6 text-right mr-4 text-xs select-none">{i + 1}</span>
-                      <span className="text-purple-400">{tech.keyword}</span>
-                      <span className="text-zinc-600 mx-1">{'('}</span>
-                      <span className="inline-flex items-center gap-2">
-                        <span
-                          className="inline-block w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: tech.color, boxShadow: `0 0 8px ${tech.color}40` }}
-                        />
-                        <span className="text-emerald-400">{`"${tech.name}"`}</span>
-                      </span>
-                      <span className="text-zinc-600">{')'}</span>
-                      <span className="text-zinc-700">;</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Blinking cursor */}
-              {bootDone && typedLines >= TECH_STACK.length && (
-                <div className="flex items-center gap-0 mt-2">
-                  <span className="text-zinc-600 w-6 text-right mr-4 text-xs select-none">{TECH_STACK.length + 1}</span>
-                  <span className="inline-block w-[7px] h-[16px] bg-purple-400/70 terminal-cursor" />
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Honeycomb hex grid */}
+           <div data-reveal className="hex-grid-wrapper" style={{ transitionDelay: '100ms' }}>
+             {/* Row 1: 4 hexagons */}
+             <div className="hex-row">
+               {TECH_STACK.slice(0, 4).map((tech, i) => (
+                 <HexItem key={tech.name} tech={tech} index={i} />
+               ))}
+             </div>
+             {/* Row 2: 5 hexagons (offset) */}
+             <div className="hex-row hex-row-offset">
+               {TECH_STACK.slice(4, 9).map((tech, i) => (
+                 <HexItem key={tech.name} tech={tech} index={i + 4} />
+               ))}
+             </div>
+             {/* Row 3: 4 hexagons (offset) */}
+             <div className="hex-row hex-row-offset">
+               {TECH_STACK.slice(9, 13).map((tech, i) => (
+                 <HexItem key={tech.name} tech={tech} index={i + 9} />
+               ))}
+             </div>
+           </div>
         </div>
       </div>
     </section>
+  )
+}
+
+function HexItem({ tech, index }) {
+  const [hovered, setHovered] = useState(false)
+  const hexRef = useRef(null)
+
+  const handleMouseMove = useCallback((e) => {
+    const el = hexRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width
+    const y = (e.clientY - rect.top) / rect.height
+    const rotateY = (x - 0.5) * 20
+    const rotateX = (0.5 - y) * 20
+    el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.08)`
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    const el = hexRef.current
+    if (!el) return
+    el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)'
+    setHovered(false)
+  }, [])
+
+  return (
+    <div
+      className="hex-item"
+      style={{ animationDelay: `${index * 0.1}s` }}
+    >
+      <div
+        ref={hexRef}
+        className="hex-card"
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        style={{ transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)' }}
+      >
+        {/* Outer hexagon SVG shape */}
+        <svg viewBox="0 0 200 230" className="hex-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id={`grad-${tech.name}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={tech.color} stopOpacity={hovered ? 0.25 : 0.08} />
+              <stop offset="100%" stopColor={tech.color} stopOpacity={hovered ? 0.1 : 0.02} />
+            </linearGradient>
+            <filter id={`glow-${tech.name}`}>
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          {/* Shadow hex behind */}
+          <polygon
+            points="100,8 190,58 190,172 100,222 10,172 10,58"
+            fill="none"
+            stroke={tech.color}
+            strokeWidth={hovered ? 2 : 1}
+            strokeOpacity={hovered ? 0.6 : 0.15}
+            filter={hovered ? `url(#glow-${tech.name})` : undefined}
+            style={{ transition: 'all 0.4s ease' }}
+          />
+          {/* Fill hex */}
+          <polygon
+            points="100,8 190,58 190,172 100,222 10,172 10,58"
+            fill={`url(#grad-${tech.name})`}
+            style={{ transition: 'all 0.4s ease' }}
+          />
+          {/* Inner highlight line */}
+          <polygon
+            points="100,22 178,66 178,164 100,208 22,164 22,66"
+            fill="none"
+            stroke={tech.color}
+            strokeWidth="0.5"
+            strokeOpacity={hovered ? 0.3 : 0.06}
+            style={{ transition: 'all 0.4s ease' }}
+          />
+        </svg>
+
+        {/* Content overlay */}
+         <div className="hex-content">
+           <div
+             className="hex-icon-wrap"
+             style={{ color: hovered ? tech.color : 'rgba(255,255,255,0.5)', transition: 'color 0.4s ease, transform 0.4s ease', transform: hovered ? 'scale(1.15)' : 'scale(1)' }}
+           >
+             {tech.logo ? (
+               <img src={tech.logo} alt={tech.name} style={{ width: '32px', height: '32px', filter: hovered ? `drop-shadow(0 0 8px ${tech.color})` : 'none', transition: 'filter 0.4s ease' }} />
+             ) : (
+               TECH_ICONS[tech.name]?.()
+             )}
+           </div>
+           <span
+             className="hex-label"
+             style={{ color: hovered ? tech.color : 'rgba(255,255,255,0.6)', transition: 'color 0.4s ease', textShadow: hovered ? `0 0 20px ${tech.color}60` : 'none' }}
+           >
+             {tech.name}
+           </span>
+         </div>
+
+        {/* Ambient glow behind on hover */}
+        <div
+          className="hex-glow"
+          style={{
+            background: `radial-gradient(circle, ${tech.color}40 0%, transparent 70%)`,
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 0.5s ease',
+          }}
+        />
+      </div>
+    </div>
   )
 }
 
@@ -1362,131 +1445,228 @@ function TerminalStack() {
 
 function Contact() {
   const { ref, revealed } = useStaggerReveal(0.08)
-  const magneticRef = useMagnetic(0.25)
+  const [copied, setCopied] = useState(false)
+  const email = 'utamapradita5@gmail.com'
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(email)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const socials = [
+    {
+      label: 'Email',
+      value: 'utamapradita5@gmail.com',
+      link: 'mailto:utamapradita5@gmail.com',
+      color: '#A78BFA',
+      isCopyable: true,
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7" />
+        </svg>
+      ),
+    },
+    {
+      label: 'GitHub',
+      value: 'github.com/galxtria',
+      link: 'https://github.com/galxtria',
+      color: '#E2E8F0',
+      icon: (
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Instagram',
+      value: '@galxtria',
+      link: 'https://www.instagram.com/galxtria/',
+      color: '#F472B6',
+      icon: (
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'LinkedIn',
+      value: 'Pradita Utama',
+      link: 'https://www.linkedin.com/in/praditautama25',
+      color: '#60A5FA',
+      icon: (
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+      ),
+    },
+  ]
 
   return (
     <section id="contact" className="relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
 
-      {/* Slow-pulsing purple radial gradient background */}
+      {/* Ambient glow */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[700px] pointer-events-none"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.08) 0%, rgba(139,92,246,0.03) 40%, transparent 70%)',
-          animation: 'contact-glow-pulse 6s ease-in-out infinite',
+          background: 'radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 65%)',
+          filter: 'blur(60px)',
         }}
       />
 
-      {/* Main content area */}
       <div
         ref={ref}
-        className={`min-h-[85vh] flex flex-col items-center justify-center px-6 relative transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+        className={`min-h-[80vh] flex flex-col items-center justify-center px-6 py-28 md:py-36 relative transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${
           revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}
       >
-        {/* Premium Glassmorphism Card */}
-        <div
-          data-reveal
-          className="relative w-full max-w-xl bg-white/[0.05] backdrop-blur-2xl border border-purple-500/20 rounded-3xl overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.1),0_20px_60px_rgba(0,0,0,0.4)]"
-        >
-          {/* Inner highlight glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,_rgba(168,85,247,0.1)_0%,_transparent_50%)] pointer-events-none" />
+        {/* Heading */}
+         <div data-reveal className="mb-14 text-center">
+           <p className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-4">Get In Touch</p>
+           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-[1.1]">
+             Let's Build
+           </h2>
+           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6">
+             <span className="bg-gradient-to-r from-fuchsia-400 via-purple-400 to-violet-500 bg-clip-text text-transparent">
+               Something Amazing
+             </span>
+           </h2>
+           <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto">
+             Got a project in mind? Let's collaborate and create something extraordinary together.
+           </p>
+         </div>
 
-          {/* Card content */}
-          <div className="relative z-10 p-8 sm:p-12 flex flex-col items-center text-center">
-            {/* Section label */}
-            <p className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-8">
-              Contact
-            </p>
+        {/* Social link cards — grid layout */}
+         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl w-full">
+           {socials.map((item, i) => (
+             <div key={item.label}>
+               {item.isCopyable ? (
+                 <button
+                   onClick={() => copyEmail()}
+                   data-reveal
+                   style={{ transitionDelay: `${(i + 1) * 80}ms` }}
+                   className="contact-card group relative w-full p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 text-left"
+                 >
+                   {/* Animated hover glow */}
+                   <div
+                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                     style={{
+                       background: `radial-gradient(ellipse at 50% 0%, ${item.color}20 0%, transparent 70%)`,
+                     }}
+                   />
 
-            {/* Headline */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
-              Ready to build the
-              <br />
-              <span className="bg-gradient-to-r from-fuchsia-400 via-purple-400 to-violet-500 bg-clip-text text-transparent">
-                next big thing?
-              </span>
-            </h2>
+                   {/* Animated background blur */}
+                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" 
+                     style={{
+                       background: `linear-gradient(135deg, ${item.color}10 0%, transparent 100%)`,
+                       backdropFilter: 'blur(8px)',
+                     }}
+                   />
 
-            {/* Subtitle */}
-            <p className="text-zinc-400 text-sm sm:text-base font-light mb-10 max-w-sm leading-relaxed">
-              Let's create something extraordinary together. I'm available for freelance work and creative collaborations.
-            </p>
+                   <div className="relative z-10 flex items-center gap-4">
+                     {/* Icon circle with animation */}
+                     <div
+                       className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:rotate-6"
+                       style={{
+                         background: `${item.color}10`,
+                         border: `1.5px solid ${item.color}30`,
+                         color: item.color,
+                       }}
+                     >
+                       {item.icon}
+                     </div>
 
-            {/* Email button — glowing, magnetic */}
-            <div className="mb-8" data-reveal style={{ transitionDelay: '100ms' }}>
-              <div
-                ref={magneticRef}
-                data-magnetic
-                className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 backdrop-blur-xl border border-purple-500/30 text-purple-200 font-semibold text-sm sm:text-base hover:from-purple-500/30 hover:to-fuchsia-500/30 hover:border-purple-400/50 hover:text-white hover:shadow-[0_0_50px_rgba(168,85,247,0.3),0_0_100px_rgba(168,85,247,0.1)] transition-all duration-300 shadow-[0_0_30px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)] cursor-default"
-                style={{ transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s, border-color 0.3s, box-shadow 0.3s, color 0.3s' }}
-              >
-                {/* Glow ring behind button */}
-                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: 'radial-gradient(ellipse at center, rgba(168,85,247,0.15) 0%, transparent 70%)',
-                  }}
-                />
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 text-purple-400/80 group-hover:text-purple-300 transition-colors duration-300">
-                  <rect x="2" y="4" width="20" height="16" rx="2" /><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7" />
-                </svg>
-                <span className="relative z-10">utamapradita5@gmail.com</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="relative z-10 opacity-0 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all duration-200">
-                  <path d="M5 12h14" /><path d="M12 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
+                     <div className="min-w-0 flex-1">
+                       <p className="text-xs font-semibold tracking-[0.15em] text-zinc-500 uppercase mb-0.5">{item.label}</p>
+                       <p className="text-sm text-zinc-300 group-hover:text-white transition-colors duration-300 truncate">{item.value}</p>
+                     </div>
 
-            {/* Divider */}
-            <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent mb-8" />
+                     {/* Copy icon with animation */}
+                     <svg
+                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                       className={`flex-shrink-0 transition-all duration-300 ${copied ? 'text-emerald-400' : 'text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-1 group-hover:-translate-y-1'}`}
+                     >
+                       {copied ? (
+                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                       ) : (
+                         <>
+                           <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+                           <rect x="8" y="2" width="8" height="4" rx="1" />
+                         </>
+                       )}
+                     </svg>
+                   </div>
+                 </button>
+               ) : (
+                 <a
+                   href={item.link}
+                   target="_blank"
+                   rel="noreferrer"
+                   data-reveal
+                   style={{ transitionDelay: `${(i + 1) * 80}ms` }}
+                   className="contact-card group relative p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 block"
+                 >
+                   {/* Animated hover glow */}
+                   <div
+                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                     style={{
+                       background: `radial-gradient(ellipse at 50% 0%, ${item.color}20 0%, transparent 70%)`,
+                     }}
+                   />
 
-            {/* Social icons — glassmorphism row */}
-            <div data-reveal style={{ transitionDelay: '200ms' }} className="flex items-center gap-3">
-              {/* GitHub */}
-              <a
-                href="https://github.com/Praddddd"
-                target="_blank"
-                rel="noreferrer"
-                className="group w-12 h-12 flex items-center justify-center rounded-xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] text-zinc-500 hover:text-white hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:-translate-y-1 active:scale-[0.95] transition-all duration-300"
-                aria-label="GitHub"
-              >
-                <svg className="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
-              </a>
+                   {/* Animated background blur */}
+                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" 
+                     style={{
+                       background: `linear-gradient(135deg, ${item.color}10 0%, transparent 100%)`,
+                       backdropFilter: 'blur(8px)',
+                     }}
+                   />
 
-              {/* Instagram */}
-              <a
-                href="https://www.instagram.com/galxtria/"
-                target="_blank"
-                rel="noreferrer"
-                className="group w-12 h-12 flex items-center justify-center rounded-xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] text-zinc-500 hover:text-white hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:-translate-y-1 active:scale-[0.95] transition-all duration-300"
-                aria-label="Instagram"
-              >
-                <svg className="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                </svg>
-              </a>
+                   <div className="relative z-10 flex items-center gap-4">
+                     {/* Icon circle with animation */}
+                     <div
+                       className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:rotate-6"
+                       style={{
+                         background: `${item.color}10`,
+                         border: `1.5px solid ${item.color}30`,
+                         color: item.color,
+                       }}
+                     >
+                       {item.icon}
+                     </div>
 
-              {/* LinkedIn */}
-              <a
-                href="https://www.linkedin.com/in/praditautama25"
-                target="_blank"
-                rel="noreferrer"
-                className="group w-12 h-12 flex items-center justify-center rounded-xl bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] text-zinc-500 hover:text-white hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] hover:-translate-y-1 active:scale-[0.95] transition-all duration-300"
-                aria-label="LinkedIn"
-              >
-                <svg className="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-              </a>
-            </div>
+                     <div className="min-w-0">
+                       <p className="text-xs font-semibold tracking-[0.15em] text-zinc-500 uppercase mb-0.5">{item.label}</p>
+                       <p className="text-sm text-zinc-300 group-hover:text-white transition-colors duration-300 truncate">{item.value}</p>
+                     </div>
+
+                     {/* Arrow with animation */}
+                     <svg
+                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                       className="ml-auto flex-shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
+                     >
+                       <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+                     </svg>
+                   </div>
+                 </a>
+               )}
+             </div>
+           ))}
+         </div>
+
+        {/* Availability badge */}
+        <div data-reveal style={{ transitionDelay: '500ms' }} className="mt-12 flex flex-col items-center gap-3">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-zinc-400 font-medium">Available for projects & collaborations</span>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar — copyright at the very bottom */}
-      <div className="relative z-10 px-6 pb-8 pt-10">
+      {/* Bottom bar — copyright */}
+      <div className="relative z-10 px-6 pb-8 pt-6">
         <div className="max-w-6xl mx-auto flex items-center justify-center">
           <p className="text-[10px] text-zinc-700 font-medium tracking-[0.15em] uppercase">
             © 2026 Galxtria
@@ -1497,8 +1677,36 @@ function Contact() {
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// APP — with dynamic SVG favicon injection
+function BackToTopButton() {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      setVisible(window.scrollY > 300)
+    }
+    window.addEventListener('scroll', toggleVisibility, { passive: true })
+    return () => window.removeEventListener('scroll', toggleVisibility)
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  return (
+    visible && (
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/50 flex items-center justify-center text-white hover:from-purple-500 hover:to-violet-500 active:scale-[0.95] transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.3),0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+        aria-label="Back to top"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="18 15 12 9 6 15" />
+        </svg>
+      </button>
+    )
+  )
+}
+
 // ─────────────────────────────────────────────────────────────────────
 
 function App() {
@@ -1569,12 +1777,13 @@ function App() {
       <CustomCursor />
       <Background mouseRef={mouseRef} isMobile={isMobile} />
       <Navbar visible={loaded} />
+      <BackToTopButton />
 
       <main className={`relative z-10 transition-opacity duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <Hero visible={loaded} mouseRef={mouseRef} isMobile={isMobile} />
         <Projects />
         <About />
-        <TerminalStack />
+        <HexagonGrid />
         <Contact />
       </main>
     </div>
