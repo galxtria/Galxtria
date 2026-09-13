@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
@@ -442,3 +444,25 @@ html::-webkit-scrollbar {
     scroll-behavior: auto;
   }
 }
+
+[data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+[data-reveal].revealed { opacity: 1; transform: translateY(0); }
+
+html:not(.dark) {
+  background-color: #fcfcfe;
+  color: #1e1b2e;
+}
+html:not(.dark) body {
+  background:
+    radial-gradient(ellipse 900px 600px at 8% 5%, rgba(76,29,149,0.065) 0%, transparent 62%),
+    radial-gradient(ellipse 700px 500px at 92% 18%, rgba(67,56,202,0.045) 0%, transparent 58%),
+    radial-gradient(ellipse 800px 600px at 50% 100%, rgba(91,33,182,0.04) 0%, transparent 62%),
+    #fcfcfe;
+}
+html:not(.dark) .cursor-dot { background: rgba(168,85,247,0.6); box-shadow: 0 0 8px rgba(168,85,247,0.25); }
+html:not(.dark) .cursor-dot.expanded { background: rgba(168,85,247,0.8); box-shadow: 0 0 14px rgba(168,85,247,0.4); }
+html:not(.dark) .cursor-ring { border-color: rgba(168,85,247,0.3); }
+html:not(.dark) .cursor-ring.expanded { border-color: rgba(168,85,247,0.5); }
+html:not(.dark) ::selection { background: rgba(168,85,247,0.2); color: #1a1a1a; }
+
+

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useTheme } from './ThemeContext'
 import kosthubImg from './assets/images/kosthub_web.webp'
 import mymusicImg from './assets/images/mymusic_web.webp'
 import expensetrackerImg from './assets/images/expensetracker_web.webp'
@@ -325,6 +326,7 @@ function SplashScreen({ onFinish }) {
 // ─────────────────────────────────────────────────────────────────────
 
 function Background({ mouseRef, isMobile }) {
+  const { isDark } = useTheme()
   const orb1 = useRef(null)
   const orb2 = useRef(null)
 
@@ -353,7 +355,7 @@ function Background({ mouseRef, isMobile }) {
       {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
         ref={orb1}
-        className={`absolute top-[-10%] left-[15%] rounded-full opacity-[0.07] ${isMobile ? 'w-[400px] h-[400px]' : 'w-[700px] h-[700px]'}`}
+        className={`absolute top-[-10%] left-[15%] rounded-full ${isDark ? 'opacity-[0.07]' : 'opacity-[0.14]'} ${isMobile ? 'w-[400px] h-[400px]' : 'w-[700px] h-[700px]'}`}
         style={{
           background: 'radial-gradient(circle, rgba(124,58,237,1) 0%, transparent 70%)',
           filter: isMobile ? 'blur(60px)' : 'blur(120px)',
@@ -365,9 +367,9 @@ function Background({ mouseRef, isMobile }) {
       {/* Ambient orb 2 */}
       <div
         ref={orb2}
-        className={`absolute bottom-[-15%] right-[5%] rounded-full opacity-[0.05] ${isMobile ? 'w-[350px] h-[350px]' : 'w-[600px] h-[600px]'}`}
+        className={`absolute bottom-[-15%] right-[5%] rounded-full ${isDark ? 'opacity-[0.05]' : 'opacity-[0.10]'} ${isMobile ? 'w-[350px] h-[350px]' : 'w-[600px] h-[600px]'}`}
         style={{
-          background: 'radial-gradient(circle, rgba(168,85,247,1) 0%, transparent 70%)',
+          background: isDark ? 'radial-gradient(circle, rgba(168,85,247,1) 0%, transparent 70%)' : 'radial-gradient(circle, rgba(236,72,153,1) 0%, transparent 70%)',
           filter: isMobile ? 'blur(50px)' : 'blur(100px)',
           animation: isMobile ? 'none' : 'orb-drift-2 30s ease-in-out infinite',
           transition: isMobile ? 'none' : 'transform 1.5s ease-out',
@@ -414,6 +416,7 @@ function Navbar({ visible }) {
   const [pillStyle, setPillStyle] = useState({})
   const navContainerRef = useRef(null)
   const itemRefs = useRef({})
+  const { isDark, toggleTheme } = useTheme()
 
   useEffect(() => {
     const onScroll = () => {
@@ -472,54 +475,56 @@ function Navbar({ visible }) {
         {/* Logo */}
         <button
           onClick={() => handleNav('Home')}
-          className="text-[13px] font-bold tracking-[0.25em] text-zinc-400 uppercase hover:text-white transition-colors duration-200 cursor-none"
+          className="text-[13px] font-bold tracking-[0.25em] dark:text-zinc-400 text-violet-900 uppercase dark:hover:text-white hover:text-violet-950 transition-colors duration-200 cursor-none"
         >
           Galxtria.
         </button>
 
-        {/* Desktop — with sliding pill & high-visibility scrolled state */}
-        <div
-          ref={navContainerRef}
-          className={`hidden md:flex items-center gap-1 px-1.5 py-1.5 rounded-xl border transition-all duration-300 relative ${
-            scrolled
-              ? 'bg-[#050505]/90 backdrop-blur-2xl border-purple-500/30 shadow-[0_8px_30px_rgba(168,85,247,0.15)]'
-              : 'bg-white/[0.02] backdrop-blur-xl border-white/[0.05]'
-          }`}
-        >
-          {/* Sliding pill indicator */}
+        <div className="hidden md:flex items-center gap-3">
           <div
-            className="absolute rounded-md bg-white/[0.08] shadow-[0_0_12px_rgba(168,85,247,0.1)] z-0"
-            style={{
-              left: pillStyle.left ?? 0,
-              top: pillStyle.top ?? 0,
-              width: pillStyle.width ?? 0,
-              height: pillStyle.height ?? 0,
-              transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              willChange: 'left, width',
-            }}
-          />
-          {NAV_LINKS.map((link) => (
-            <button
-              key={link}
-              ref={(el) => { itemRefs.current[link] = el }}
-              onClick={() => handleNav(link)}
-              className={`relative z-10 px-4 py-1.5 rounded-md text-[13px] font-medium transition-all duration-200 cursor-none ${
-                active === link
-                  ? 'text-white'
-                  : 'text-zinc-500 hover:text-zinc-200'
-              }`}
-            >
-              {link}
-            </button>
-          ))}
+            ref={navContainerRef}
+            className={`flex items-center gap-1 px-1.5 py-1.5 rounded-xl border transition-all duration-300 relative ${
+              scrolled
+                ? 'dark:bg-[#050505]/90 bg-white/90 backdrop-blur-2xl dark:border-purple-500/30 border-violet-200/60 dark:shadow-[0_8px_30px_rgba(168,85,247,0.15)] shadow-[0_8px_20px_rgba(0,0,0,0.08)]'
+                : 'dark:bg-white/[0.02] bg-white/60 backdrop-blur-xl dark:border-white/[0.05] border-violet-200/40'
+            }`}
+          >
+            <div
+              className="absolute rounded-md dark:bg-white/[0.08] bg-violet-100 dark:shadow-[0_0_12px_rgba(168,85,247,0.1)] shadow-[0_0_8px_rgba(168,85,247,0.2)] z-0"
+              style={{
+                left: pillStyle.left ?? 0,
+                top: pillStyle.top ?? 0,
+                width: pillStyle.width ?? 0,
+                height: pillStyle.height ?? 0,
+                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                willChange: 'left, width',
+              }}
+            />
+            {NAV_LINKS.map((link) => (
+              <button
+                key={link}
+                ref={(el) => { itemRefs.current[link] = el }}
+                onClick={() => handleNav(link)}
+                className={`relative z-10 px-4 py-1.5 rounded-md text-[13px] font-medium transition-all duration-200 cursor-none ${
+                  active === link
+                    ? 'dark:text-white text-slate-900'
+                    : 'dark:text-zinc-500 text-slate-600 dark:hover:text-zinc-200 hover:text-slate-800'
+                }`}
+              >
+                {link}
+              </button>
+            ))}
+          </div>
+          <button onClick={toggleTheme} className="flex items-center justify-center w-9 h-9 rounded-xl dark:bg-white/[0.06] bg-white border dark:border-white/[0.08] border-slate-200 dark:text-zinc-300 text-slate-700 dark:hover:text-white hover:text-slate-900 hover:border-violet-200/60 shadow-sm transition-all cursor-pointer shrink-0" aria-label="Toggle theme">{isDark ? (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>) : (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>)}</button>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen((o) => !o)}
-          className="md:hidden p-2 rounded-md text-zinc-400 hover:text-white transition-colors cursor-pointer"
-          aria-label="Menu"
-        >
+        <div className="flex items-center gap-1 md:hidden">
+          <button onClick={toggleTheme} className="p-2 rounded-md dark:text-zinc-400 text-slate-600 dark:hover:text-white hover:text-slate-900 transition-colors cursor-pointer" aria-label="Toggle theme">{isDark ? (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>) : (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>)}</button>
+          <button
+            onClick={() => setMobileOpen((o) => !o)}
+            className="p-2 rounded-md dark:text-zinc-400 text-slate-600 dark:hover:text-white hover:text-slate-900 border dark:border-transparent border-slate-200 dark:bg-transparent bg-white transition-colors cursor-pointer"
+            aria-label="Menu"
+          >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
             {mobileOpen
               ? <><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></>
@@ -531,13 +536,13 @@ function Navbar({ visible }) {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden mx-6 mb-4 p-2 rounded-xl bg-[#050505]/90 backdrop-blur-2xl border border-purple-500/30 shadow-[0_8px_30px_rgba(168,85,247,0.15)]">
+        <div className="md:hidden mx-6 mb-4 p-2 rounded-xl dark:bg-[#050505]/90 bg-white/90 backdrop-blur-2xl dark:border dark:border-purple-500/30 border border-purple-400/25 dark:shadow-[0_8px_30px_rgba(168,85,247,0.15)] shadow-[0_8px_20px_rgba(0,0,0,0.08)]">
           {NAV_LINKS.map((link) => (
             <button
               key={link}
               onClick={() => handleNav(link)}
               className={`block w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
-                active === link ? 'text-white bg-white/[0.05]' : 'text-zinc-500 hover:text-white'
+                active === link ? 'dark:text-white text-slate-900 dark:bg-white/[0.05] bg-violet-50' : 'dark:text-zinc-500 text-slate-600 dark:hover:text-white hover:text-slate-900'
               }`}
             >
               {link}
@@ -545,6 +550,7 @@ function Navbar({ visible }) {
           ))}
         </div>
       )}
+      </div>
     </nav>
   )
 }
@@ -586,10 +592,10 @@ function Hero({ visible, mouseRef, isMobile }) {
       }`}
     >
       {/* Divider line */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
 
       {/* Hero glow behind name */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[600px] h-[400px] bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.08)_0%,_transparent_65%)] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[600px] h-[400px] dark:bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.08)_0%,_transparent_65%)] bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.06)_0%,_transparent_65%)] pointer-events-none" />
 
       {/* Floating parallax shapes behind text */}
       {/* Floating parallax shapes — desktop only (5 rAF-animated shapes are too heavy for mobile) */}
@@ -648,8 +654,8 @@ function Hero({ visible, mouseRef, isMobile }) {
           data-reveal
           style={{ transitionDelay: '0ms' }}
         >
-          <span className={`inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.05] border border-purple-500/30 text-purple-300 text-xs font-semibold tracking-[0.2em] uppercase ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_0_20px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)]'}`}>
-            <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
+          <span className={`inline-flex items-center gap-2 px-5 py-2 rounded-full dark:bg-white/[0.05] bg-violet-50/80 dark:border border-purple-500/30 border-violet-200/60 dark:text-purple-300 text-[#4c1d95] text-xs font-semibold tracking-[0.2em] uppercase ${isMobile ? '' : 'backdrop-blur-2xl dark:shadow-[0_0_20px_rgba(168,85,247,0.15),0_8px_32px_rgba(0,0,0,0.3)] shadow-[0_0_15px_rgba(168,85,247,0.1),0_4px_16px_rgba(0,0,0,0.08)]'}`}>
+            <span className="h-1.5 w-1.5 rounded-full dark:bg-purple-400 bg-violet-500 animate-pulse" />
             Frontend Developer
           </span>
         </div>
@@ -661,7 +667,7 @@ function Hero({ visible, mouseRef, isMobile }) {
            style={{ transitionDelay: '100ms' }}
          >
            <h1
-             className="text-[clamp(4rem,12vw,10rem)] font-black tracking-tighter leading-[0.9] bg-gradient-to-r from-purple-300 via-purple-400 to-violet-400 bg-clip-text text-transparent"
+             className="text-[clamp(4rem,12vw,10rem)] font-black tracking-tighter leading-[0.9] bg-gradient-to-r dark:from-purple-300 dark:via-purple-400 dark:to-violet-400 from-[#4c1d95] via-[#5b21b6] to-[#4338ca] bg-clip-text text-transparent"
              style={{ filter: 'drop-shadow(0 0 30px rgba(139,92,246,0.15))' }}
            >
              Galxtria
@@ -670,12 +676,12 @@ function Hero({ visible, mouseRef, isMobile }) {
 
         {/* Tagline */}
         <p
-          className="text-zinc-400 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12 font-light"
+          className="dark:text-zinc-400 text-slate-600 text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12 font-light"
           data-reveal
           style={{ transitionDelay: '200ms' }}
         >
           Engineering digital experiences with
-          <span className="text-zinc-200 font-medium"> aesthetic precision </span>
+          <span className="dark:text-zinc-200 text-slate-900 font-medium"> aesthetic precision </span>
           and seamless interaction design.
         </p>
 
@@ -687,7 +693,7 @@ function Hero({ visible, mouseRef, isMobile }) {
                e.preventDefault()
                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
              }}
-             className={`group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/50 text-white text-sm font-semibold hover:from-purple-500 hover:to-violet-500 hover:border-purple-400 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl shadow-[0_0_30px_rgba(168,85,247,0.3),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_40px_rgba(168,85,247,0.5),0_8px_40px_rgba(0,0,0,0.4)]'}`}
+               className={`group relative inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r dark:from-purple-600 dark:to-violet-600 from-[#4c1d95] to-[#4338ca] dark:border-purple-500/50 border-[#4c1d95]/30 text-white text-sm font-semibold dark:hover:from-purple-500 dark:hover:to-violet-500 hover:from-[#5b21b6] hover:to-[#4c1d95] dark:hover:border-purple-400 hover:border-[#5b21b6] active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl dark:shadow-[0_0_30px_rgba(168,85,247,0.3),0_8px_32px_rgba(0,0,0,0.3)] shadow-[0_0_28px_rgba(76,29,149,0.35),0_8px_32px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_40px_rgba(168,85,247,0.5),0_8px_40px_rgba(0,0,0,0.4)] hover:shadow-[0_0_36px_rgba(76,29,149,0.5),0_8px_40px_rgba(0,0,0,0.4)]'}`}
            >
              View Projects
              <svg
@@ -702,7 +708,7 @@ function Hero({ visible, mouseRef, isMobile }) {
           <a
             href="/cv.pdf"
             download
-            className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-transparent border border-white/20 text-zinc-300 text-sm font-semibold hover:bg-white/10 hover:text-white hover:border-white/30 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.3)]'}`}
+            className={`group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-transparent dark:border-white/20 border-slate-300 dark:text-zinc-300 text-slate-700 text-sm font-semibold dark:hover:bg-white/10 hover:bg-slate-100 dark:hover:text-white hover:text-slate-900 dark:hover:border-white/30 hover:border-slate-400 active:scale-[0.97] transition-all duration-300 ${isMobile ? '' : 'backdrop-blur-2xl dark:dark:dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]'}`}
           >
             <svg
               width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -748,20 +754,20 @@ function ProjectModal({ project, onClose }) {
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-md modal-backdrop-enter" />
+      <div className="absolute inset-0 dark:bg-black/70 bg-black/40 backdrop-blur-md modal-backdrop-enter" />
 
       {/* Modal Card */}
       <div
-        className="relative w-full max-w-xl bg-white/[0.05] backdrop-blur-2xl border border-white/[0.12] rounded-2xl overflow-hidden shadow-[0_32px_64px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] modal-card-enter"
+        className="relative w-full max-w-xl dark:bg-white/[0.05] bg-white backdrop-blur-2xl border dark:border-white/[0.12] border-slate-200 rounded-2xl overflow-hidden dark:shadow-[0_32px_64px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] shadow-[0_20px_50px_rgba(0,0,0,0.15)] modal-card-enter"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Inner glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,_rgba(139,92,246,0.08)_0%,_transparent_55%)] pointer-events-none" />
+        <div className="absolute inset-0 dark:bg-[radial-gradient(ellipse_at_50%_0%,_rgba(139,92,246,0.08)_0%,_transparent_55%)] bg-[radial-gradient(ellipse_at_50%_0%,_rgba(139,92,246,0.04)_0%,_transparent_55%)] pointer-events-none" />
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/[0.06] border border-white/[0.1] text-zinc-400 hover:text-white hover:bg-white/[0.1] transition-all duration-200"
+          className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full dark:bg-white/[0.06] bg-slate-100 dark:border-white/[0.1] border-slate-200 dark:text-zinc-400 text-slate-500 dark:hover:text-white hover:text-slate-900 dark:hover:bg-white/[0.1] hover:bg-slate-200 transition-all duration-200"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" />
@@ -782,28 +788,28 @@ function ProjectModal({ project, onClose }) {
 
         <div className="relative z-10 p-8 sm:p-10">
           {/* Year badge */}
-          <div className="inline-block px-3 py-1 rounded-md bg-purple-500/10 border border-purple-500/20 text-[10px] font-semibold tracking-[0.2em] text-purple-300 uppercase mb-5">
+          <div className="inline-block px-3 py-1 rounded-md dark:bg-violet-500/10 bg-violet-50 dark:border-violet-500/20 border-violet-200/60 text-[10px] font-semibold tracking-[0.2em] dark:text-violet-300 text-[#4c1d95] uppercase mb-5">
             {project.year}
           </div>
 
           {/* Title */}
-          <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-4">
+          <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight dark:text-white text-slate-900 mb-4">
             {project.title}
           </h3>
 
           {/* Full description */}
-          <p className="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6">
+          <p className="dark:text-zinc-400 text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
             {project.fullDesc || project.desc}
           </p>
 
           {/* Tech stack */}
           <div className="mb-8">
-            <p className="text-[10px] font-semibold tracking-[0.2em] text-zinc-500 uppercase mb-3">Tech Stack</p>
+            <p className="text-[10px] font-semibold tracking-[0.2em] dark:text-zinc-500 text-slate-500 uppercase mb-3">Tech Stack</p>
             <div className="flex flex-wrap gap-2">
               {project.tech.map((t) => (
                 <span
                   key={t}
-                  className="px-3 py-1.5 rounded-lg bg-white/[0.06] backdrop-blur-xl border border-white/[0.1] text-[11px] font-medium text-zinc-300 shadow-[0_2px_8px_0_rgba(0,0,0,0.15)]"
+                  className="px-3 py-1.5 rounded-lg dark:bg-white/[0.06] bg-slate-100 backdrop-blur-xl dark:border-white/[0.1] border-slate-200 text-[11px] font-medium dark:text-zinc-300 text-slate-700 shadow-[0_2px_8px_0_rgba(0,0,0,0.15)]"
                 >
                   {t}
                 </span>
@@ -816,7 +822,7 @@ function ProjectModal({ project, onClose }) {
             href={project.github || 'https://github.com/'}
             target="_blank"
             rel="noreferrer"
-            className="group inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-white/[0.06] backdrop-blur-xl border border-white/[0.12] text-white text-sm font-semibold hover:bg-white/[0.1] hover:border-purple-500/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.12)] active:scale-[0.97] transition-all duration-300"
+            className="group inline-flex items-center gap-3 px-6 py-3 rounded-xl dark:bg-white/[0.06] bg-slate-900 backdrop-blur-xl border dark:border-white/[0.12] border-slate-800 text-white text-sm font-semibold dark:hover:bg-white/[0.1] hover:bg-slate-800 dark:hover:border-purple-500/30 hover:border-slate-700 hover:shadow-[0_0_20px_rgba(168,85,247,0.12)] active:scale-[0.97] transition-all duration-300"
           >
             <svg className="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
@@ -837,6 +843,7 @@ function ProjectModal({ project, onClose }) {
 // ─────────────────────────────────────────────────────────────────────
 
 function ProjectCard({ project, onSelect, index, total }) {
+  const { isDark } = useTheme()
   const [isHovered, setIsHovered] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
@@ -852,12 +859,12 @@ function ProjectCard({ project, onSelect, index, total }) {
         className={`relative h-full rounded-2xl border overflow-hidden cursor-pointer transition-all duration-500 group ${
           isHovered
             ? 'border-purple-500/40 shadow-[0_0_40px_rgba(168,85,247,0.15),0_20px_60px_rgba(0,0,0,0.4)] scale-[1.02]'
-            : 'border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.3)]'
+            : isDark ? 'border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.3)]' : 'border-violet-200/60 shadow-[0_2px_8px_rgba(24,16,60,0.04),0_16px_40px_rgba(124,58,237,0.08)]'
         }`}
         style={{
-          background: isHovered
-            ? 'linear-gradient(165deg, rgba(168,85,247,0.08) 0%, rgba(255,255,255,0.03) 40%, rgba(0,0,0,0.2) 100%)'
-            : 'linear-gradient(165deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)',
+          background: isDark
+            ? isHovered ? 'linear-gradient(165deg, rgba(168,85,247,0.08) 0%, rgba(255,255,255,0.03) 40%, rgba(0,0,0,0.2) 100%)' : 'linear-gradient(165deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)'
+            : isHovered ? 'linear-gradient(165deg, rgba(255,255,255,1) 0%, rgba(249,247,255,1) 55%, rgba(243,240,255,1) 100%)' : 'linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(250,248,255,0.92) 100%)',
         }}
       >
         {/* Inner glow on hover */}
@@ -896,7 +903,7 @@ function ProjectCard({ project, onSelect, index, total }) {
           <div
             className={`absolute bottom-4 right-4 w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${
               isHovered
-                ? 'border-purple-500/60 bg-purple-500/20 scale-110'
+                ? 'border-purple-500/60 bg-violet-500/20 scale-110'
                 : 'border-white/[0.1] bg-white/[0.04]'
             }`}
           >
@@ -915,13 +922,13 @@ function ProjectCard({ project, onSelect, index, total }) {
         <div className="relative z-10 p-6 sm:p-8">
           {/* Title */}
           <h3 className={`text-xl sm:text-2xl font-extrabold tracking-tight mb-3 transition-colors duration-500 ${
-            isHovered ? 'text-white' : 'text-zinc-200'
+            isHovered ? 'dark:text-white text-slate-900' : 'dark:text-zinc-200 text-slate-800'
           }`}>
             {project.title}
           </h3>
 
           {/* Description */}
-          <p className="text-zinc-400 text-sm leading-relaxed mb-5 line-clamp-2">
+          <p className="dark:text-zinc-400 text-slate-600 text-sm leading-relaxed mb-5 line-clamp-2">
             {project.desc}
           </p>
 
@@ -932,8 +939,8 @@ function ProjectCard({ project, onSelect, index, total }) {
                 key={t}
                 className={`px-3 py-1 rounded-lg text-[11px] font-medium transition-all duration-500 ${
                   isHovered
-                    ? 'bg-purple-500/15 border border-purple-500/25 text-purple-200'
-                    : 'bg-white/[0.05] border border-white/[0.08] text-zinc-400'
+                    ? 'bg-violet-500/15 border border-purple-500/25 dark:text-purple-200 text-[#4c1d95]'
+                    : 'dark:bg-white/[0.05] bg-slate-100 dark:border-white/[0.08] border-slate-200 dark:text-zinc-400 text-slate-600'
                 }`}
               >
                 {t}
@@ -990,7 +997,7 @@ function Projects() {
   return (
     <>
       <section id="projects" className="py-28 md:py-36 relative">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
 
         {/* Heading — left aligned with padding */}
         <div className="px-6 max-w-6xl mx-auto">
@@ -1000,13 +1007,13 @@ function Projects() {
               headRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-3">Selected Work</p>
+            <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] dark:text-zinc-500 text-slate-500 uppercase mb-3">Selected Work</p>
             <div className="flex items-end justify-between gap-4">
                <div>
-                 <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter text-white">
-                   Projects
-                 </h2>
-                 <p data-reveal className="text-sm text-zinc-500 mt-2">
+                 <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter dark:text-white text-slate-900">
+                    Projects
+                  </h2>
+                 <p data-reveal className="text-sm dark:text-zinc-500 text-slate-500 mt-2">
                    {String(currentIndex + 1).padStart(2, '0')} / {String(PROJECTS.length).padStart(2, '0')}
                  </p>
                </div>
@@ -1017,8 +1024,8 @@ function Projects() {
                   disabled={!canScrollLeft}
                   className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 ${
                     canScrollLeft
-                      ? 'border-white/[0.12] text-zinc-400 hover:text-white hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)]'
-                      : 'border-white/[0.05] text-zinc-700 cursor-not-allowed'
+                      ? 'dark:border-white/[0.12] border-slate-300 dark:text-zinc-400 text-slate-600 dark:hover:text-white hover:text-slate-900 dark:hover:border-purple-500/40 hover:border-purple-300 dark:hover:bg-violet-500/10 hover:bg-violet-50/80 dark:hover:shadow-[0_0_15px_rgba(168,85,247,0.15)]'
+                      : 'dark:border-white/[0.05] border-slate-200 dark:text-zinc-700 text-slate-300 cursor-not-allowed'
                   }`}
                   aria-label="Scroll left"
                 >
@@ -1031,8 +1038,8 @@ function Projects() {
                   disabled={!canScrollRight}
                   className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300 ${
                     canScrollRight
-                      ? 'border-white/[0.12] text-zinc-400 hover:text-white hover:border-purple-500/40 hover:bg-purple-500/10 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)]'
-                      : 'border-white/[0.05] text-zinc-700 cursor-not-allowed'
+                      ? 'dark:border-white/[0.12] border-slate-300 dark:text-zinc-400 text-slate-600 dark:hover:text-white hover:text-slate-900 dark:hover:border-purple-500/40 hover:border-purple-300 dark:hover:bg-violet-500/10 hover:bg-violet-50/80 dark:hover:shadow-[0_0_15px_rgba(168,85,247,0.15)]'
+                      : 'dark:border-white/[0.05] border-slate-200 dark:text-zinc-700 text-slate-300 cursor-not-allowed'
                   }`}
                   aria-label="Scroll right"
                 >
@@ -1085,7 +1092,7 @@ function Projects() {
                 className="group p-1"
                 aria-label={`Go to ${p.title}`}
               >
-                <div className="w-8 h-1 rounded-full bg-white/[0.1] group-hover:bg-purple-500/40 transition-all duration-300 overflow-hidden">
+                <div className="w-8 h-1 rounded-full dark:bg-white/[0.1] bg-slate-300 group-hover:bg-violet-500/40 dark:group-hover:bg-violet-500/40 transition-all duration-300 overflow-hidden">
                   <div className="h-full rounded-full bg-purple-400/60 transition-all duration-300 w-0 group-hover:w-full" />
                 </div>
               </button>
@@ -1112,33 +1119,12 @@ function Projects() {
 function WireframeGlobe() {
   return (
     <div className="relative w-48 h-48 mx-auto lg:mx-0 flex-shrink-0" style={{ perspective: '600px' }}>
-      {/* Pulsing glow behind */}
-      <div
-        className="absolute inset-4 rounded-full"
-        style={{ animation: 'globe-pulse 4s ease-in-out infinite' }}
-      />
-      {/* Ring 1 */}
-      <div
-        className="absolute inset-0 rounded-full border border-white/[0.06]"
-        style={{ animation: 'wireframe-spin-x 12s linear infinite', transformStyle: 'preserve-3d' }}
-      />
-      {/* Ring 2 */}
-      <div
-        className="absolute inset-3 rounded-full border border-purple-500/[0.08]"
-        style={{ animation: 'wireframe-spin-y 15s linear infinite', transformStyle: 'preserve-3d' }}
-      />
-      {/* Ring 3 — now purple instead of blue */}
-      <div
-        className="absolute inset-6 rounded-full border border-fuchsia-400/[0.06]"
-        style={{ animation: 'wireframe-spin-z 10s linear infinite reverse', transformStyle: 'preserve-3d' }}
-      />
-      {/* Ring 4 — equatorial */}
-      <div
-        className="absolute inset-1 rounded-full border border-violet-400/[0.05]"
-        style={{ animation: 'wireframe-spin-y 18s linear infinite reverse', transformStyle: 'preserve-3d' }}
-      />
-      {/* Center dot */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-purple-400/30 shadow-[0_0_20px_rgba(168,85,247,0.3)]" />
+      <div className="absolute inset-4 rounded-full" style={{ animation: 'globe-pulse 4s ease-in-out infinite' }} />
+      <div className="absolute inset-0 rounded-full border dark:border-white/[0.06] border-slate-300/50" style={{ animation: 'wireframe-spin-x 12s linear infinite', transformStyle: 'preserve-3d' }} />
+      <div className="absolute inset-3 rounded-full border dark:border-purple-500/[0.08] border-purple-400/20" style={{ animation: 'wireframe-spin-y 15s linear infinite', transformStyle: 'preserve-3d' }} />
+      <div className="absolute inset-6 rounded-full border dark:border-fuchsia-400/[0.06] border-fuchsia-400/15" style={{ animation: 'wireframe-spin-z 10s linear infinite reverse', transformStyle: 'preserve-3d' }} />
+      <div className="absolute inset-1 rounded-full border dark:border-violet-400/[0.05] border-violet-400/15" style={{ animation: 'wireframe-spin-y 18s linear infinite reverse', transformStyle: 'preserve-3d' }} />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-violet-500 dark:bg-purple-400/30 shadow-[0_0_20px_rgba(168,85,247,0.4)]" />
     </div>
   )
 }
@@ -1148,17 +1134,17 @@ function WireframeGlobe() {
 // ─────────────────────────────────────────────────────────────────────
 
 const ABOUT_LINES = [
-  { text: 'I believe great interfaces are invisible.', highlight: true },
-  { text: "They're built with clean, component-driven code", highlight: false },
-  { text: 'and express themselves through interactions', highlight: false },
-  { text: 'that feel intuitive, precise, and effortless to use.', highlight: false },
+  { text: 'I believe great interfaces are invisible.', high: true },
+  { text: "They're built with clean, component-driven code", high: false },
+  { text: 'and express themselves through interactions', high: false },
+  { text: 'that feel intuitive, precise, and effortless to use.', high: false },
 ]
 
 const TIMELINE = [
-  { year: '2021', title: 'SMK RPL Started', desc: 'Began programming journey at SMK' },
-  { year: '2024', title: 'SMK Graduated', desc: 'Completed RPL (Rekayasa Perangkat Lunak) program' },
-  { year: '2024', title: 'University Enrolled', desc: 'Started higher education journey' },
-  { year: '2026', title: 'Present', desc: 'Building projects & growing skills' },
+  { year: '2021', title: 'Began RPL Journey', desc: 'Explored software engineering fundamentals and web development at SMK.' },
+  { year: '2022 – 2023', title: 'Web & Graphic Design Intern', desc: 'Gained hands-on experience building responsive websites and digital design assets.' },
+  { year: '2024', title: 'Graduated & Enrolled in Informatics', desc: "Completed RPL program and started pursuing a Bachelor's degree in Informatics." },
+  { year: '2026 – Present', title: 'Building Multi-Platform Apps', desc: 'Building cross-platform apps and exploring AI integration.' },
 ]
 
 function About() {
@@ -1167,7 +1153,7 @@ function About() {
 
   return (
     <section id="about" className="px-6 py-28 md:py-36 relative">
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         {/* Heading */}
@@ -1177,8 +1163,8 @@ function About() {
             headRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-3">About</p>
-          <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter text-white">
+          <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] dark:text-zinc-500 text-slate-500 uppercase mb-3">About</p>
+          <h2 data-reveal className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tighter dark:text-white text-slate-900">
             Philosophy
           </h2>
         </div>
@@ -1198,7 +1184,7 @@ function About() {
                    <span
                      key={i}
                      data-reveal
-                     className={`inline-block ${line.highlight ? 'text-zinc-200' : 'text-zinc-500'}`}
+                     className={`inline-block ${line.high ? 'dark:text-zinc-200 text-slate-900 font-semibold' : 'dark:text-zinc-500 text-slate-500'}`}
                      style={{ transitionDelay: `${i * 120}ms` }}
                    >
                      {line.text}{' '}
@@ -1214,21 +1200,21 @@ function About() {
                  <WireframeGlobe />
                </div>
 
-               <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '200ms' }}>
-                 Every project starts with understanding the user deeply — the flows,
-                 the edge cases, and the moments that make or break an experience. From there,
-                 I build interfaces that feel alive.
-               </p>
-               <p data-reveal className="text-sm text-zinc-400 leading-relaxed" style={{ transitionDelay: '300ms' }}>
-                 I obsess over typography, spacing, animation timing, and component architecture,
-                 always optimising for clarity, speed, and pixel-perfect craft.
-               </p>
+                <p data-reveal className="text-sm dark:text-zinc-400 text-slate-600 leading-relaxed" style={{ transitionDelay: '200ms' }}>
+                  Every project starts with understanding the user deeply — the flows,
+                  the edge cases, and the moments that make or break an experience. From there,
+                  I build interfaces that feel alive.
+                </p>
+                <p data-reveal className="text-sm dark:text-zinc-400 text-slate-600 leading-relaxed" style={{ transitionDelay: '300ms' }}>
+                  I obsess over typography, spacing, animation timing, and component architecture,
+                  always optimising for clarity, speed, and pixel-perfect craft.
+                </p>
              </div>
            </div>
 
-           {/* Timeline */}
-           <div className="mt-16 pt-16 border-t border-white/[0.05]">
-             <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-8">Timeline</p>
+            {/* Timeline */}
+            <div className="mt-16 pt-16 border-t dark:border-white/[0.05] border-slate-200">
+              <p data-reveal className="text-[11px] font-semibold tracking-[0.3em] dark:text-zinc-500 text-slate-500 uppercase mb-8">Timeline</p>
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                {TIMELINE.map((item, i) => (
                  <div
@@ -1238,17 +1224,17 @@ function About() {
                    className="relative pl-6"
                  >
                    {/* Dot */}
-                   <div className="absolute left-0 top-1 w-3 h-3 rounded-full bg-purple-500/60 border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)]" />
+                   <div className="absolute left-0 top-1 w-3 h-3 rounded-full bg-violet-500/60 border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)]" />
                    
-                   <div className="text-[11px] font-semibold tracking-[0.2em] text-purple-400 uppercase mb-1">
+                   <div className="text-[11px] font-semibold tracking-[0.2em] dark:text-purple-400 text-violet-700 uppercase mb-1">
                      {item.year}
                    </div>
-                   <h4 className="text-sm font-semibold text-white mb-1">
-                     {item.title}
-                   </h4>
-                   <p className="text-xs text-zinc-500">
-                     {item.desc}
-                   </p>
+                    <h4 className="text-sm font-semibold dark:text-white text-slate-900 mb-1">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs dark:text-zinc-500 text-slate-500">
+                      {item.desc}
+                    </p>
                  </div>
                ))}
              </div>
@@ -1288,7 +1274,7 @@ function HexagonGrid() {
 
   return (
     <section className="px-6 py-24 md:py-32 relative">
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         <div
@@ -1297,10 +1283,10 @@ function HexagonGrid() {
             revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
           }`}
         >
-          <p data-reveal className="text-center text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-4">
+          <p data-reveal className="text-center text-[11px] font-semibold tracking-[0.3em] dark:text-zinc-500 text-slate-500 uppercase mb-4">
             Core Technologies
           </p>
-          <h2 data-reveal className="text-center text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tighter text-white mb-14">
+          <h2 data-reveal className="text-center text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tighter dark:text-white text-slate-900 mb-14">
             Tech Stack
           </h2>
 
@@ -1332,6 +1318,7 @@ function HexagonGrid() {
 }
 
 function HexItem({ tech, index }) {
+  const { isDark } = useTheme()
   const [hovered, setHovered] = useState(false)
   const hexRef = useRef(null)
 
@@ -1369,11 +1356,11 @@ function HexItem({ tech, index }) {
         {/* Outer hexagon SVG shape */}
         <svg viewBox="0 0 200 230" className="hex-svg" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id={`grad-${tech.name}`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={tech.color} stopOpacity={hovered ? 0.25 : 0.08} />
-              <stop offset="100%" stopColor={tech.color} stopOpacity={hovered ? 0.1 : 0.02} />
+            <linearGradient id={`grad-${tech.name.replace(/\s/g, '-')}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={tech.color === '#FFFFFF' && !isDark ? '#1a1a1a' : tech.color} stopOpacity={hovered ? 0.32 : isDark ? 0.08 : 0.28} />
+              <stop offset="100%" stopColor={tech.color === '#FFFFFF' && !isDark ? '#1a1a1a' : tech.color} stopOpacity={hovered ? 0.14 : isDark ? 0.02 : 0.14} />
             </linearGradient>
-            <filter id={`glow-${tech.name}`}>
+            <filter id={`glow-${tech.name.replace(/\s/g, '-')}`}>
               <feGaussianBlur stdDeviation="6" result="blur" />
               <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
@@ -1382,45 +1369,45 @@ function HexItem({ tech, index }) {
           <polygon
             points="100,8 190,58 190,172 100,222 10,172 10,58"
             fill="none"
-            stroke={tech.color}
-            strokeWidth={hovered ? 2 : 1}
-            strokeOpacity={hovered ? 0.6 : 0.15}
-            filter={hovered ? `url(#glow-${tech.name})` : undefined}
+            stroke={tech.color === '#FFFFFF' && !isDark ? '#334155' : tech.color}
+            strokeWidth={hovered ? 2 : isDark ? 1 : 1.5}
+            strokeOpacity={hovered ? 0.62 : isDark ? 0.15 : 0.45}
+            filter={hovered ? `url(#glow-${tech.name.replace(/\s/g, '-')})` : undefined}
             style={{ transition: 'all 0.4s ease' }}
           />
           {/* Fill hex */}
           <polygon
             points="100,8 190,58 190,172 100,222 10,172 10,58"
-            fill={`url(#grad-${tech.name})`}
+            fill={`url(#grad-${tech.name.replace(/\s/g, '-')})`}
             style={{ transition: 'all 0.4s ease' }}
           />
           {/* Inner highlight line */}
           <polygon
             points="100,22 178,66 178,164 100,208 22,164 22,66"
             fill="none"
-            stroke={tech.color}
+            stroke={tech.color === '#FFFFFF' && !isDark ? '#334155' : tech.color}
             strokeWidth="0.5"
-            strokeOpacity={hovered ? 0.3 : 0.06}
+            strokeOpacity={hovered ? 0.32 : isDark ? 0.06 : 0.18}
             style={{ transition: 'all 0.4s ease' }}
           />
         </svg>
 
         {/* Content overlay */}
-         <div className="hex-content">
-           <div
-             className="hex-icon-wrap"
-             style={{ color: hovered ? tech.color : 'rgba(255,255,255,0.5)', transition: 'color 0.4s ease, transform 0.4s ease', transform: hovered ? 'scale(1.15)' : 'scale(1)' }}
-           >
-             {tech.logo ? (
-               <img src={tech.logo} alt={tech.name} style={{ width: '32px', height: '32px', filter: hovered ? `drop-shadow(0 0 8px ${tech.color})` : 'none', transition: 'filter 0.4s ease' }} />
-             ) : (
-               TECH_ICONS[tech.name]?.()
-             )}
-           </div>
-           <span
-             className="hex-label"
-             style={{ color: hovered ? tech.color : 'rgba(255,255,255,0.6)', transition: 'color 0.4s ease', textShadow: hovered ? `0 0 20px ${tech.color}60` : 'none' }}
-           >
+          <div className="hex-content">
+            <div
+              className="hex-icon-wrap"
+              style={{ color: hovered ? (tech.color === '#FFFFFF' && !isDark ? '#0f172a' : tech.color) : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(30,30,40,0.62)', transition: 'color 0.4s ease, transform 0.4s ease', transform: hovered ? 'scale(1.15)' : 'scale(1)' }}
+            >
+              {tech.logo ? (
+                <img src={tech.logo} alt={tech.name} style={{ width: '32px', height: '32px', filter: tech.color === '#FFFFFF' && !isDark && !hovered ? 'invert(1) brightness(0.35)' : hovered ? `drop-shadow(0 0 8px ${tech.color === '#FFFFFF' ? '#64748b' : tech.color})` : 'none', transition: 'filter 0.4s ease' }} />
+              ) : (
+                TECH_ICONS[tech.name]?.()
+              )}
+            </div>
+            <span
+              className="hex-label"
+              style={{ color: hovered ? (tech.color === '#FFFFFF' && !isDark ? '#0f172a' : tech.color) : isDark ? 'rgba(255,255,255,0.62)' : 'rgba(30,30,45,0.78)', transition: 'color 0.4s ease', textShadow: hovered ? `0 0 20px ${tech.color === '#FFFFFF' ? '#94a3b8' : tech.color}60` : 'none' }}
+            >
              {tech.name}
            </span>
          </div>
@@ -1505,7 +1492,7 @@ function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
 
       {/* Ambient glow */}
       <div
@@ -1523,17 +1510,17 @@ function Contact() {
         }`}
       >
         {/* Heading */}
-         <div data-reveal className="mb-14 text-center">
-           <p className="text-[11px] font-semibold tracking-[0.3em] text-zinc-500 uppercase mb-4">Get In Touch</p>
-           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white mb-4 leading-[1.1]">
-             Let's Build
-           </h2>
-           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6">
-             <span className="bg-gradient-to-r from-fuchsia-400 via-purple-400 to-violet-500 bg-clip-text text-transparent">
-               Something Amazing
-             </span>
-           </h2>
-           <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto">
+          <div data-reveal className="mb-14 text-center">
+            <p className="text-[11px] font-semibold tracking-[0.3em] dark:text-zinc-500 text-slate-500 uppercase mb-4">Get In Touch</p>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight dark:text-white text-slate-900 mb-4 leading-[1.1]">
+              Let's Build
+            </h2>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6">
+              <span className="bg-gradient-to-r dark:from-fuchsia-400 dark:via-purple-400 dark:to-violet-500 from-violet-700 via-indigo-700 to-violet-800 bg-clip-text text-transparent">
+                Something Amazing
+              </span>
+            </h2>
+            <p className="dark:text-zinc-400 text-slate-600 text-base sm:text-lg max-w-2xl mx-auto">
              Got a project in mind? Let's collaborate and create something extraordinary together.
            </p>
          </div>
@@ -1543,12 +1530,12 @@ function Contact() {
            {socials.map((item, i) => (
              <div key={item.label}>
                {item.isCopyable ? (
-                 <button
-                   onClick={() => copyEmail()}
-                   data-reveal
-                   style={{ transitionDelay: `${(i + 1) * 80}ms` }}
-                   className="contact-card group relative w-full p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 text-left"
-                 >
+                  <button
+                    onClick={() => copyEmail()}
+                    data-reveal
+                    style={{ transitionDelay: `${(i + 1) * 80}ms` }}
+                    className="contact-card group relative w-full p-5 rounded-2xl dark:bg-white/[0.03] bg-white dark:border-white/[0.06] border-slate-300 dark:hover:border-white/[0.15] hover:border-purple-300/50 dark:hover:bg-white/[0.08] hover:bg-white dark:shadow-none shadow-[0_1px_2px_rgba(15,23,42,0.06),0_8px_24px_rgba(124,58,237,0.06)] hover:shadow-[0_4px_16px_rgba(15,23,42,0.10),0_12px_32px_rgba(124,58,237,0.08)] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 text-left"
+                  >
                    {/* Animated hover glow */}
                    <div
                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -1578,16 +1565,16 @@ function Contact() {
                        {item.icon}
                      </div>
 
-                     <div className="min-w-0 flex-1">
-                       <p className="text-xs font-semibold tracking-[0.15em] text-zinc-500 uppercase mb-0.5">{item.label}</p>
-                       <p className="text-sm text-zinc-300 group-hover:text-white transition-colors duration-300 truncate">{item.value}</p>
-                     </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold tracking-[0.15em] dark:text-zinc-500 text-slate-500 uppercase mb-0.5">{item.label}</p>
+                        <p className="text-sm dark:text-zinc-300 text-slate-800 dark:group-hover:text-white group-hover:text-slate-900 transition-colors duration-300 truncate">{item.value}</p>
+                      </div>
 
-                     {/* Copy icon with animation */}
-                     <svg
-                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                       className={`flex-shrink-0 transition-all duration-300 ${copied ? 'text-emerald-400' : 'text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-1 group-hover:-translate-y-1'}`}
-                     >
+                      {/* Copy icon with animation */}
+                      <svg
+                        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                        className={`flex-shrink-0 transition-all duration-300 ${copied ? 'text-emerald-400' : 'dark:text-zinc-600 text-slate-400 dark:group-hover:text-zinc-300 group-hover:text-slate-600 group-hover:translate-x-1 group-hover:-translate-y-1'}`}
+                      >
                        {copied ? (
                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                        ) : (
@@ -1600,14 +1587,14 @@ function Contact() {
                    </div>
                  </button>
                ) : (
-                 <a
-                   href={item.link}
-                   target="_blank"
-                   rel="noreferrer"
-                   data-reveal
-                   style={{ transitionDelay: `${(i + 1) * 80}ms` }}
-                   className="contact-card group relative p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 block"
-                 >
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-reveal
+                    style={{ transitionDelay: `${(i + 1) * 80}ms` }}
+                    className="contact-card group relative p-5 rounded-2xl dark:bg-white/[0.03] bg-white dark:border-white/[0.06] border-slate-300 dark:hover:border-white/[0.15] hover:border-purple-300/50 dark:hover:bg-white/[0.08] hover:bg-white dark:shadow-none shadow-[0_1px_2px_rgba(15,23,42,0.06),0_8px_24px_rgba(124,58,237,0.06)] hover:shadow-[0_4px_16px_rgba(15,23,42,0.10),0_12px_32px_rgba(124,58,237,0.08)] transition-all duration-400 overflow-hidden cursor-none transform hover:scale-105 hover:-translate-y-1 block"
+                  >
                    {/* Animated hover glow */}
                    <div
                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
@@ -1637,16 +1624,16 @@ function Contact() {
                        {item.icon}
                      </div>
 
-                     <div className="min-w-0">
-                       <p className="text-xs font-semibold tracking-[0.15em] text-zinc-500 uppercase mb-0.5">{item.label}</p>
-                       <p className="text-sm text-zinc-300 group-hover:text-white transition-colors duration-300 truncate">{item.value}</p>
-                     </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold tracking-[0.15em] dark:text-zinc-500 text-slate-500 uppercase mb-0.5">{item.label}</p>
+                        <p className="text-sm dark:text-zinc-300 text-slate-800 dark:group-hover:text-white group-hover:text-slate-900 transition-colors duration-300 truncate">{item.value}</p>
+                      </div>
 
-                     {/* Arrow with animation */}
-                     <svg
-                       width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                       className="ml-auto flex-shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
-                     >
+                      {/* Arrow with animation */}
+                      <svg
+                        width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                        className="ml-auto flex-shrink-0 dark:text-zinc-600 text-slate-400 dark:group-hover:text-zinc-300 group-hover:text-slate-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
+                      >
                        <path d="M7 17L17 7" /><path d="M7 7h10v10" />
                      </svg>
                    </div>
@@ -1658,9 +1645,9 @@ function Contact() {
 
         {/* Availability badge */}
         <div data-reveal style={{ transitionDelay: '500ms' }} className="mt-12 flex flex-col items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06]">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full dark:bg-white/[0.03] bg-white dark:border-white/[0.06] border-slate-200 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-zinc-400 font-medium">Available for projects & collaborations</span>
+            <span className="text-xs dark:text-zinc-400 text-slate-600 font-medium">Available for projects & collaborations</span>
           </div>
         </div>
       </div>
@@ -1668,7 +1655,7 @@ function Contact() {
       {/* Bottom bar — copyright */}
       <div className="relative z-10 px-6 pb-8 pt-6">
         <div className="max-w-6xl mx-auto flex items-center justify-center">
-          <p className="text-[10px] text-zinc-700 font-medium tracking-[0.15em] uppercase">
+          <p className="text-[10px] dark:text-zinc-700 text-slate-400 font-medium tracking-[0.15em] uppercase">
             © 2026 Galxtria
           </p>
         </div>
@@ -1696,7 +1683,7 @@ function BackToTopButton() {
     visible && (
       <button
         onClick={scrollToTop}
-        className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 border border-purple-500/50 flex items-center justify-center text-white hover:from-purple-500 hover:to-violet-500 active:scale-[0.95] transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.3),0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+        className="fixed bottom-8 right-8 z-40 w-12 h-12 rounded-full bg-gradient-to-r dark:from-purple-600 dark:to-violet-600 from-[#4c1d95] to-[#4338ca] dark:border-purple-500/50 border-[#4c1d95]/30 flex items-center justify-center text-white dark:hover:from-purple-500 dark:hover:to-violet-500 hover:from-[#5b21b6] hover:to-[#4c1d95] active:scale-[0.95] transition-all duration-300 dark:shadow-[0_0_20px_rgba(168,85,247,0.3),0_8px_24px_rgba(0,0,0,0.3)] shadow-[0_0_20px_rgba(76,29,149,0.28),0_8px_24px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(76,29,149,0.45)]"
         aria-label="Back to top"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1771,7 +1758,7 @@ function App() {
   }, [loaded])
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 font-sans relative">
+    <div className="min-h-screen dark:bg-black bg-[#fcfcfe] dark:text-zinc-100 text-[#1e1b2e] font-sans relative transition-colors duration-300">
       {!loaded && <SplashScreen onFinish={handleSplashFinish} />}
 
       <CustomCursor />
