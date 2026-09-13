@@ -355,143 +355,79 @@ function Background({ mouseRef, isMobile }) {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
       <div
         ref={planetRef}
-        className={`absolute ${isMobile ? 'hidden' : 'w-[560px] h-[560px] top-[-4%] right-[-8%] opacity-[0.88]'}`}
+        className={`absolute overflow-hidden select-none ${isMobile ? 'hidden' : 'w-[520px] h-[520px] top-[2%] right-[4%]'}`}
         style={{
           transition: isMobile ? 'none' : 'transform 1.6s cubic-bezier(0.16,1,0.3,1)',
           willChange: isMobile ? 'auto' : 'transform',
-          filter: isMobile ? 'none' : 'blur(0.15px)',
         }}
+        aria-hidden="true"
       >
-        {/* Dark: photoreal Saturn — back ring behind, planet, front ring in front */}
-        <div className="absolute inset-0" style={{ opacity: isDark ? 1 : 0, transition: 'opacity 900ms ease' }}>
-          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="satBody" cx="28%" cy="26%" r="72%">
-                <stop offset="0%" stopColor="#b8a6ff" />
-                <stop offset="12%" stopColor="#8b6cf0" />
-                <stop offset="30%" stopColor="#5b3bb0" />
-                <stop offset="52%" stopColor="#2a1f62" />
-                <stop offset="78%" stopColor="#0f0c2a" />
-                <stop offset="100%" stopColor="#04030e" />
-              </radialGradient>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#a78bfa" stopOpacity="0" />
-                <stop offset="14%" stopColor="#9580ff" stopOpacity="0.0" />
-                <stop offset="26%" stopColor="#c4b5fd" stopOpacity="0.38" />
-                <stop offset="36%" stopColor="#ddd6fe" stopOpacity="0.52" />
-                <stop offset="44%" stopColor="#a78bfa" stopOpacity="0.28" />
-                <stop offset="54%" stopColor="#7c3aed" stopOpacity="0.18" />
-                <stop offset="68%" stopColor="#a78bfa" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
-              </linearGradient>
-              <radialGradient id="satTerm" cx="68%" cy="52%" r="74%">
-                <stop offset="0%" stopColor="transparent" stopOpacity="0" />
-                <stop offset="46%" stopColor="transparent" stopOpacity="0" />
-                <stop offset="72%" stopColor="#020208" stopOpacity="0.42" />
-                <stop offset="100%" stopColor="#01010a" stopOpacity="0.88" />
-              </radialGradient>
-              <filter id="satGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18" /></filter>
-              <clipPath id="satC"><circle cx="200" cy="200" r="92" /></clipPath>
-            </defs>
-            <ellipse cx="200" cy="200" rx="92" ry="92" fill="black" opacity="0.0" style={{ filter: 'url(#satGlow)', fill: 'rgba(139,92,246,0.14)' }} />
-            {/* outer atmospheric glow */}
-            <circle cx="200" cy="200" r="112" fill="none" stroke="rgba(139,92,246,0.06)" strokeWidth="22" style={{ filter: 'blur(18px)' }} />
-            {/* back part of ring — behind planet */}
-            <g opacity="0.72">
-              <ellipse cx="200" cy="200" rx="188" ry="42" fill="none" stroke="url(#ringGrad)" strokeWidth="17" transform="rotate(-18 200 200)" strokeLinecap="round" />
-              <ellipse cx="200" cy="200" rx="188" ry="42" fill="none" stroke="rgba(255,255,255,0.055)" strokeWidth="0.7" transform="rotate(-18 200 200)" />
-            </g>
-            {/* planet body */}
-            <circle cx="200" cy="200" r="92" fill="url(#satBody)" />
-            {/* cloud bands — clipped to planet */}
-            <g clipPath="url(#satC)" opacity="1">
-              <ellipse cx="200" cy="182" rx="88" ry="4.5" fill="#d8ccff" opacity="0.18" />
-              <ellipse cx="200" cy="198" rx="91" ry="3.2" fill="#c4b5fd" opacity="0.14" />
-              <ellipse cx="200" cy="214" rx="87" ry="3.8" fill="#9a7dff" opacity="0.13" />
-              <ellipse cx="200" cy="230" rx="78" ry="2.8" fill="#7c5cf0" opacity="0.09" />
-              {/* ring shadow cast on planet */}
-              <ellipse cx="200" cy="206" rx="92" ry="14" fill="#020208" opacity="0.34" transform="rotate(-18 200 206)" style={{ filter: 'blur(5px)' }} />
-              <ellipse cx="200" cy="206" rx="92" ry="1.2" fill="black" opacity="0.5" transform="rotate(-18 200 206)" />
-            </g>
-            {/* specular highlight */}
-            <ellipse cx="168" cy="162" rx="30" ry="20" fill="white" opacity="0.055" style={{ filter: 'blur(8px)' }} />
-            <ellipse cx="160" cy="156" rx="10" ry="7" fill="white" opacity="0.07" style={{ filter: 'blur(4px)' }} />
-            {/* terminator / night side */}
-            <circle cx="200" cy="200" r="92" fill="url(#satTerm)" />
-            {/* front part of ring — in front of planet, only lower arc */}
-            <g opacity="1">
-              <path d="M 38 166 A 188 42 0 0 0 362 234" fill="none" stroke="url(#ringGrad)" strokeWidth="17" strokeLinecap="round" transform="rotate(-18 200 200)" style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.45))' }} />
-              <path d="M 42 167 A 188 42 0 0 0 358 233" fill="none" stroke="rgba(255,255,255,0.09)" strokeWidth="0.6" transform="rotate(-18 200 200)" />
-              {/* ring thickness edge highlight */}
-              <path d="M 40 168 A 188 42 0 0 0 360 232" fill="none" stroke="rgba(255,255,255,0.045)" strokeWidth="0.7" transform="rotate(-18 200 200)" />
-            </g>
-            {/* planet rim light */}
-            <circle cx="200" cy="200" r="92" fill="none" stroke="rgba(192,132,252,0.11)" strokeWidth="1.1" />
-            <circle cx="200" cy="200" r="92" fill="none" stroke="white" strokeWidth="0.4" opacity="0.07" />
-          </svg>
-        </div>
-        {/* Light: ultra-premium Moon — embossed craters, soft terminator, delicate */}
-        <div className="absolute inset-0" style={{ opacity: isDark ? 0 : 1, transition: 'opacity 900ms ease' }}>
-          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="moonB" cx="30%" cy="28%" r="76%">
-                <stop offset="0%" stopColor="#ffffff" />
-                <stop offset="18%" stopColor="#fefcff" />
-                <stop offset="36%" stopColor="#fbf7ff" />
-                <stop offset="58%" stopColor="#f0ebff" />
-                <stop offset="78%" stopColor="#e6ddff" />
-                <stop offset="100%" stopColor="#c9bedd" />
-              </radialGradient>
-              <radialGradient id="moonTerm" cx="70%" cy="50%" r="70%">
-                <stop offset="0%" stopColor="transparent" stopOpacity="0" />
-                <stop offset="48%" stopColor="transparent" stopOpacity="0" />
-                <stop offset="70%" stopColor="rgba(28,20,56,0.07)" stopOpacity="1" />
-                <stop offset="100%" stopColor="rgba(18,14,40,0.20)" stopOpacity="1" />
-              </radialGradient>
-              <filter id="moonSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="12" /></filter>
-              <radialGradient id="crRim" cx="30%" cy="28%" r="70%">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-                <stop offset="58%" stopColor="#e8e0f7" stopOpacity="1" />
-                <stop offset="100%" stopColor="#d5ccee" stopOpacity="1" />
-              </radialGradient>
-            </defs>
-            <circle cx="200" cy="200" r="96" fill="white" opacity="0.0" style={{ filter: 'url(#moonSoft)', fill: 'rgba(255,255,255,0.95)' }} />
-            <circle cx="200" cy="200" r="116" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="18" style={{ filter: 'blur(20px)' }} opacity="0.045" />
-            <circle cx="200" cy="200" r="96" fill="url(#moonB)" style={{ filter: 'drop-shadow(0 14px 36px rgba(124,58,237,0.08)) drop-shadow(0 0 60px rgba(168,85,247,0.05))' }} />
-            <g>
-              <g>
-                <circle cx="172" cy="162" r="26" fill="url(#crRim)" stroke="rgba(0,0,0,0.04)" strokeWidth="0.8" />
-                <circle cx="172" cy="162" r="26" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="0.6" />
-                <circle cx="172" cy="162" r="17" fill="rgba(0,0,0,0.028)" style={{ filter: 'blur(1.2px)' }} />
-                <ellipse cx="166" cy="154" rx="6" ry="4.2" fill="white" opacity="0.34" style={{ filter: 'blur(1px)' }} />
-                <circle cx="182" cy="168" r="3.2" fill="rgba(0,0,0,0.045)" />
-              </g>
-              <g>
-                <circle cx="238" cy="214" r="19" fill="url(#crRim)" stroke="rgba(0,0,0,0.035)" strokeWidth="0.7" />
-                <circle cx="238" cy="214" r="19" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
-                <circle cx="238" cy="214" r="12" fill="rgba(0,0,0,0.022)" style={{ filter: 'blur(1px)' }} />
-                <ellipse cx="232" cy="208" rx="4.2" ry="3" fill="white" opacity="0.28" />
-              </g>
-              <circle cx="196" cy="252" r="13.5" fill="#ece6fb" stroke="rgba(0,0,0,0.04)" strokeWidth="0.6" />
-              <circle cx="196" cy="252" r="8.2" fill="rgba(0,0,0,0.022)" style={{ filter: 'blur(0.8px)' }} />
-              <circle cx="184" cy="246" r="2.8" fill="white" opacity="0.28" />
-              <g>
-                <circle cx="258" cy="172" r="9.5" fill="#f0ebff" stroke="rgba(0,0,0,0.03)" strokeWidth="0.5" />
-                <circle cx="258" cy="172" r="5.5" fill="rgba(0,0,0,0.02)" />
-              </g>
-              <circle cx="218" cy="132" r="6.2" fill="#f5f0ff" stroke="rgba(0,0,0,0.03)" strokeWidth="0.4" />
-              <circle cx="218" cy="132" r="3.4" fill="rgba(0,0,0,0.018)" />
-              <circle cx="142" cy="208" r="6.8" fill="#eee8fb" stroke="rgba(0,0,0,0.03)" strokeWidth="0.4" />
-              <circle cx="152" cy="188" r="2.2" fill="#f3eeff" opacity="0.9" />
-            </g>
-            <circle cx="200" cy="200" r="96" fill="url(#moonTerm)" />
-            <circle cx="200" cy="200" r="96" fill="none" stroke="white" strokeWidth="0.9" opacity="0.55" />
-            <circle cx="200" cy="200" r="96" fill="none" stroke="rgba(168,85,247,0.07)" strokeWidth="1.2" />
-            {/* subtle lunar maria — ultra faint */}
-            <ellipse cx="188" cy="192" rx="28" ry="18" fill="#e8e0f7" opacity="0.045" style={{ filter: 'blur(6px)' }} />
-            <ellipse cx="224" cy="208" rx="22" ry="14" fill="#ddd4f2" opacity="0.04" style={{ filter: 'blur(5px)' }} />
-          </svg>
-        </div>
+        <img
+          src="https://images.unsplash.com/photo-1614314107768-601506d1387e?w=800&q=80&auto=format&fit=crop&crop=center"
+          alt=""
+          draggable="false"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: isDark ? 0.52 : 0,
+            transition: 'opacity 900ms cubic-bezier(0.16,1,0.3,1)',
+            filter: 'brightness(0.85) contrast(1.08) saturate(0.9) blur(0px)',
+            mixBlendMode: 'screen',
+            borderRadius: '50%',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 62%, transparent 73%)',
+            maskImage: 'radial-gradient(circle at 50% 50%, black 62%, transparent 73%)',
+          }}
+        />
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            opacity: isDark ? 0.52 : 0,
+            transition: 'opacity 900ms ease',
+            background: 'radial-gradient(circle at 32% 30%, rgba(255,255,255,0.09) 0%, transparent 42%)',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 62%, transparent 73%)',
+            maskImage: 'radial-gradient(circle at 50% 50%, black 62%, transparent 73%)',
+          }}
+        />
+        <div
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            inset: '6%',
+            opacity: isDark ? 1 : 0,
+            transition: 'opacity 900ms ease',
+            border: '1px solid rgba(168,85,247,0.09)',
+            boxShadow: '0 0 60px rgba(139,92,246,0.14), inset 0 0 40px rgba(139,92,246,0.06)',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 50%, transparent 62%, black 73%)',
+            maskImage: 'radial-gradient(circle at 50% 50%, transparent 62%, black 73%)',
+          }}
+        />
+        <img
+          src="https://images.unsplash.com/photo-1532693322450-2cb5c511067d?w=800&q=80&auto=format&fit=crop&crop=center"
+          alt=""
+          draggable="false"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: isDark ? 0 : 0.44,
+            transition: 'opacity 900ms cubic-bezier(0.16,1,0.3,1)',
+            filter: 'brightness(1.06) contrast(0.96) saturate(0.45) blur(0.2px)',
+            borderRadius: '50%',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 64%, transparent 74%)',
+            maskImage: 'radial-gradient(circle at 50% 50%, black 64%, transparent 74%)',
+            boxShadow: '0 12px 40px rgba(124,58,237,0.07)',
+          }}
+        />
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            opacity: isDark ? 0 : 0.44,
+            transition: 'opacity 900ms ease',
+            background: 'radial-gradient(ellipse 75% 80% at 70% 50%, rgba(18,14,40,0.13) 0%, transparent 62%)',
+            WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 64%, transparent 74%)',
+            maskImage: 'radial-gradient(circle at 50% 50%, black 64%, transparent 74%)',
+          }}
+        />
       </div>
       {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
