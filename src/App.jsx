@@ -355,60 +355,88 @@ function Background({ mouseRef, isMobile }) {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
       <div
         ref={planetRef}
-        className={`absolute rounded-full ${isMobile ? 'w-[220px] h-[220px] top-[9%] right-[-18px]' : 'w-[380px] h-[380px] top-[7%] right-[5%]'}`}
+        className={`absolute ${isMobile ? 'w-[210px] h-[210px] top-[8%] right-[-10px]' : 'w-[340px] h-[340px] top-[6%] right-[6%]'}`}
         style={{
           transition: isMobile ? 'none' : 'transform 1.5s ease-out',
           willChange: isMobile ? 'auto' : 'transform',
         }}
       >
-        <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: 'radial-gradient(circle at 32% 28%, #4c2a8a 0%, #2b1654 30%, #1a1030 58%, #0b0a1a 78%, #050510 100%)',
-            boxShadow: 'inset -22px -14px 36px rgba(0,0,0,0.85), inset 10px 10px 30px rgba(168,85,247,0.12), 0 0 70px rgba(139,92,246,0.10)',
-            filter: 'blur(0.3px)',
-            opacity: isDark ? (isMobile ? 0.38 : 0.72) : 0,
-            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
-          }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 pointer-events-none"
-          style={{
-            width: '138%',
-            height: '28%',
-            transform: 'translate(-50%, -50%) rotate(-16deg)',
-            borderRadius: '50%',
-            background: 'linear-gradient(90deg, transparent 5%, rgba(168,85,247,0) 10%, rgba(168,85,247,0.18) 22%, rgba(192,132,252,0.22) 36%, rgba(168,85,247,0.14) 52%, rgba(139,92,246,0.06) 68%, transparent 82%)',
-            borderTop: '1px solid rgba(168,85,247,0.18)',
-            borderBottom: '1px solid rgba(168,85,247,0.10)',
-            filter: 'blur(0.4px)',
-            opacity: isDark ? (isMobile ? 0.26 : 0.52) : 0,
-            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
-          }}
-        />
-        <div
-          className="absolute inset-0 rounded-full overflow-hidden"
-          style={{
-            background: 'radial-gradient(circle at 32% 28%, #ffffff 0%, #fdfcff 22%, #f5f3ff 42%, #ede9fe 64%, #ddd6fe 82%, #c4b5fd 100%)',
-            boxShadow: 'inset -18px -12px 28px rgba(120,100,160,0.18), inset 8px 8px 18px rgba(255,255,255,0.95), 0 0 50px rgba(168,85,247,0.07)',
-            filter: 'blur(0.2px)',
-            opacity: isDark ? 0 : (isMobile ? 0.34 : 0.62),
-            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
-          }}
-        >
-          <div className="absolute rounded-full" style={{ width: '22%', height: '22%', left: '28%', top: '24%', background: 'radial-gradient(circle at 30% 30%, #ede9fe, #ddd6fe 65%, #c4b5fd 100%)', boxShadow: 'inset -3px -2px 6px rgba(0,0,0,0.12)', opacity: 0.9 }} />
-          <div className="absolute rounded-full" style={{ width: '14%', height: '14%', left: '58%', top: '42%', background: 'radial-gradient(circle at 30% 30%, #f5f3ff, #ddd6fe 70%)', boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.10)', opacity: 0.85 }} />
-          <div className="absolute rounded-full" style={{ width: '10%', height: '10%', left: '36%', top: '62%', background: '#e9e5ff', boxShadow: 'inset -2px -1px 3px rgba(0,0,0,0.08)', opacity: 0.8 }} />
-          <div className="absolute rounded-full" style={{ width: '7%', height: '7%', left: '68%', top: '68%', background: '#ddd6fe', opacity: 0.7 }} />
+        <div className="absolute inset-0" style={{ opacity: isDark ? 1 : 0, transition: 'opacity 800ms cubic-bezier(0.16,1,0.3,1)', filter: isMobile ? 'blur(0.3px)' : 'none' }}>
+          <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="saturnBody" cx="34%" cy="30%" r="74%">
+                <stop offset="0%" stopColor="#7a5ad6" />
+                <stop offset="22%" stopColor="#5536a8" />
+                <stop offset="48%" stopColor="#2e1d62" />
+                <stop offset="78%" stopColor="#140e2e" />
+                <stop offset="100%" stopColor="#080610" />
+              </radialGradient>
+              <linearGradient id="saturnRing" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#a78bfa" stopOpacity="0" />
+                <stop offset="16%" stopColor="#a78bfa" stopOpacity="0.22" />
+                <stop offset="30%" stopColor="#c4b5fd" stopOpacity="0.42" />
+                <stop offset="46%" stopColor="#a78bfa" stopOpacity="0.28" />
+                <stop offset="62%" stopColor="#7c3aed" stopOpacity="0.18" />
+                <stop offset="84%" stopColor="#a78bfa" stopOpacity="0" />
+              </linearGradient>
+              <radialGradient id="saturnShade" cx="68%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="transparent" stopOpacity="0" />
+                <stop offset="48%" stopColor="transparent" stopOpacity="0" />
+                <stop offset="100%" stopColor="#020208" stopOpacity="0.82" />
+              </radialGradient>
+              <clipPath id="satClip"><circle cx="100" cy="100" r="58" /></clipPath>
+            </defs>
+            <ellipse cx="100" cy="100" rx="104" ry="21" fill="none" stroke="url(#saturnRing)" strokeWidth="9" opacity="0.95" transform="rotate(-18 100 100)" />
+            <ellipse cx="100" cy="100" rx="104" ry="21" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.6" transform="rotate(-18 100 100)" />
+            <circle cx="100" cy="100" r="58" fill="url(#saturnBody)" />
+            <g clipPath="url(#satClip)" opacity="0.22">
+              <ellipse cx="100" cy="87" rx="55" ry="2.8" fill="#c4b5fd" />
+              <ellipse cx="100" cy="100" rx="57" ry="2.2" fill="#a78bfa" opacity="0.7" />
+              <ellipse cx="100" cy="113" rx="53" ry="2.6" fill="#8b6cf0" />
+            </g>
+            <ellipse cx="80" cy="76" rx="20" ry="13" fill="white" opacity="0.045" />
+            <circle cx="100" cy="100" r="58" fill="url(#saturnShade)" />
+            <circle cx="100" cy="100" r="58" fill="none" stroke="rgba(168,85,247,0.09)" strokeWidth="0.8" />
+          </svg>
+          <div className="absolute inset-0 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 50%, transparent 60%, rgba(139,92,246,0.08) 100%)', filter: 'blur(14px)', transform: 'scale(1.12)' }} />
         </div>
-        <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 85% 90% at 72% 50%, transparent 38%, rgba(15,10,40,0.09) 72%, rgba(15,10,40,0.16) 100%)',
-            opacity: isDark ? 0 : 1,
-            transition: 'opacity 700ms ease',
-          }}
-        />
+        <div className="absolute inset-0" style={{ opacity: isDark ? 0 : 1, transition: 'opacity 800ms cubic-bezier(0.16,1,0.3,1)' }}>
+          <svg viewBox="0 0 200 200" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="moonBody" cx="32%" cy="30%" r="78%">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="30%" stopColor="#fdfcfe" />
+                <stop offset="58%" stopColor="#f1eefb" />
+                <stop offset="80%" stopColor="#e2dcf3" />
+                <stop offset="100%" stopColor="#c7bfdE" />
+              </radialGradient>
+              <radialGradient id="moonShade" cx="70%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="transparent" stopOpacity="0" />
+                <stop offset="52%" stopColor="transparent" stopOpacity="0" />
+                <stop offset="100%" stopColor="#1a1530" stopOpacity="0.18" />
+              </radialGradient>
+            </defs>
+            <circle cx="100" cy="100" r="60" fill="url(#moonBody)" style={{ filter: 'drop-shadow(0 10px 28px rgba(124,58,237,0.09)) drop-shadow(0 0 40px rgba(168,85,247,0.06))' }} />
+            <g opacity="0.92">
+              <g>
+                <circle cx="84" cy="78" r="17" fill="#ede8fb" stroke="rgba(0,0,0,0.045)" strokeWidth="0.7" />
+                <circle cx="84" cy="78" r="17" fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth="0.5" />
+                <ellipse cx="80" cy="74" rx="4.5" ry="3.2" fill="rgba(0,0,0,0.035)" />
+              </g>
+              <g>
+                <circle cx="119" cy="109" r="12.5" fill="#ece7f8" stroke="rgba(0,0,0,0.04)" strokeWidth="0.6" />
+                <ellipse cx="116" cy="106" rx="3.2" ry="2.4" fill="rgba(0,0,0,0.03)" />
+              </g>
+              <circle cx="97" cy="133" r="8.5" fill="#e9e4f7" stroke="rgba(0,0,0,0.035)" strokeWidth="0.5" />
+              <circle cx="133" cy="86" r="6" fill="#eee9fb" stroke="rgba(0,0,0,0.03)" strokeWidth="0.4" />
+              <circle cx="108" cy="62" r="3.8" fill="#f3efff" opacity="0.95" />
+              <circle cx="68" cy="108" r="4.2" fill="#ece8f7" opacity="0.9" />
+            </g>
+            <circle cx="100" cy="100" r="60" fill="url(#moonShade)" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="white" strokeWidth="0.7" opacity="0.42" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(168,85,247,0.08)" strokeWidth="1.1" />
+          </svg>
+        </div>
       </div>
       {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
