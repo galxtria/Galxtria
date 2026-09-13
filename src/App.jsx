@@ -329,10 +329,10 @@ function Background({ mouseRef, isMobile }) {
   const { isDark } = useTheme()
   const orb1 = useRef(null)
   const orb2 = useRef(null)
+  const planetRef = useRef(null)
 
   useEffect(() => {
     if (isMobile) return
-
     let raf
     const animate = () => {
       const { nx, ny } = mouseRef.current
@@ -340,10 +340,11 @@ function Background({ mouseRef, isMobile }) {
       const o1y = (ny - 0.5) * 30
       const o2x = (nx - 0.5) * -50
       const o2y = (ny - 0.5) * -35
-
+      const px = (nx - 0.5) * 18
+      const py = (ny - 0.5) * 14
       if (orb1.current) orb1.current.style.transform = `translate(${o1x}px, ${o1y}px)`
       if (orb2.current) orb2.current.style.transform = `translate(${o2x}px, ${o2y}px)`
-
+      if (planetRef.current) planetRef.current.style.transform = `translate(${px}px, ${py}px)`
       raf = requestAnimationFrame(animate)
     }
     raf = requestAnimationFrame(animate)
@@ -352,6 +353,63 @@ function Background({ mouseRef, isMobile }) {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+      <div
+        ref={planetRef}
+        className={`absolute rounded-full ${isMobile ? 'w-[220px] h-[220px] top-[9%] right-[-18px]' : 'w-[380px] h-[380px] top-[7%] right-[5%]'}`}
+        style={{
+          transition: isMobile ? 'none' : 'transform 1.5s ease-out',
+          willChange: isMobile ? 'auto' : 'transform',
+        }}
+      >
+        <div
+          className="absolute inset-0 rounded-full"
+          style={{
+            background: 'radial-gradient(circle at 32% 28%, #4c2a8a 0%, #2b1654 30%, #1a1030 58%, #0b0a1a 78%, #050510 100%)',
+            boxShadow: 'inset -22px -14px 36px rgba(0,0,0,0.85), inset 10px 10px 30px rgba(168,85,247,0.12), 0 0 70px rgba(139,92,246,0.10)',
+            filter: 'blur(0.3px)',
+            opacity: isDark ? (isMobile ? 0.38 : 0.72) : 0,
+            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
+          }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 pointer-events-none"
+          style={{
+            width: '138%',
+            height: '28%',
+            transform: 'translate(-50%, -50%) rotate(-16deg)',
+            borderRadius: '50%',
+            background: 'linear-gradient(90deg, transparent 5%, rgba(168,85,247,0) 10%, rgba(168,85,247,0.18) 22%, rgba(192,132,252,0.22) 36%, rgba(168,85,247,0.14) 52%, rgba(139,92,246,0.06) 68%, transparent 82%)',
+            borderTop: '1px solid rgba(168,85,247,0.18)',
+            borderBottom: '1px solid rgba(168,85,247,0.10)',
+            filter: 'blur(0.4px)',
+            opacity: isDark ? (isMobile ? 0.26 : 0.52) : 0,
+            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
+          }}
+        />
+        <div
+          className="absolute inset-0 rounded-full overflow-hidden"
+          style={{
+            background: 'radial-gradient(circle at 32% 28%, #ffffff 0%, #fdfcff 22%, #f5f3ff 42%, #ede9fe 64%, #ddd6fe 82%, #c4b5fd 100%)',
+            boxShadow: 'inset -18px -12px 28px rgba(120,100,160,0.18), inset 8px 8px 18px rgba(255,255,255,0.95), 0 0 50px rgba(168,85,247,0.07)',
+            filter: 'blur(0.2px)',
+            opacity: isDark ? 0 : (isMobile ? 0.34 : 0.62),
+            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1)',
+          }}
+        >
+          <div className="absolute rounded-full" style={{ width: '22%', height: '22%', left: '28%', top: '24%', background: 'radial-gradient(circle at 30% 30%, #ede9fe, #ddd6fe 65%, #c4b5fd 100%)', boxShadow: 'inset -3px -2px 6px rgba(0,0,0,0.12)', opacity: 0.9 }} />
+          <div className="absolute rounded-full" style={{ width: '14%', height: '14%', left: '58%', top: '42%', background: 'radial-gradient(circle at 30% 30%, #f5f3ff, #ddd6fe 70%)', boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.10)', opacity: 0.85 }} />
+          <div className="absolute rounded-full" style={{ width: '10%', height: '10%', left: '36%', top: '62%', background: '#e9e5ff', boxShadow: 'inset -2px -1px 3px rgba(0,0,0,0.08)', opacity: 0.8 }} />
+          <div className="absolute rounded-full" style={{ width: '7%', height: '7%', left: '68%', top: '68%', background: '#ddd6fe', opacity: 0.7 }} />
+        </div>
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 85% 90% at 72% 50%, transparent 38%, rgba(15,10,40,0.09) 72%, rgba(15,10,40,0.16) 100%)',
+            opacity: isDark ? 0 : 1,
+            transition: 'opacity 700ms ease',
+          }}
+        />
+      </div>
       {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
         ref={orb1}
