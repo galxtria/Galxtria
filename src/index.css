@@ -465,4 +465,131 @@ html:not(.dark) .cursor-ring { border-color: rgba(168,85,247,0.3); }
 html:not(.dark) .cursor-ring.expanded { border-color: rgba(168,85,247,0.5); }
 html:not(.dark) ::selection { background: rgba(168,85,247,0.2); color: #1a1a1a; }
 
+/* ── Celestial premium — moon & sun ───────────────────────────────── */
+@keyframes celestial-float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes celestial-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.7); }
+  50%      { opacity: 1; transform: scale(1.25); }
+}
+@keyframes celestial-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.06); }
+}
+@keyframes sun-rays-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes sun-rays-spin-rev {
+  from { transform: rotate(360deg); }
+  to   { transform: rotate(0deg); }
+}
+@keyframes sun-core-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+@keyframes sparkle-blink {
+  0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); }
+  50%      { opacity: 1; transform: scale(1.15) rotate(20deg); }
+}
+
+.celestial-float { animation: celestial-float 7s ease-in-out infinite; transform-origin: center; }
+.celestial-twinkle { animation: celestial-twinkle 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.celestial-pulse { animation: celestial-pulse 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.sun-rays { animation: sun-rays-spin 46s linear infinite; transform-origin: 200px 200px; }
+.sun-rays-rev { animation: sun-rays-spin-rev 68s linear infinite; transform-origin: 200px 200px; }
+.sun-core-breathe { animation: sun-core-breathe 6s ease-in-out infinite; transform-origin: 200px 200px; }
+.sparkle-blink { animation: sparkle-blink 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+/* ── Enchanted additions — nebula, shooting star, soft orbit ─────── */
+@keyframes nebula-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  50%      { transform: translate(14px, -12px) scale(1.08); opacity: 1; }
+}
+@keyframes orbit-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes shooting {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.8); }
+  8%   { opacity: 1; }
+  22%  { opacity: 1; transform: translate(-90px, 56px) scale(1); }
+  34%, 100% { opacity: 0; transform: translate(-150px, 94px) scale(0.9); }
+}
+@keyframes tip-glint {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1; transform: scale(1.2); }
+}
+@keyframes soft-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50%      { transform: scale(1.025); opacity: 1; }
+}
+
+.nebula-drift { animation: nebula-drift 11s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.orbit-slow { animation: orbit-slow 80s linear infinite; transform-origin: 200px 200px; }
+.orbit-slower-rev { animation: sun-rays-spin-rev 110s linear infinite; transform-origin: 200px 200px; }
+.shooting { animation: shooting 7s ease-out infinite; }
+.tip-glint { animation: tip-glint 3.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.soft-breathe { animation: soft-breathe 7s ease-in-out infinite; transform-origin: 200px 200px; }
+
+/* ── Glassmorphism celestial — quiet drift + faint twinkle ───────── */
+@keyframes glass-drift {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes glass-twinkle {
+  0%, 100% { opacity: 0.18; }
+  50%      { opacity: 0.45; }
+}
+
+.glass-drift { animation: glass-drift 9s ease-in-out infinite; transform-origin: center; }
+.glass-twinkle { animation: glass-twinkle 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+/* ── Minimal splash (hero-like) ─────────────────────────────────── */
+@keyframes splash-faint-twinkle {
+  0%, 100% { opacity: 0.1; }
+  50%      { opacity: 0.38; }
+}
+@keyframes splash-letter-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes splash-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.splash-faint-star {
+  position: absolute;
+  border-radius: 9999px;
+  animation: splash-faint-twinkle 4s ease-in-out infinite;
+}
+.splash-letter {
+  display: inline-block;
+  opacity: 0;
+  animation: splash-letter-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.splash-rise {
+  opacity: 0;
+  animation: splash-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-faint-star, .splash-letter, .splash-rise {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celestial-float, .celestial-twinkle, .celestial-pulse,
+  .sun-rays, .sun-rays-rev, .sun-core-breathe, .sparkle-blink,
+  .nebula-drift, .orbit-slow, .orbit-slower-rev, .shooting, .tip-glint, .soft-breathe,
+  .glass-drift, .glass-twinkle {
+    animation: none !important;
+  }
+}
+
 

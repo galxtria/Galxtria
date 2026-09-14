@@ -248,13 +248,35 @@ function CustomCursor() {
 // ─────────────────────────────────────────────────────────────────────
 
 function SplashScreen({ onFinish }) {
+  const { isDark } = useTheme()
   const [phase, setPhase] = useState('loading') // loading → fade → done
   const [percent, setPercent] = useState(0)
+
+  const stars = useMemo(() => {
+    // Hanya selusin titik samar — aksen, bukan hujan bintang
+    const rand = (seed) => {
+      let s = seed
+      return () => {
+        s = (s * 9301 + 49297) % 233280
+        return s / 233280
+      }
+    }
+    const r = rand(7)
+    return Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      left: `${8 + r() * 84}%`,
+      top: `${10 + r() * 80}%`,
+      size: 1 + r() * 1.2,
+      opacity: 0.16 + r() * 0.22,
+      delay: `${(r() * 4).toFixed(2)}s`,
+      duration: `${(3 + r() * 3).toFixed(2)}s`,
+    }))
+  }, [])
 
   useEffect(() => {
     // Rapid percentage counter
     const startTime = Date.now()
-    const duration = 1200 // ms for counter to reach 100
+    const duration = 1400 // ms for counter to reach 100
 
     const tick = () => {
       const elapsed = Date.now() - startTime
@@ -270,8 +292,8 @@ function SplashScreen({ onFinish }) {
     requestAnimationFrame(tick)
 
     // Phase transitions
-    const t1 = setTimeout(() => setPhase('fade'), 1350)
-    const t2 = setTimeout(() => onFinish(), 1750)
+    const t1 = setTimeout(() => setPhase('fade'), 1550)
+    const t2 = setTimeout(() => onFinish(), 1950)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [onFinish])
 
@@ -279,43 +301,107 @@ function SplashScreen({ onFinish }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[200] flex items-center justify-center bg-black transition-all duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-        phase === 'fade' ? 'opacity-0 scale-[1.08] pointer-events-none' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        phase === 'fade' ? 'opacity-0 scale-[1.02] pointer-events-none' : 'opacity-100 scale-100'
       }`}
+      style={{ background: isDark ? '#050505' : '#fcfcfe' }}
     >
-      {/* Radial glow behind text */}
+      {/* Garis divider atas — sama seperti hero section */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute top-0 left-0 right-0 h-[1px]"
         style={{
-          background: 'radial-gradient(circle at 50% 50%, rgba(168,85,247,0.08) 0%, transparent 55%)',
-          opacity: phase === 'loading' ? 1 : 0,
-          transition: 'opacity 0.4s ease',
+          background: isDark
+            ? 'linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent)'
+            : 'linear-gradient(to right, transparent, rgba(139,92,246,0.18), transparent)',
         }}
+        aria-hidden="true"
       />
 
-      <div className="relative flex flex-col items-center gap-6">
-        {/* Main brand text with glow */}
+      {/* Glow lembut di belakang nama — sama seperti hero glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[600px] h-[400px] pointer-events-none"
+        style={{
+          background: isDark
+            ? 'radial-gradient(ellipse at center, rgba(139,92,246,0.09) 0%, transparent 65%)'
+            : 'radial-gradient(ellipse at center, rgba(139,92,246,0.07) 0%, transparent 65%)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Selusin bintang samar sebagai aksen */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {stars.map((s) => (
+          <span
+            key={s.id}
+            className="splash-faint-star"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: s.size,
+              height: s.size,
+              opacity: s.opacity,
+              background: isDark ? '#d9d4e8' : '#6d28d9',
+              animationDelay: s.delay,
+              animationDuration: s.duration,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Sengaja tanpa planet — bersih seperti hero section */}
+
+      <div className="relative flex flex-col items-center px-6 text-center">
+        {/* Nama — huruf muncul satu per satu (gradasi di tiap huruf agar tidak hilang) */}
         <h1
-          className="text-5xl sm:text-7xl font-black tracking-tighter bg-gradient-to-r from-fuchsia-400 via-purple-400 to-violet-500 bg-clip-text text-transparent"
-          style={{
-            filter: `drop-shadow(0 0 ${20 + percent * 0.4}px rgba(168,85,247,${0.15 + percent * 0.004}))`,
-            transition: 'filter 0.1s ease',
-          }}
+          aria-label="Galxtria."
+          className="text-[clamp(3.5rem,11vw,7.5rem)] font-black tracking-tighter leading-none"
+          style={{ filter: isDark ? 'drop-shadow(0 0 26px rgba(139,92,246,0.18))' : 'none' }}
         >
-          Galxtria.
+          {'Galxtria.'.split('').map((ch, i) => (
+            <span
+              key={i}
+              className={`splash-letter bg-gradient-to-r bg-clip-text text-transparent ${
+                isDark
+                  ? 'from-purple-300 via-purple-400 to-violet-400'
+                  : 'from-[#4c1d95] via-[#5b21b6] to-[#4338ca]'
+              }`}
+              style={{ animationDelay: `${150 + i * 55}ms` }}
+              aria-hidden="true"
+            >
+              {ch}
+            </span>
+          ))}
         </h1>
 
-        {/* Percentage counter */}
-        <div className="flex items-center gap-3">
-          <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-purple-500/40" />
+        {/* Loader minimal — garis tipis + persen */}
+        <div className="mt-10 flex items-center gap-4 splash-rise" style={{ animationDelay: '650ms' }}>
+          <div
+            className="h-[2px] w-44 sm:w-56 overflow-hidden rounded-full"
+            style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(76,29,149,0.12)' }}
+          >
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${percent}%`,
+                background: isDark
+                  ? 'linear-gradient(to right, #a855f7, #8b5cf6)'
+                  : 'linear-gradient(to right, #4c1d95, #7c3aed)',
+                transition: 'width 0.08s linear',
+              }}
+            />
+          </div>
           <span
-            className="text-[13px] font-mono font-semibold tracking-[0.3em] text-purple-400/80 tabular-nums"
-            style={{ minWidth: '3.5ch', textAlign: 'right' }}
+            className={`text-xs font-mono font-medium tracking-[0.2em] tabular-nums ${isDark ? 'text-purple-200/70' : 'text-violet-800/80'}`}
+            style={{ minWidth: '4ch', textAlign: 'left' }}
           >
             {percent}%
           </span>
-          <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-purple-500/40" />
         </div>
+      </div>
+
+      {/* Penanda bawah */}
+      <div className={`absolute bottom-8 text-[10px] font-mono tracking-[0.35em] uppercase ${isDark ? 'text-zinc-600' : 'text-slate-400'}`}>
+        Galxtria © 2026
       </div>
     </div>
   )
@@ -325,11 +411,168 @@ function SplashScreen({ onFinish }) {
 // INTERACTIVE BACKGROUND — Ambient orbs with mouse tracking
 // ─────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────
+// CELESTIAL BODY — moon (dark) / sun (light), anchored inside Hero
+// Rendered absolute against the hero section so it scrolls away with it
+// instead of sticking to the viewport like the fixed background does
+// ─────────────────────────────────────────────────────────────────────
+
+function CelestialBody({ innerRef, isMobile }) {
+  const { isDark } = useTheme()
+
+  if (isMobile) return null
+
+  return (
+    <div
+      ref={innerRef}
+      className="absolute select-none w-[520px] h-[520px] top-[2%] right-[4%]"
+      style={{
+        transition: 'transform 1.6s cubic-bezier(0.16,1,0.3,1)',
+        willChange: 'transform',
+      }}
+      aria-hidden="true"
+    >
+        {/* Dark Mode: Frosted Crescent — quiet glassmorphism, low-contrast */}
+        <div className="absolute inset-0 flex items-center justify-center" style={{ opacity: isDark ? 0.9 : 0, transition: 'opacity 1.2s ease', transform: isDark ? 'scale(1)' : 'scale(0.95)', filter: isDark ? 'blur(0)' : 'blur(10px)' }}>
+          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible glass-drift" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="crescentGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#b8b0d6" stopOpacity="0.2" />
+                <stop offset="45%" stopColor="#7a7390" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="earthshine" cx="35%" cy="32%" r="78%">
+                <stop offset="0%" stopColor="#232030" stopOpacity="0.7" />
+                <stop offset="55%" stopColor="#16131f" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#0a0910" stopOpacity="0.1" />
+              </radialGradient>
+              <linearGradient id="crescentLight" x1="20%" y1="10%" x2="85%" y2="90%">
+                <stop offset="0%" stopColor="#f4f1f9" />
+                <stop offset="45%" stopColor="#cfc8e2" />
+                <stop offset="78%" stopColor="#9a90b5" />
+                <stop offset="100%" stopColor="#6f6789" />
+              </linearGradient>
+              <radialGradient id="craterGrad" cx="35%" cy="35%" r="65%">
+                <stop offset="0%" stopColor="#000000" stopOpacity="0.28" />
+                <stop offset="70%" stopColor="#000000" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#ffffff" stopOpacity="0.08" />
+              </radialGradient>
+              <mask id="crescentMask">
+                <rect width="400" height="400" fill="black" />
+                <circle cx="200" cy="200" r="68" fill="white" />
+                <circle cx="178" cy="182" r="60" fill="black" />
+              </mask>
+              <clipPath id="moonClip">
+                <circle cx="200" cy="200" r="68" />
+              </clipPath>
+              <filter id="soft10" x="-70%" y="-70%" width="240%" height="240%">
+                <feGaussianBlur stdDeviation="10" />
+              </filter>
+              <filter id="soft6" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="6" />
+              </filter>
+              <filter id="soft2" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="2" />
+              </filter>
+            </defs>
+
+            {/* whisper halo — very dim */}
+            <circle cx="200" cy="200" r="150" fill="url(#crescentGlow)" />
+
+            {/* 6 quiet stars, low opacity */}
+            <g fill="#d9d4e8">
+              <circle cx="96" cy="110" r="1.3" opacity="0.35" className="glass-twinkle" />
+              <circle cx="310" cy="100" r="1.2" opacity="0.3" className="glass-twinkle" style={{ animationDelay: '1.4s' }} />
+              <circle cx="330" cy="250" r="1.1" opacity="0.28" className="glass-twinkle" style={{ animationDelay: '2.2s' }} />
+              <circle cx="80" cy="270" r="1.2" opacity="0.3" className="glass-twinkle" style={{ animationDelay: '0.8s' }} />
+              <circle cx="150" cy="70" r="1" opacity="0.25" className="glass-twinkle" style={{ animationDelay: '2.8s' }} />
+              <circle cx="290" cy="310" r="1" opacity="0.25" className="glass-twinkle" style={{ animationDelay: '1.9s' }} />
+            </g>
+
+            {/* single hairline orbit — frosted */}
+            <ellipse cx="200" cy="200" rx="102" ry="36" fill="none" stroke="#ffffff" strokeWidth="0.8" opacity="0.13" transform="rotate(-22 200 200)" />
+            <circle cx="288" cy="172" r="2" fill="#cfc8e2" opacity="0.35" />
+
+            {/* frosted glass backing disc */}
+            <circle cx="200" cy="200" r="68" fill="#ffffff" opacity="0.035" />
+            <circle cx="200" cy="200" r="68" fill="url(#earthshine)" />
+            <circle cx="200" cy="200" r="68" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.09" />
+
+            {/* 2 faint craters only */}
+            <g clipPath="url(#moonClip)">
+              <circle cx="186" cy="196" r="9" fill="url(#craterGrad)" opacity="0.5" />
+              <circle cx="210" cy="224" r="6.5" fill="url(#craterGrad)" opacity="0.4" />
+              <ellipse cx="182" cy="226" rx="24" ry="18" fill="#000000" opacity="0.18" filter="url(#soft6)" />
+            </g>
+
+            {/* slim matte crescent */}
+            <g mask="url(#crescentMask)">
+              <circle cx="200" cy="200" r="68" fill="url(#crescentLight)" opacity="0.92" />
+              <g clipPath="url(#moonClip)">
+                <ellipse cx="192" cy="198" rx="12" ry="52" fill="#4a4459" opacity="0.28" filter="url(#soft6)" />
+              </g>
+              <circle cx="200" cy="200" r="68" fill="none" stroke="#ffffff" strokeWidth="1" opacity="0.28" filter="url(#soft2)" />
+            </g>
+          </svg>
+        </div>
+
+        {/* Light Mode: Clean Morning Sun — simple, warm, elegant */}
+        <div className="absolute inset-0 flex items-center justify-center" style={{ opacity: isDark ? 0 : 1, transition: 'opacity 1.2s ease', transform: isDark ? 'scale(0.95)' : 'scale(1)', filter: isDark ? 'blur(10px)' : 'blur(0)' }}>
+          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible glass-drift" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="sunAmbient" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.30" />
+                <stop offset="45%" stopColor="#fcd34d" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="sunCoreGrad" cx="42%" cy="36%" r="75%">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="42%" stopColor="#fef6dd" />
+                <stop offset="70%" stopColor="#fde68a" />
+                <stop offset="90%" stopColor="#f3d27a" />
+                <stop offset="100%" stopColor="#d9c8f0" />
+              </radialGradient>
+              <linearGradient id="sunRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#eab308" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.4" />
+              </linearGradient>
+              <clipPath id="sunClip">
+                <circle cx="200" cy="200" r="58" />
+              </clipPath>
+              <filter id="sunBlur5" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="5" />
+              </filter>
+            </defs>
+
+            {/* single warm halo */}
+            <circle cx="200" cy="200" r="150" fill="url(#sunAmbient)" />
+
+            {/* core */}
+            <circle cx="200" cy="200" r="58" fill="url(#sunCoreGrad)" />
+            <g clipPath="url(#sunClip)">
+              <ellipse cx="180" cy="174" rx="26" ry="16" fill="#ffffff" opacity="0.7" filter="url(#sunBlur5)" />
+            </g>
+            {/* crisp-but-soft edge */}
+            <circle cx="200" cy="200" r="58" fill="none" stroke="url(#sunRingGrad)" strokeWidth="1.4" opacity="0.65" />
+
+            {/* one thin orbit ring — quiet nod to the space theme */}
+            <circle cx="200" cy="200" r="80" fill="none" stroke="#8b7ab8" strokeWidth="0.8" opacity="0.22" />
+
+            {/* two faint sparkles */}
+            <g fill="#8b7ab8">
+              <circle cx="122" cy="158" r="1.3" opacity="0.35" className="glass-twinkle" />
+              <circle cx="282" cy="242" r="1.4" opacity="0.32" className="glass-twinkle" style={{ animationDelay: '1.8s' }} />
+            </g>
+          </svg>
+        </div>
+    </div>
+  )
+}
+
 function Background({ mouseRef, isMobile }) {
   const { isDark } = useTheme()
   const orb1 = useRef(null)
   const orb2 = useRef(null)
-  const planetRef = useRef(null)
 
   useEffect(() => {
     if (isMobile) return
@@ -340,11 +583,8 @@ function Background({ mouseRef, isMobile }) {
       const o1y = (ny - 0.5) * 30
       const o2x = (nx - 0.5) * -50
       const o2y = (ny - 0.5) * -35
-      const px = (nx - 0.5) * 18
-      const py = (ny - 0.5) * 14
       if (orb1.current) orb1.current.style.transform = `translate(${o1x}px, ${o1y}px)`
       if (orb2.current) orb2.current.style.transform = `translate(${o2x}px, ${o2y}px)`
-      if (planetRef.current) planetRef.current.style.transform = `translate(${px}px, ${py}px)`
       raf = requestAnimationFrame(animate)
     }
     raf = requestAnimationFrame(animate)
@@ -353,50 +593,7 @@ function Background({ mouseRef, isMobile }) {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-      <div
-        ref={planetRef}
-        className={`absolute overflow-hidden select-none ${isMobile ? 'hidden' : 'w-[520px] h-[520px] top-[2%] right-[4%]'}`}
-        style={{
-          transition: isMobile ? 'none' : 'transform 1.6s cubic-bezier(0.16,1,0.3,1)',
-          willChange: isMobile ? 'auto' : 'transform',
-        }}
-        aria-hidden="true"
-      >
-        {/* Dark: Saturn premium — single cohesive element */}
-        <div className="absolute inset-0" style={{ opacity: isDark ? 1 : 0, transition: 'opacity 900ms ease' }}>
-          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="satB" cx="30%" cy="28%" r="75%"><stop offset="0%" stopColor="#b8a3ff"/><stop offset="18%" stopColor="#7f5af0"/><stop offset="38%" stopColor="#4a2fb8"/><stop offset="62%" stopColor="#1e1452"/><stop offset="82%" stopColor="#0a0a18"/><stop offset="100%" stopColor="#020208"/></radialGradient>
-              <linearGradient id="ringG" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#a78bfa" stopOpacity="0"/><stop offset="22%" stopColor="#c4b5fd" stopOpacity="0.32"/><stop offset="38%" stopColor="#ddd6fe" stopOpacity="0.5"/><stop offset="52%" stopColor="#a78bfa" stopOpacity="0.24"/><stop offset="100%" stopColor="#a78bfa" stopOpacity="0"/></linearGradient>
-              <radialGradient id="satSh" cx="72%" cy="52%" r="70%"><stop offset="0%" stopColor="transparent" stopOpacity="0"/><stop offset="50%" stopColor="transparent" stopOpacity="0"/><stop offset="100%" stopColor="#010208" stopOpacity="0.78"/></radialGradient>
-              <clipPath id="satClip2"><circle cx="200" cy="200" r="90"/></clipPath>
-            </defs>
-            <circle cx="200" cy="200" r="118" fill="none" stroke="rgba(139,92,246,0.09)" strokeWidth="30" style={{filter:'blur(22px)'}}/>
-            <g opacity="0.62"><ellipse cx="200" cy="200" rx="182" ry="40" fill="none" stroke="url(#ringG)" strokeWidth="15" transform="rotate(-18 200 200)" strokeLinecap="round"/></g>
-            <circle cx="200" cy="200" r="90" fill="url(#satB)"/>
-            <g clipPath="url(#satClip2)" opacity="0.35"><ellipse cx="200" cy="186" rx="86" ry="3.5" fill="#c4b5fd"/><ellipse cx="200" cy="210" rx="84" ry="2.8" fill="#9a7dff"/><ellipse cx="200" cy="202" rx="88" ry="12" fill="#020208" opacity="0.28" transform="rotate(-18 200 202)" style={{filter:'blur(4px)'}}/></g>
-            <ellipse cx="168" cy="162" rx="26" ry="16" fill="white" opacity="0.05" style={{filter:'blur(7px)'}}/>
-            <circle cx="200" cy="200" r="90" fill="url(#satSh)"/>
-            <g opacity="1"><path d="M 48 172 A 182 40 0 0 0 352 228" fill="none" stroke="url(#ringG)" strokeWidth="15" strokeLinecap="round" transform="rotate(-18 200 200)" style={{filter:'drop-shadow(0 3px 8px rgba(0,0,0,0.4))'}}/><path d="M 52 173 A 182 40 0 0 0 348 227" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="0.6" transform="rotate(-18 200 200)"/></g>
-            <circle cx="200" cy="200" r="90" fill="none" stroke="rgba(168,85,247,0.13)" strokeWidth="1"/>
-          </svg>
-        </div>
-        {/* Light: Moon sinar — single cohesive, no gray, pure glow */}
-        <div className="absolute inset-0" style={{ opacity: isDark ? 0 : 1, transition: 'opacity 900ms ease' }}>
-          <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="moonB2" cx="30%" cy="28%" r="78%"><stop offset="0%" stopColor="#ffffff"/><stop offset="28%" stopColor="#fefcff"/><stop offset="55%" stopColor="#f2eeff"/><stop offset="100%" stopColor="#d9d0f5"/></radialGradient>
-              <radialGradient id="moonSh2" cx="70%" cy="50%" r="70%"><stop offset="0%" stopColor="transparent" stopOpacity="0"/><stop offset="55%" stopColor="transparent" stopOpacity="0"/><stop offset="100%" stopColor="rgba(30,20,60,0.16)" stopOpacity="1"/></radialGradient>
-            </defs>
-            <circle cx="200" cy="200" r="122" fill="none" stroke="white" strokeWidth="28" opacity="0.06" style={{filter:'blur(24px)'}}/>
-            <circle cx="200" cy="200" r="94" fill="url(#moonB2)" style={{filter:'drop-shadow(0 0 40px rgba(255,255,255,0.45)) drop-shadow(0 0 80px rgba(168,85,247,0.12))'}}/>
-            <g opacity="0.9"><circle cx="172" cy="164" r="22" fill="#ede7ff" stroke="rgba(0,0,0,0.04)" strokeWidth="0.7"/><circle cx="172" cy="164" r="13" fill="rgba(0,0,0,0.02)" style={{filter:'blur(1px)'}}/><circle cx="236" cy="214" r="16" fill="#ece7ff" stroke="rgba(0,0,0,0.03)" strokeWidth="0.6"/><circle cx="196" cy="250" r="11" fill="#ece6ff" stroke="rgba(0,0,0,0.03)" strokeWidth="0.5"/><circle cx="258" cy="172" r="7.5" fill="#f0ebff"/><circle cx="140" cy="208" r="5.5" fill="#eee8ff"/></g>
-            <circle cx="200" cy="200" r="94" fill="url(#moonSh2)"/>
-            <circle cx="200" cy="200" r="94" fill="none" stroke="white" strokeWidth="0.8" opacity="0.5"/>
-            <circle cx="200" cy="200" r="94" fill="none" stroke="rgba(168,85,247,0.09)" strokeWidth="1"/>
-          </svg>
-        </div>
-      </div>
+      {/* Celestial body (moon/sun) now lives in Hero so it scrolls with the hero section */}
       {/* Ambient orb 1 — simplified on mobile (no animation, static glow) */}
       <div
         ref={orb1}
@@ -606,6 +803,7 @@ function Navbar({ visible }) {
 
 function Hero({ visible, mouseRef, isMobile }) {
   const parallaxRef = useRef(null)
+  const planetRef = useRef(null)
 
   useEffect(() => {
     if (isMobile) return
@@ -623,6 +821,10 @@ function Hero({ visible, mouseRef, isMobile }) {
           shapes[i].style.transform = `translate(${dx}px, ${dy}px)`
         }
       }
+      if (planetRef.current) {
+        const { nx, ny } = mouseRef.current
+        planetRef.current.style.transform = `translate(${(nx - 0.5) * 18}px, ${(ny - 0.5) * 14}px)`
+      }
       raf = requestAnimationFrame(animate)
     }
     raf = requestAnimationFrame(animate)
@@ -638,6 +840,9 @@ function Hero({ visible, mouseRef, isMobile }) {
     >
       {/* Divider line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent dark:via-white/[0.04] via-purple-200/40 to-transparent" />
+
+      {/* Moon / sun — absolute to hero, scrolls away with it */}
+      <CelestialBody innerRef={planetRef} isMobile={isMobile} />
 
       {/* Hero glow behind name */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[55%] w-[600px] h-[400px] dark:bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.08)_0%,_transparent_65%)] bg-[radial-gradient(ellipse_at_center,_rgba(139,92,246,0.06)_0%,_transparent_65%)] pointer-events-none" />
