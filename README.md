@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=220&section=header&text=Galxtria&fontSize=72&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Frontend%20Developer&descAlignY=58&descSize=20" width="100%" alt="Galxtria banner" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=220&section=header&text=Galxtria&fontSize=72&fontColor=ffffff&animation=fadeIn&fontAlignY=50" width="100%" alt="Galxtria banner" />
 
 <div align="center">
 
@@ -57,72 +57,21 @@ const galxtria = {
 
 <div align="center">
 
-![Frontend](https://img.shields.io/badge/FRONTEND-7c3aed?style=for-the-badge)
+| 💻 Frontend | ⚙️ Backend |
+|:-----------:|:----------:|
+| <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" width="38" height="38" alt="React" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" width="38" height="38" alt="Next.js" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" width="38" height="38" alt="TypeScript" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" width="38" height="38" alt="JavaScript" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" width="38" height="38" alt="Tailwind CSS" /><br />`React` `Next.js` `TypeScript` `JavaScript` `Tailwind` | <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="38" height="38" alt="Node.js" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg" width="38" height="38" alt="Laravel" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" width="38" height="38" alt="PHP" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="38" height="38" alt="Python" /><br />`Node.js` `Laravel` `PHP` `Python` |
+| 📱 Mobile | 🎨 Design |
+| <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg" width="38" height="38" alt="Flutter" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg" width="38" height="38" alt="Dart" /> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="38" height="38" alt="Java" /><br />`Flutter` `Dart` `Java` | <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg" width="38" height="38" alt="Figma" /><br />`Figma` |
 
-<table>
-  <tr>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" width="50" height="50" alt="React" /><br /><sub><b>React</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" width="50" height="50" alt="Next.js" /><br /><sub><b>Next.js</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" width="50" height="50" alt="TypeScript" /><br /><sub><b>TypeScript</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" width="50" height="50" alt="JavaScript" /><br /><sub><b>JavaScript</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" width="50" height="50" alt="Tailwind CSS" /><br /><sub><b>Tailwind</b></sub>
-    </td>
-  </tr>
-</table>
+</div>
 
-![Backend](https://img.shields.io/badge/BACKEND-6d28d9?style=for-the-badge)
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=2" width="100%" alt="divider" />
 
-<table>
-  <tr>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="50" height="50" alt="Node.js" /><br /><sub><b>Node.js</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg" width="50" height="50" alt="Laravel" /><br /><sub><b>Laravel</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" width="50" height="50" alt="PHP" /><br /><sub><b>PHP</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="50" height="50" alt="Python" /><br /><sub><b>Python</b></sub>
-    </td>
-  </tr>
-</table>
+### 📊 Top Languages
 
-![Mobile](https://img.shields.io/badge/MOBILE-8b5cf6?style=for-the-badge)
+<div align="center">
 
-<table>
-  <tr>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg" width="50" height="50" alt="Flutter" /><br /><sub><b>Flutter</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg" width="50" height="50" alt="Dart" /><br /><sub><b>Dart</b></sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="50" height="50" alt="Java" /><br /><sub><b>Java</b></sub>
-    </td>
-  </tr>
-</table>
-
-![Design](https://img.shields.io/badge/DESIGN-a78bfa?style=for-the-badge)
-
-<table>
-  <tr>
-    <td align="center" width="100">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg" width="50" height="50" alt="Figma" /><br /><sub><b>Figma</b></sub>
-    </td>
-  </tr>
-</table>
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=galxtria&layout=compact&langs_count=8&title_color=8b5cf6&text_color=c4b5fd&icon_color=a78bfa&bg_color=0d1117&hide_border=true)
 
 </div>
 
