@@ -1,6 +1,6 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=200&section=header&text=Galxtria&fontSize=72&fontColor=ffffff&animation=fadeIn&fontAlignY=50" width="100%" alt="Galxtria banner" />
-
 <div align="center">
+
+# Galxtria ✨
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Inter&weight=500&size=17&pause=1200&color=8B5CF6&center=true&vCenter=true&width=620&lines=Engineering+digital+experiences;with+aesthetic+precision;and+seamless+interaction+design)](https://github.com/galxtria)
 
@@ -83,15 +83,3 @@ const galxtria = {
 </div>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=140&section=footer" width="100%" alt="footer" />
-
-<div align="center">
-
-### Let's build something amazing together 🚀
-
-[![Email](https://img.shields.io/badge/utamapradita5@gmail.com-A78BFA?style=flat-square&logo=gmail&logoColor=white)](mailto:utamapradita5@gmail.com)
-[![LinkedIn](https://img.shields.io/badge/Pradita_Utama-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/praditautama25)
-[![Instagram](https://img.shields.io/badge/@galxtria-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/galxtria/)
-
-<sub>© 2026 Galxtria • Engineered with aesthetic precision</sub>
-
-</div>
