@@ -1,6 +1,6 @@
 <div align="center">
 
-# Galxtria ✨
+# Galxtria
 
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Inter&weight=500&size=17&pause=1200&color=8B5CF6&center=true&vCenter=true&width=620&lines=Engineering+digital+experiences;with+aesthetic+precision;and+seamless+interaction+design)](https://github.com/galxtria)
 
