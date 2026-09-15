@@ -71,7 +71,7 @@ const galxtria = {
 
 <div align="center">
 
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=galxtria&layout=compact&langs_count=8&title_color=8b5cf6&text_color=c4b5fd&icon_color=a78bfa&bg_color=0d1117&hide_border=true)
+![Top Languages by Repo](https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=galxtria&theme=tokyonight)
 
 </div>
 
