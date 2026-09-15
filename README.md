@@ -20,7 +20,7 @@
 
 </div>
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=2" width="100%" alt="divider" />
 
 ### 👨‍💻 About Me
 
@@ -38,80 +38,88 @@ const galxtria = {
 };
 ```
 
+<div align="center">
+
+![Focus](https://img.shields.io/badge/FOCUS-React_•_Mobile_•_Cross_Platform-7c3aed?style=flat-square)
+![Building](https://img.shields.io/badge/BUILDING-Multi_Platform_Apps-8b5cf6?style=flat-square)
+![Exploring](https://img.shields.io/badge/EXPLORING-AI_Integration-a78bfa?style=flat-square)
+
+</div>
+
 - 🎯 **Focus** — React, Mobile & Cross-Platform Apps
 - 🌱 **Currently** — Building multi-platform apps & exploring AI integration
 - 🎓 **Background** — RPL → Web & Graphic Design Intern → Informatics Bachelor
 - 📬 **Contact** — utamapradita5@gmail.com
 
----
+<img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=12,20,24&height=2" width="100%" alt="divider" />
 
 ### 🛠️ Tech Stack
 
 <div align="center">
 
-**Frontend**
+![Frontend](https://img.shields.io/badge/FRONTEND-7c3aed?style=for-the-badge)
 
 <table>
   <tr>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" width="45" height="45" alt="React" /><br /><sub><b>React</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" width="50" height="50" alt="React" /><br /><sub><b>React</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" width="45" height="45" alt="Next.js" /><br /><sub><b>Next.js</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" width="50" height="50" alt="Next.js" /><br /><sub><b>Next.js</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" width="45" height="45" alt="TypeScript" /><br /><sub><b>TypeScript</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" width="50" height="50" alt="TypeScript" /><br /><sub><b>TypeScript</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" width="45" height="45" alt="JavaScript" /><br /><sub><b>JavaScript</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" width="50" height="50" alt="JavaScript" /><br /><sub><b>JavaScript</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" width="45" height="45" alt="Tailwind CSS" /><br /><sub><b>Tailwind</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" width="50" height="50" alt="Tailwind CSS" /><br /><sub><b>Tailwind</b></sub>
     </td>
   </tr>
 </table>
 
-**Backend**
+![Backend](https://img.shields.io/badge/BACKEND-6d28d9?style=for-the-badge)
 
 <table>
   <tr>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="45" height="45" alt="Node.js" /><br /><sub><b>Node.js</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="50" height="50" alt="Node.js" /><br /><sub><b>Node.js</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg" width="45" height="45" alt="Laravel" /><br /><sub><b>Laravel</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg" width="50" height="50" alt="Laravel" /><br /><sub><b>Laravel</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" width="45" height="45" alt="PHP" /><br /><sub><b>PHP</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" width="50" height="50" alt="PHP" /><br /><sub><b>PHP</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="45" height="45" alt="Python" /><br /><sub><b>Python</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="50" height="50" alt="Python" /><br /><sub><b>Python</b></sub>
     </td>
   </tr>
 </table>
 
-**Mobile**
+![Mobile](https://img.shields.io/badge/MOBILE-8b5cf6?style=for-the-badge)
 
 <table>
   <tr>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg" width="45" height="45" alt="Flutter" /><br /><sub><b>Flutter</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg" width="50" height="50" alt="Flutter" /><br /><sub><b>Flutter</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg" width="45" height="45" alt="Dart" /><br /><sub><b>Dart</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg" width="50" height="50" alt="Dart" /><br /><sub><b>Dart</b></sub>
     </td>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="45" height="45" alt="Java" /><br /><sub><b>Java</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="50" height="50" alt="Java" /><br /><sub><b>Java</b></sub>
     </td>
   </tr>
 </table>
 
-**Design**
+![Design](https://img.shields.io/badge/DESIGN-a78bfa?style=for-the-badge)
 
 <table>
   <tr>
-    <td align="center" width="90">
-      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg" width="45" height="45" alt="Figma" /><br /><sub><b>Figma</b></sub>
+    <td align="center" width="100">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg" width="50" height="50" alt="Figma" /><br /><sub><b>Figma</b></sub>
     </td>
   </tr>
 </table>
@@ -119,3 +127,9 @@ const galxtria = {
 </div>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=140&section=footer" width="100%" alt="footer" />
+
+<div align="center">
+
+<sub>© 2026 Galxtria • Engineered with aesthetic precision</sub>
+
+</div>
