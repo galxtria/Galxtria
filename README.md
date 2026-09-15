@@ -49,50 +49,72 @@ const galxtria = {
 
 <div align="center">
 
-*Core Technologies — same order as my portfolio hexagon grid*
+**Frontend**
 
-<br />
+<table>
+  <tr>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" width="45" height="45" alt="React" /><br /><sub><b>React</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nextjs/nextjs-original.svg" width="45" height="45" alt="Next.js" /><br /><sub><b>Next.js</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg" width="45" height="45" alt="TypeScript" /><br /><sub><b>TypeScript</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" width="45" height="45" alt="JavaScript" /><br /><sub><b>JavaScript</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg" width="45" height="45" alt="Tailwind CSS" /><br /><sub><b>Tailwind</b></sub>
+    </td>
+  </tr>
+</table>
 
-<!-- Row 1: 4 hexagons -->
-<p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" width="48" height="48" alt="React" title="React" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" width="48" height="48" alt="Tailwind CSS" title="Tailwind CSS" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" width="48" height="48" alt="Next.js" title="Next.js" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" width="48" height="48" alt="Figma" title="Figma" />
-  <br />
-  <sub><b>React</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Tailwind</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Next.js</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Figma</b></sub>
-</p>
+**Backend**
 
-<!-- Row 2: 5 hexagons (offset) -->
-<p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" width="48" height="48" alt="TypeScript" title="TypeScript" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" width="48" height="48" alt="Node.js" title="Node.js" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" width="48" height="48" alt="Java" title="Java" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" width="48" height="48" alt="Python" title="Python" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" width="48" height="48" alt="PHP" title="PHP" />
-  <br />
-  <sub><b>TypeScript</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Node.js</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Java</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Python</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>PHP</b></sub>
-</p>
+<table>
+  <tr>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="45" height="45" alt="Node.js" /><br /><sub><b>Node.js</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg" width="45" height="45" alt="Laravel" /><br /><sub><b>Laravel</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" width="45" height="45" alt="PHP" /><br /><sub><b>PHP</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="45" height="45" alt="Python" /><br /><sub><b>Python</b></sub>
+    </td>
+  </tr>
+</table>
 
-<!-- Row 3: 4 hexagons -->
-<p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" width="48" height="48" alt="Dart" title="Dart" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" width="48" height="48" alt="JavaScript" title="JavaScript" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" width="48" height="48" alt="Laravel" title="Laravel" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" width="48" height="48" alt="Flutter" title="Flutter" />
-  <br />
-  <sub><b>Dart</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>JavaScript</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Laravel</b></sub>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <sub><b>Flutter</b></sub>
-</p>
+**Mobile**
+
+<table>
+  <tr>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg" width="45" height="45" alt="Flutter" /><br /><sub><b>Flutter</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dart/dart-original.svg" width="45" height="45" alt="Dart" /><br /><sub><b>Dart</b></sub>
+    </td>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" width="45" height="45" alt="Java" /><br /><sub><b>Java</b></sub>
+    </td>
+  </tr>
+</table>
+
+**Design**
+
+<table>
+  <tr>
+    <td align="center" width="90">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg" width="45" height="45" alt="Figma" /><br /><sub><b>Figma</b></sub>
+    </td>
+  </tr>
+</table>
 
 </div>
 
