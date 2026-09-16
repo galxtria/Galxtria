@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <linearGradient id="mm-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a0a14"/>
+      <stop offset="1" stop-color="#060609"/>
+    </linearGradient>
+    <radialGradient id="mm-glowB" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2563eb" stop-opacity="0.5"/>
+      <stop offset="0.55" stop-color="#2563eb" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#2563eb" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mm-glowP" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.45"/>
+      <stop offset="0.6" stop-color="#7c3aed" stop-opacity="0.1"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mm-brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="0.55" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="mm-laser" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#3b82f6" stop-opacity="0.85"/>
+      <stop offset="0.55" stop-color="#a855f7" stop-opacity="0.9"/>
+      <stop offset="0.8" stop-color="#3b82f6" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="mm-trend" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17295e"/>
+      <stop offset="1" stop-color="#0c1530"/>
+    </linearGradient>
+    <linearGradient id="mm-art" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101b32"/>
+      <stop offset="0.5" stop-color="#3b2a1a"/>
+      <stop offset="0.78" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#92400e"/>
+    </linearGradient>
+    <radialGradient id="mm-fire" cx="0.5" cy="0.72" r="0.5">
+      <stop offset="0" stop-color="#fde68a" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#f59e0b" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mm-moodA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#10b981"/>
+      <stop offset="1" stop-color="#065f46"/>
+    </linearGradient>
+    <linearGradient id="mm-moodB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f97316"/>
+      <stop offset="1" stop-color="#7c2d12"/>
+    </linearGradient>
+    <linearGradient id="mm-moodC" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#0c4a6e"/>
+    </linearGradient>
+    <linearGradient id="mm-moodD" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b4cc0"/>
+      <stop offset="1" stop-color="#141b4d"/>
+    </linearGradient>
+    <pattern id="mm-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1.2" fill="#ffffff" opacity="0.05"/>
+    </pattern>
+    <filter id="mm-shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="mm-soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#3b82f6" flood-opacity="0.4"/>
+    </filter>
+    <filter id="mm-blur18" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#mm-bg)"/>
+  <rect width="1280" height="720" fill="url(#mm-grid)"/>
+  <ellipse cx="230" cy="170" rx="330" ry="230" fill="url(#mm-glowB)"/>
+  <ellipse cx="1090" cy="620" rx="360" ry="240" fill="url(#mm-glowP)"/>
+
+  <rect x="0" y="438" width="1280" height="3" fill="url(#mm-laser)" opacity="0.8"/>
+  <rect x="0" y="441" width="1280" height="12" fill="url(#mm-laser)" opacity="0.18" filter="url(#mm-blur18)"/>
+
+  <text x="70" y="122" font-size="62" font-weight="900" letter-spacing="-1">
+    <tspan fill="#ffffff">My</tspan><tspan fill="url(#mm-brand)">Music</tspan>
+  </text>
+  <text x="72" y="154" font-size="19" font-weight="500" fill="#9c9cae">Automated Music Streaming Platform</text>
+
+  <g font-size="11" font-weight="600" fill="#d4d4d8">
+    <rect x="70" y="172" width="100" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="88" cy="185" r="4" fill="#ff2d20"/>
+    <text x="98" y="189">Laravel</text>
+    <rect x="178" y="172" width="92" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="196" cy="185" r="4" fill="#38bdf8"/>
+    <text x="206" y="189">MySQL</text>
+    <rect x="278" y="172" width="98" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="296" cy="185" r="4" fill="#06b6d4"/>
+    <text x="306" y="189">Tailwind</text>
+  </g>
+
+  <rect x="1096" y="64" width="114" height="38" rx="19" fill="rgba(59,130,246,0.14)" stroke="#3b82f6" stroke-opacity="0.6"/>
+  <text x="1153" y="89" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#93c5fd">WEB APP</text>
+
+  <ellipse cx="640" cy="668" rx="380" ry="16" fill="#000000" opacity="0.5" filter="url(#mm-blur18)"/>
+  <ellipse cx="640" cy="664" rx="270" ry="10" fill="#3b82f6" opacity="0.25" filter="url(#mm-blur18)"/>
+
+  <!-- browser window -->
+  <g filter="url(#mm-shadow)">
+    <rect x="210" y="250" width="860" height="400" rx="16" fill="#0d0d14" stroke="rgba(255,255,255,0.14)"/>
+    <rect x="210" y="250" width="860" height="44" rx="16" fill="#12121a"/>
+    <rect x="210" y="278" width="860" height="16" fill="#12121a"/>
+    <circle cx="234" cy="272" r="5" fill="#ff5f57"/>
+    <circle cx="252" cy="272" r="5" fill="#febc2e"/>
+    <circle cx="270" cy="272" r="5" fill="#28c840"/>
+    <rect x="300" y="262" width="420" height="20" rx="10" fill="rgba(255,255,255,0.07)"/>
+    <text x="510" y="276" text-anchor="middle" font-size="11" fill="#a1a1b5">mymusic — home</text>
+    <text x="1052" y="276" text-anchor="end" font-size="10" fill="#71717a" font-family="ui-monospace, Menlo, monospace">localhost:8000</text>
+    <path d="M211,294 H1069 V634 Q1069,649 1054,649 H226 Q211,649 211,634 Z" fill="#0a0f1e"/>
+
+    <!-- sidebar -->
+    <rect x="211" y="294" width="150" height="355" fill="#0c1327"/>
+    <line x1="361" y1="294" x2="361" y2="649" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <circle cx="236" cy="318" r="10" fill="#1d4ed8"/>
+    <circle cx="236" cy="318" r="6.5" fill="none" stroke="#60a5fa" stroke-width="1.6"/>
+    <circle cx="236" cy="318" r="2" fill="#bfdbfe"/>
+    <text x="252" y="322" font-size="12" font-weight="800" fill="#ffffff">MyMusic</text>
+    <rect x="221" y="340" width="130" height="28" rx="8" fill="rgba(59,130,246,0.18)" stroke="rgba(59,130,246,0.4)"/>
+    <text x="233" y="358" font-size="10" font-weight="700" fill="#ffffff">Home</text>
+    <text x="233" y="388" font-size="10" fill="#8b93b0">Search</text>
+    <text x="233" y="416" font-size="10" fill="#8b93b0">Your Library</text>
+    <text x="233" y="456" font-size="10" fill="#8b93b0">+  Create Playlist</text>
+    <text x="233" y="484" font-size="10" fill="#8b93b0">♥  Liked Songs</text>
+
+    <!-- greeting -->
+    <text x="386" y="350" font-size="30" font-weight="800" fill="#e8ecf8">Good Morning, Admin</text>
+
+    <!-- genre pills -->
+    <g font-size="10" font-weight="700">
+      <rect x="386" y="362" width="88" height="26" rx="13" fill="#2f7bff"/>
+      <text x="430" y="379" text-anchor="middle" fill="#ffffff">All Music</text>
+      <rect x="482" y="362" width="58" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="511" y="379" text-anchor="middle" fill="#aab2cc">Pop</text>
+      <rect x="548" y="362" width="62" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="579" y="379" text-anchor="middle" fill="#aab2cc">Rock</text>
+      <rect x="618" y="362" width="60" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="648" y="379" text-anchor="middle" fill="#aab2cc">EDM</text>
+      <rect x="686" y="362" width="84" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+      <text x="728" y="379" text-anchor="middle" fill="#aab2cc">Acoustic</text>
+    </g>
+
+    <!-- trending card -->
+    <rect x="386" y="400" width="668" height="140" rx="14" fill="url(#mm-trend)" stroke="rgba(96,165,250,0.28)"/>
+    <rect x="410" y="416" width="122" height="20" rx="10" fill="rgba(59,130,246,0.22)" stroke="rgba(59,130,246,0.5)"/>
+    <text x="471" y="430" text-anchor="middle" font-size="8" font-weight="800" letter-spacing="1.5" fill="#93c5fd">TRENDING NOW</text>
+    <text x="410" y="468" font-size="34" font-weight="900" fill="#ffffff">Kelelawar</text>
+    <circle cx="419" cy="488" r="8" fill="#334155"/>
+    <text x="433" y="492" font-size="11" font-weight="600" fill="#dbe3f5">.Feast</text>
+    <text x="478" y="492" font-size="11" fill="#7c87a3">•</text>
+    <text x="490" y="492" font-size="11" fill="#9fb0d0">Indie Rock</text>
+    <circle cx="428" cy="520" r="16" fill="#2f7bff"/>
+    <path d="M424,511 L437,520 L424,529 Z" fill="#ffffff"/>
+    <rect x="452" y="508" width="112" height="24" rx="12" fill="none" stroke="rgba(255,255,255,0.3)"/>
+    <text x="508" y="524" text-anchor="middle" font-size="10" font-weight="600" fill="#e8ecf8">Save Track</text>
+    <!-- album art -->
+    <rect x="910" y="414" width="128" height="112" rx="12" fill="url(#mm-art)" stroke="rgba(255,255,255,0.18)"/>
+    <ellipse cx="974" cy="492" rx="52" ry="26" fill="url(#mm-fire)"/>
+    <rect x="948" y="452" width="52" height="34" rx="3" fill="#fbbf24" opacity="0.85"/>
+    <rect x="952" y="458" width="44" height="5" rx="1" fill="#7c2d12"/>
+    <rect x="952" y="466" width="44" height="5" rx="1" fill="#7c2d12"/>
+    <rect x="952" y="474" width="30" height="5" rx="1" fill="#7c2d12"/>
+
+    <!-- mood heading -->
+    <text x="386" y="566" font-size="13" font-weight="800" fill="#dfe5f5">Discover by Mood</text>
+
+    <!-- mood cards -->
+    <g font-size="12" font-weight="800" fill="#ffffff">
+      <rect x="386" y="576" width="158" height="64" rx="12" fill="url(#mm-moodA)"/>
+      <circle cx="520" cy="584" r="26" fill="#ffffff" opacity="0.14"/>
+      <text x="398" y="616">Focus</text>
+      <rect x="556" y="576" width="158" height="64" rx="12" fill="url(#mm-moodB)"/>
+      <circle cx="690" cy="584" r="26" fill="#ffffff" opacity="0.14"/>
+      <text x="568" y="616">Energy</text>
+      <rect x="726" y="576" width="158" height="64" rx="12" fill="url(#mm-moodC)"/>
+      <circle cx="860" cy="584" r="26" fill="#ffffff" opacity="0.14"/>
+      <text x="738" y="616">Chill</text>
+      <rect x="896" y="576" width="158" height="64" rx="12" fill="url(#mm-moodD)"/>
+      <circle cx="1030" cy="584" r="26" fill="#ffffff" opacity="0.14"/>
+      <text x="908" y="616">Sad</text>
+    </g>
+  </g>
+
+  <!-- floating now-playing badge -->
+  <g filter="url(#mm-soft)">
+    <rect x="24" y="330" width="176" height="64" rx="12" fill="rgba(16,16,26,0.9)" stroke="rgba(59,130,246,0.45)"/>
+    <text x="44" y="358" font-size="15" fill="#60a5fa">▶</text>
+    <text x="66" y="354" font-size="9" fill="#8b93b0">NOW PLAYING</text>
+    <text x="44" y="376" font-size="11" font-weight="700" fill="#ffffff">Kelelawar — .Feast</text>
+  </g>
+
+  <!-- floating trending badge -->
+  <g filter="url(#mm-soft)">
+    <rect x="1036" y="520" width="172" height="64" rx="12" fill="rgba(16,16,26,0.9)" stroke="rgba(168,85,247,0.45)"/>
+    <text x="1054" y="547" font-size="15" font-weight="800" fill="#fbbf24">★ Trending #1</text>
+    <text x="1054" y="564" font-size="9" fill="#8b93b0">Discover by Mood</text>
+  </g>
+
+  <g font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="2">
+    <text x="315" y="692"><tspan font-weight="800" fill="#60a5fa">01 </tspan><tspan fill="#71717a">DISCOVER</tspan></text>
+    <text x="575" y="692"><tspan font-weight="800" fill="#60a5fa">02 </tspan><tspan fill="#71717a">TRENDING NOW</tspan></text>
+    <text x="815" y="692"><tspan font-weight="800" fill="#60a5fa">03 </tspan><tspan fill="#71717a">MOOD PLAYLISTS</tspan></text>
+  </g>
+</svg>

@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useTheme } from './ThemeContext'
-import kosthubImg from './assets/images/kosthub_web.webp'
-import mymusicImg from './assets/images/mymusic_web.webp'
-import expensetrackerImg from './assets/images/expensetracker_web.webp'
+import mymusicImg from './assets/images/mymusic.svg'
+import mymusicLightImg from './assets/images/mymusic-light.svg'
+import expensetrackerImg from './assets/images/expensetracker.svg'
+import expensetrackerLightImg from './assets/images/expensetracker-light.svg'
+import kosthubImg from './assets/images/kosthub-app.svg'
+import kosthubLightImg from './assets/images/kosthub-app-light.svg'
+import kosthubWebImg from './assets/images/kosthub-web.svg'
+import kosthubWebLightImg from './assets/images/kosthub-web-light.svg'
 
 // ─────────────────────────────────────────────────────────────────────
 // HOOKS
@@ -114,6 +119,7 @@ const PROJECTS = [
     github: 'https://github.com/Praddddd/MyMusic.git',
     year: '2025',
     img: mymusicImg,
+    imgLight: mymusicLightImg,
   },
   {
     title: 'Expense Tracker',
@@ -123,6 +129,7 @@ const PROJECTS = [
     github: 'https://github.com/Praddddd/money_manager.git',
     year: '2026',
     img: expensetrackerImg,
+    imgLight: expensetrackerLightImg,
   },
   {
     title: 'KostHub App',
@@ -132,6 +139,17 @@ const PROJECTS = [
     github: 'https://github.com/Praddddd/KostHub.git',
     year: '2026',
     img: kosthubImg,
+    imgLight: kosthubLightImg,
+  },
+  {
+    title: 'KostHub Web',
+    desc: 'Full-stack boarding house platform with property discovery, curated recommendations, and tenant order management.',
+    fullDesc: 'KostHub Web is the web counterpart of the KostHub mobile app, built with Laravel, React, and Tailwind CSS. It features property search with filters, curated room recommendations with pricing and facilities, a tenant dashboard with active room tracking, and order and billing management — all in a responsive interface for tenants and property owners.',
+    tech: ['Laravel', 'React', 'Tailwind'],
+    github: 'https://github.com/galxtria/KostHub_Web.git',
+    year: '2026',
+    img: kosthubWebImg,
+    imgLight: kosthubWebLightImg,
   },
 ]
 
@@ -971,6 +989,7 @@ function Hero({ visible, mouseRef, isMobile }) {
 // ─────────────────────────────────────────────────────────────────────
 
 function ProjectModal({ project, onClose }) {
+  const { isDark } = useTheme()
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', handler)
@@ -1012,7 +1031,7 @@ function ProjectModal({ project, onClose }) {
         {/* Project image in modal */}
         <div className="relative h-48 sm:h-56 overflow-hidden">
           <img
-            src={project.img}
+            src={!isDark && project.imgLight ? project.imgLight : project.img}
             alt={project.title}
             loading="lazy"
             decoding="async"
@@ -1116,9 +1135,9 @@ function ProjectCard({ project, onSelect, index, total }) {
            {!imageLoaded && (
              <div className="absolute inset-0 bg-gradient-to-r from-white/[0.05] via-white/[0.1] to-white/[0.05] animate-pulse" />
            )}
-           <img
-             src={project.img}
-             alt={project.title}
+            <img
+              src={!isDark && project.imgLight ? project.imgLight : project.img}
+              alt={project.title}
              loading="lazy"
              decoding="async"
              onLoad={() => setImageLoaded(true)}

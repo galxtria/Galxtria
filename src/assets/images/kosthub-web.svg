@@ -1,0 +1,247 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <linearGradient id="kh-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0c0c14"/>
+      <stop offset="1" stop-color="#07070c"/>
+    </linearGradient>
+    <radialGradient id="kh-glowP" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#7c3aed" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#7c3aed" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="kh-glowF" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#d946ef" stop-opacity="0.4"/>
+      <stop offset="0.6" stop-color="#d946ef" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#d946ef" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="kh-glowT" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#14b8a6" stop-opacity="0.35"/>
+      <stop offset="0.6" stop-color="#14b8a6" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#14b8a6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="kh-brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d8b4fe"/>
+      <stop offset="0.55" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="kh-laser" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a855f7" stop-opacity="0"/>
+      <stop offset="0.28" stop-color="#a855f7" stop-opacity="0.85"/>
+      <stop offset="0.55" stop-color="#e879f9" stop-opacity="0.9"/>
+      <stop offset="0.8" stop-color="#a855f7" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="kh-imgA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#147a70"/>
+      <stop offset="1" stop-color="#0b3b38"/>
+    </linearGradient>
+    <linearGradient id="kh-imgB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9ddc2"/>
+      <stop offset="1" stop-color="#a8895a"/>
+    </linearGradient>
+    <linearGradient id="kh-imgC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b45309"/>
+      <stop offset="1" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="kh-avatar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f9a8d4"/>
+      <stop offset="1" stop-color="#fb923c"/>
+    </linearGradient>
+    <pattern id="kh-grid" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1.2" fill="#ffffff" opacity="0.05"/>
+    </pattern>
+    <filter id="kh-shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="kh-soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#a855f7" flood-opacity="0.35"/>
+    </filter>
+    <filter id="kh-blur18" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="1280" height="720" fill="url(#kh-bg)"/>
+  <rect width="1280" height="720" fill="url(#kh-grid)"/>
+  <ellipse cx="240" cy="180" rx="330" ry="230" fill="url(#kh-glowP)"/>
+  <ellipse cx="1080" cy="620" rx="360" ry="240" fill="url(#kh-glowF)"/>
+  <ellipse cx="640" cy="440" rx="420" ry="170" fill="url(#kh-glowT)" opacity="0.5"/>
+
+  <!-- faint stars -->
+  <g fill="#d9d4e8">
+    <circle cx="90" cy="250" r="1.4" opacity="0.4"/>
+    <circle cx="150" cy="620" r="1.2" opacity="0.3"/>
+    <circle cx="420" cy="80" r="1.3" opacity="0.35"/>
+    <circle cx="660" cy="60" r="1.1" opacity="0.28"/>
+    <circle cx="880" cy="120" r="1.4" opacity="0.35"/>
+    <circle cx="1150" cy="200" r="1.2" opacity="0.3"/>
+    <circle cx="1210" cy="420" r="1.5" opacity="0.35"/>
+    <circle cx="70" cy="430" r="1.1" opacity="0.28"/>
+    <circle cx="330" cy="690" r="1.3" opacity="0.3"/>
+    <circle cx="980" cy="690" r="1.2" opacity="0.3"/>
+  </g>
+
+  <!-- laser line behind browser -->
+  <rect x="0" y="438" width="1280" height="3" fill="url(#kh-laser)" opacity="0.8"/>
+  <rect x="0" y="441" width="1280" height="12" fill="url(#kh-laser)" opacity="0.18" filter="url(#kh-blur18)"/>
+
+  <!-- title block -->
+  <text x="70" y="122" font-size="62" font-weight="900" letter-spacing="-1">
+    <tspan fill="#ffffff">Kost</tspan><tspan fill="url(#kh-brand)">Hub</tspan>
+  </text>
+  <text x="72" y="154" font-size="19" font-weight="500" fill="#9c9cae">Boarding House Management Platform</text>
+
+  <!-- stack chips -->
+  <g font-size="11" font-weight="600" fill="#d4d4d8">
+    <rect x="70" y="172" width="100" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="88" cy="185" r="4" fill="#ff2d20"/>
+    <text x="98" y="189">Laravel</text>
+    <rect x="178" y="172" width="92" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="196" cy="185" r="4" fill="#61dafb"/>
+    <text x="206" y="189">React</text>
+    <rect x="278" y="172" width="98" height="26" rx="13" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="296" cy="185" r="4" fill="#06b6d4"/>
+    <text x="306" y="189">Tailwind</text>
+  </g>
+
+  <!-- WEB APP pill -->
+  <rect x="1096" y="64" width="114" height="38" rx="19" fill="rgba(168,85,247,0.14)" stroke="#a855f7" stroke-opacity="0.6"/>
+  <text x="1153" y="89" text-anchor="middle" font-size="14" font-weight="800" letter-spacing="2" fill="#d8b4fe">WEB APP</text>
+
+  <!-- reflection under browser -->
+  <ellipse cx="640" cy="668" rx="380" ry="16" fill="#000000" opacity="0.5" filter="url(#kh-blur18)"/>
+  <ellipse cx="640" cy="664" rx="270" ry="10" fill="#7c3aed" opacity="0.22" filter="url(#kh-blur18)"/>
+
+  <!-- browser window -->
+  <g filter="url(#kh-shadow)">
+    <rect x="210" y="250" width="860" height="400" rx="16" fill="#0d0d14" stroke="rgba(255,255,255,0.14)"/>
+    <!-- chrome bar -->
+    <rect x="210" y="250" width="860" height="44" rx="16" fill="#12121a"/>
+    <rect x="210" y="278" width="860" height="16" fill="#12121a"/>
+    <circle cx="234" cy="272" r="5" fill="#ff5f57"/>
+    <circle cx="252" cy="272" r="5" fill="#febc2e"/>
+    <circle cx="270" cy="272" r="5" fill="#28c840"/>
+    <rect x="300" y="262" width="420" height="20" rx="10" fill="rgba(255,255,255,0.07)"/>
+    <text x="510" y="276" text-anchor="middle" font-size="11" fill="#a1a1b5">kosthub — dashboard</text>
+    <text x="1052" y="276" text-anchor="end" font-size="10" fill="#71717a" font-family="ui-monospace, Menlo, monospace">localhost:5173</text>
+    <!-- content -->
+    <path d="M211,294 H1069 V634 Q1069,649 1054,649 H226 Q211,649 211,634 Z" fill="#f4f6f8"/>
+
+    <!-- mini navbar -->
+    <rect x="211" y="294" width="858" height="46" fill="#ffffff"/>
+    <line x1="211" y1="340" x2="1069" y2="340" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="235" y="306" width="24" height="24" rx="6" fill="#0f766e"/>
+    <text x="247" y="323" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">H</text>
+    <text x="267" y="323" font-size="14" font-weight="800" fill="#0f172a">KostHub</text>
+    <rect x="360" y="308" width="52" height="22" rx="11" fill="#0f766e"/>
+    <text x="386" y="323" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Home</text>
+    <text x="428" y="323" font-size="10" fill="#6b7280">Pesanan</text>
+    <text x="490" y="323" font-size="10" fill="#6b7280">Tagihan</text>
+    <text x="550" y="323" font-size="10" fill="#6b7280">Profil</text>
+    <circle cx="920" cy="317" r="9" fill="#ffffff" stroke="#d1d5db"/>
+    <circle cx="927" cy="310" r="2.5" fill="#f43f5e"/>
+    <circle cx="948" cy="317" r="12" fill="url(#kh-avatar)"/>
+    <text x="966" y="314" font-size="9" font-weight="700" fill="#111827">Enami Asa</text>
+    <text x="966" y="326" font-size="7.5" fill="#6b7280">asa@gmail.com</text>
+
+    <!-- my room card -->
+    <rect x="235" y="356" width="810" height="70" rx="12" fill="#ffffff" stroke="#e8eaee"/>
+    <rect x="249" y="366" width="52" height="50" rx="8" fill="url(#kh-imgA)"/>
+    <text x="313" y="382" font-size="8" font-weight="800" letter-spacing="1.5" fill="#0f766e">KAMAR SAYA</text>
+    <text x="313" y="398" font-size="13" font-weight="800" fill="#0f172a">Kost Renon Asri • Kamar A1</text>
+    <text x="313" y="412" font-size="9" fill="#6b7280">Masuk 2026-09-15 • Kelola pesanan</text>
+    <text x="1022" y="398" font-size="22" fill="#0f766e">›</text>
+
+    <!-- search row -->
+    <rect x="235" y="440" width="700" height="32" rx="10" fill="#ffffff" stroke="#e2e5ea"/>
+    <circle cx="259" cy="456" r="6" fill="none" stroke="#9ca3af" stroke-width="1.6"/>
+    <line x1="264" y1="461" x2="269" y2="466" stroke="#9ca3af" stroke-width="1.6"/>
+    <text x="276" y="460" font-size="11" fill="#9ca3af">Cari kost, daerah, atau kota...</text>
+    <rect x="947" y="440" width="98" height="32" rx="10" fill="#ffffff" stroke="#e2e5ea"/>
+    <line x1="959" y1="450" x2="973" y2="450" stroke="#6b7280" stroke-width="1.4"/>
+    <line x1="959" y1="456" x2="973" y2="456" stroke="#6b7280" stroke-width="1.4"/>
+    <line x1="959" y1="462" x2="973" y2="462" stroke="#6b7280" stroke-width="1.4"/>
+    <text x="980" y="460" font-size="11" font-weight="600" fill="#374151">Filter</text>
+
+    <!-- recommendations heading -->
+    <text x="235" y="498" font-size="15" font-weight="800" fill="#0f172a">Rekomendasi</text>
+    <text x="1045" y="498" text-anchor="end" font-size="10" font-weight="700" fill="#0f766e">10 properti ›</text>
+
+    <!-- card 1 -->
+    <g>
+      <rect x="235" y="510" width="258" height="130" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <path d="M235,510 h240 a9,9 0 0 1 9,9 v53 h-258 v-53 a9,9 0 0 1 9,-9 z" fill="url(#kh-imgA)"/>
+      <ellipse cx="300" cy="532" rx="52" ry="20" fill="#ffffff" opacity="0.14"/>
+      <rect x="262" y="552" width="66" height="26" rx="4" fill="#ffffff" opacity="0.2"/>
+      <rect x="336" y="548" width="40" height="30" rx="4" fill="#ffffff" opacity="0.2"/>
+      <circle cx="257" cy="526" r="10" fill="#ffffff" opacity="0.95"/>
+      <path d="M257,529 C256,527 253.5,526 252.3,527.2 C251,528.4 251.6,530.4 253.4,531.8 L257,534 L260.6,531.8 C262.4,530.4 263,528.4 261.7,527.2 C260.5,526 258,527 257,529 Z" fill="#f43f5e"/>
+      <rect x="435" y="516" width="46" height="16" rx="8" fill="#065f46"/>
+      <text x="458" y="528" text-anchor="middle" font-size="8" font-weight="800" fill="#ffffff">★ 5.0</text>
+      <rect x="245" y="554" width="92" height="14" rx="7" fill="#0f766e" opacity="0.92"/>
+      <text x="291" y="564" text-anchor="middle" font-size="6.5" font-weight="800" letter-spacing="0.5" fill="#ffffff">3 KAMAR TERSEDIA</text>
+      <text x="245" y="598" font-size="10.5" font-weight="800" fill="#0f172a">Kost Sesetan Harmoni</text>
+      <text x="483" y="598" text-anchor="end" font-size="10.5" font-weight="800" fill="#0f766e">Rp 950rb</text>
+      <text x="483" y="607" text-anchor="end" font-size="6" fill="#9ca3af">MULAI / BULAN</text>
+      <text x="245" y="618" font-size="7.5" fill="#6b7280">Jl. Sesetan No. 250, Denpasar</text>
+      <text x="245" y="630" font-size="7.5" font-weight="600" fill="#374151">WiFi  •  Parkir Motor  •  CCTV</text>
+    </g>
+
+    <!-- card 2 -->
+    <g>
+      <rect x="511" y="510" width="258" height="130" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <path d="M511,510 h240 a9,9 0 0 1 9,9 v53 h-258 v-53 a9,9 0 0 1 9,-9 z" fill="url(#kh-imgB)"/>
+      <rect x="560" y="524" width="70" height="44" rx="3" fill="#ffffff" opacity="0.35"/>
+      <rect x="640" y="530" width="56" height="38" rx="3" fill="#7c5a2e" opacity="0.3"/>
+      <circle cx="533" cy="526" r="10" fill="#ffffff" opacity="0.95"/>
+      <path d="M533,529 C532,527 529.5,526 528.3,527.2 C527,528.4 527.6,530.4 529.4,531.8 L533,534 L536.6,531.8 C538.4,530.4 539,528.4 537.7,527.2 C536.5,526 534,527 533,529 Z" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+      <rect x="521" y="554" width="92" height="14" rx="7" fill="#0f766e" opacity="0.92"/>
+      <text x="567" y="564" text-anchor="middle" font-size="6.5" font-weight="800" letter-spacing="0.5" fill="#ffffff">3 KAMAR TERSEDIA</text>
+      <text x="521" y="598" font-size="10.5" font-weight="800" fill="#0f172a">Kost Ubung Permai</text>
+      <text x="759" y="598" text-anchor="end" font-size="10.5" font-weight="800" fill="#0f766e">Rp 850rb</text>
+      <text x="759" y="607" text-anchor="end" font-size="6" fill="#9ca3af">MULAI / BULAN</text>
+      <text x="521" y="618" font-size="7.5" fill="#6b7280">Jl. Cokroaminoto No. 88, Denpasar</text>
+      <text x="521" y="630" font-size="7.5" font-weight="600" fill="#374151">WiFi  •  Parkir Motor  •  CCTV</text>
+    </g>
+
+    <!-- card 3 -->
+    <g>
+      <rect x="787" y="510" width="258" height="130" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <path d="M787,510 h240 a9,9 0 0 1 9,9 v53 h-258 v-53 a9,9 0 0 1 9,-9 z" fill="url(#kh-imgC)"/>
+      <rect x="830" y="526" width="76" height="42" rx="3" fill="#fde68a" opacity="0.3"/>
+      <rect x="912" y="520" width="60" height="48" rx="2" fill="#ffffff" opacity="0.25"/>
+      <circle cx="809" cy="526" r="10" fill="#ffffff" opacity="0.95"/>
+      <path d="M809,529 C808,527 805.5,526 804.3,527.2 C803,528.4 803.6,530.4 805.4,531.8 L809,534 L812.6,531.8 C814.4,530.4 815,528.4 813.7,527.2 C812.5,526 810,527 809,529 Z" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+      <rect x="797" y="554" width="92" height="14" rx="7" fill="#0f766e" opacity="0.92"/>
+      <text x="843" y="564" text-anchor="middle" font-size="6.5" font-weight="800" letter-spacing="0.5" fill="#ffffff">3 KAMAR TERSEDIA</text>
+      <text x="797" y="598" font-size="10.5" font-weight="800" fill="#0f172a">Kost Teuku Umar Res.</text>
+      <text x="1035" y="598" text-anchor="end" font-size="10.5" font-weight="800" fill="#0f766e">Rp 1,4jt</text>
+      <text x="1035" y="607" text-anchor="end" font-size="6" fill="#9ca3af">MULAI / BULAN</text>
+      <text x="797" y="618" font-size="7.5" fill="#6b7280">Jl. Teuku Umar No. 150, Denpasar</text>
+      <text x="797" y="630" font-size="7.5" font-weight="600" fill="#374151">WiFi  •  AC  •  Parkir Motor</text>
+    </g>
+  </g>
+
+  <!-- floating rating badge -->
+  <g filter="url(#kh-soft)">
+    <rect x="88" y="300" width="150" height="64" rx="12" fill="rgba(16,16,24,0.88)" stroke="rgba(168,85,247,0.4)"/>
+    <text x="108" y="328" font-size="17" fill="#fbbf24">★</text>
+    <text x="130" y="329" font-size="18" font-weight="800" fill="#ffffff">5.0</text>
+    <text x="108" y="348" font-size="9" fill="#a1a1aa">212 reviews • Sesetan</text>
+  </g>
+
+  <!-- floating price badge -->
+  <g filter="url(#kh-soft)">
+    <rect x="1042" y="520" width="150" height="64" rx="12" fill="rgba(16,16,24,0.88)" stroke="rgba(52,211,153,0.4)"/>
+    <text x="1058" y="547" font-size="15" font-weight="800" fill="#34d399">Rp 950rb</text>
+    <text x="1058" y="564" font-size="9" fill="#a1a1aa">/ bulan • mulai</text>
+  </g>
+
+  <!-- bottom labels -->
+  <g font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="2">
+    <text x="315" y="692"><tspan font-weight="800" fill="#a855f7">01 </tspan><tspan fill="#71717a">SEARCH &amp; DISCOVERY</tspan></text>
+    <text x="575" y="692"><tspan font-weight="800" fill="#a855f7">02 </tspan><tspan fill="#71717a">RECOMMENDATIONS</tspan></text>
+    <text x="815" y="692"><tspan font-weight="800" fill="#a855f7">03 </tspan><tspan fill="#71717a">TENANT DASHBOARD</tspan></text>
+  </g>
+</svg>
