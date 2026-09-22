@@ -777,7 +777,7 @@ export default function App() {
   const [activeProject, setActiveProject] = useState(null)
 
   useEffect(() => {
-    document.title = 'Galxtria | Frontend Developer'
+    document.title = 'Galxtria'
   }, [])
 
   return (
