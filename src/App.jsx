@@ -554,7 +554,6 @@ function Work() {
                     <span className="font-mono text-[12px] tracking-[0.2em] text-black/40 dark:text-white/40">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     <span aria-hidden className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-transform duration-300 md:hidden ${isOpen ? 'rotate-180 border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' : 'border-black/15 text-black/50 dark:border-white/20 dark:text-white/60'}`}>
                       ↓
                     </span>
@@ -810,28 +809,31 @@ function ContactCard({ c }) {
   )
 }
 
-function LocalTime() {
-  const [time, setTime] = useState('--:--')
+// ── Back to top mengambang: muncul setelah scroll ──
+
+function BackToTop({ visible }) {
+  const [show, setShow] = useState(false)
+
   useEffect(() => {
-    const update = () => {
-      try {
-        setTime(
-          new Intl.DateTimeFormat('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'Asia/Makassar',
-          }).format(new Date())
-        )
-      } catch {
-        setTime(new Date().toLocaleTimeString())
-      }
-    }
-    update()
-    const id = setInterval(update, 1000)
-    return () => clearInterval(id)
+    const onScroll = () => setShow(window.scrollY > 600)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
-  return <span className="tabular-nums">{time} WITA</span>
+
+  if (!visible) return null
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Back to top"
+      title="Back to top"
+      className={`fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/10 dark:text-white/70 dark:hover:border-white dark:hover:text-white ${
+        show ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
+      }`}
+    >
+      <span aria-hidden className="text-base leading-none">↑</span>
+    </button>
+  )
 }
 
 function Contact() {
@@ -867,25 +869,6 @@ function Contact() {
             <ContactCard key={c.id} c={c} />
           ))}
         </div>
-        <div data-reveal className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2 text-[11px] font-semibold shadow-sm border border-black/10 dark:border-white/10 dark:bg-white/5">
-            <span className="avail-dot relative h-2 w-2 rounded-full bg-green-500" />
-            Available for projects &amp; collaborations
-          </span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-black/55 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/55">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 2" />
-            </svg>
-            DENPASAR, ID — <LocalTime />
-          </span>
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold text-black/60 shadow-sm transition-all hover:-translate-y-0.5 hover:border-black hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
-          >
-            Back to top <span aria-hidden>↑</span>
-          </button>
-        </div>
       </div>
       <p className="relative pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35 dark:text-white/35">© 2026 Galxtria</p>
     </section>
@@ -911,6 +894,7 @@ export default function App() {
         <Experience />
         <Contact />
       </main>
+      <BackToTop visible={loaded} />
     </div>
   )
 }

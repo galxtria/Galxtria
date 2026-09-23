@@ -389,18 +389,6 @@ body {
 .contact-headline:hover span.hl-outline {
   letter-spacing: 0.01em;
 }
-@keyframes ping-soft {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-.avail-dot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  background: #22c55e;
-  animation: ping-soft 1.8s cubic-bezier(0,0,0.2,1) infinite;
-}
 
 ::selection { background: #111; color: #fff; }
 
