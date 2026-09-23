@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Dark mode berbasis class .dark di <html> (bukan prefers-color-scheme) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Archivo", "Inter", system-ui, sans-serif;
@@ -14,6 +17,80 @@ body {
   background: #d9d9d9;
   color: #111;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── Fondasi dark mode: warm charcoal, bukan hitam murni ── */
+.dark body {
+  background: #0b0b0d;
+  color: #f4f2ed;
+}
+
+.dark .cloud-sky {
+  background:
+    radial-gradient(ellipse 900px 480px at 12% 8%, rgba(255,255,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 700px 420px at 85% 15%, rgba(255,255,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 1000px 600px at 50% 45%, rgba(255,255,255,0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 800px 500px at 20% 85%, rgba(255,255,255,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 700px 450px at 90% 80%, rgba(255,255,255,0.04) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0a0c 0%, #101014 40%, #0c0c0f 70%, #08080a 100%);
+}
+
+.dark .cloud-sky::before {
+  background:
+    radial-gradient(ellipse 320px 120px at 8% 22%, rgba(255,255,255,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 420px 150px at 72% 12%, rgba(255,255,255,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 380px 140px at 30% 65%, rgba(255,255,255,0.035) 0%, transparent 70%),
+    radial-gradient(ellipse 460px 160px at 88% 60%, rgba(255,255,255,0.035) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 170px at 55% 92%, rgba(255,255,255,0.045) 0%, transparent 70%);
+}
+
+.dark .text-outline {
+  -webkit-text-stroke: 2.5px #f4f2ed;
+}
+@media (max-width: 640px) {
+  .dark .text-outline { -webkit-text-stroke: 1.5px #f4f2ed; }
+}
+
+.dark ::selection { background: #f4f2ed; color: #111; }
+
+/* ── Transisi ganti tema: wipe diatur via WAAPI, ini mematikan crossfade default ── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+
+/* Fallback browser tanpa View Transitions: transisi warna manual 500ms */
+.theme-fade,
+.theme-fade *,
+.theme-fade *::before,
+.theme-fade *::after {
+  transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, fill 0.5s ease, stroke 0.5s ease !important;
+}
+
+/* Glow hover di dark mode dibalik (cahaya putih, bukan gelap) */
+.dark .spot-pill::before {
+  background: radial-gradient(130px circle at var(--mx) var(--my), rgba(255,255,255,0.10), transparent 70%);
+}
+.dark .contact-spot::before {
+  background: radial-gradient(220px circle at var(--mx) var(--my), rgba(255,255,255,0.09), transparent 65%);
+}
+.dark .spot-dark-row::before {
+  background: radial-gradient(260px circle at var(--mx) var(--my), rgba(0,0,0,0.08), transparent 65%);
+}
+.dark .chip-glow:hover {
+  border-color: rgba(255,255,255,0.4);
+  box-shadow: 0 10px 22px -12px rgba(0,0,0,0.7), 0 0 0 3px rgba(255,255,255,0.08);
+}
+.dark .chip-glow-dark:hover {
+  border-color: rgba(0,0,0,0.35);
+  box-shadow: 0 10px 22px -12px rgba(0,0,0,0.3), 0 0 0 3px rgba(0,0,0,0.06);
+}
+.dark .group:hover .contact-arrow {
+  background: #f4f2ed;
+  color: #111;
 }
 
 /* ── Cloud sky backdrop (CSS only, seperti referensi) ── */

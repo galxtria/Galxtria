@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTheme } from './ThemeContext.jsx'
 
 // ── Thumbnail memakai screenshot asli di public/shots (tanpa import) ──
 
@@ -108,7 +109,7 @@ const spotMove = (e) => {
 }
 
 function SocialIcon({ label, className }) {
-  const cls = className || 'h-[13px] w-[13px] shrink-0 text-black/45'
+  const cls = className || 'h-[13px] w-[13px] shrink-0 text-black/45 dark:text-white/45'
   if (label === 'GitHub')
     return (
       <svg className={cls} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -241,31 +242,31 @@ function Splash({ onFinish }) {
   const word = 'GALXTRIA'
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#f2f2f4] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#f2f2f4] dark:bg-[#0e0e11] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         leaving ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-black/40 rise-in">Portfolio © 2026</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-black/40 dark:text-white/40 rise-in">Portfolio © 2026</p>
       <p className="mt-3 text-5xl md:text-6xl font-black tracking-tighter" aria-label="Galxtria">
         {word.split('').map((ch, i) => (
           <span
             key={i}
             aria-hidden
-            className={`rise-in inline-block ${i < 4 ? 'text-outline' : 'text-black'}`}
+            className={`rise-in inline-block ${i < 4 ? 'text-outline' : 'text-black dark:text-white'}`}
             style={{ animationDelay: `${150 + i * 70}ms` }}
           >
             {ch}
           </span>
         ))}
       </p>
-      <p className="mt-3 text-[12px] font-medium tracking-[0.2em] uppercase text-black/50 rise-in" style={{ animationDelay: '700ms' }}>
+      <p className="mt-3 text-[12px] font-medium tracking-[0.2em] uppercase text-black/50 dark:text-white/50 rise-in" style={{ animationDelay: '700ms' }}>
         Frontend Developer
       </p>
       <div className="mt-8 w-52 rise-in" style={{ animationDelay: '850ms' }}>
-        <div className="h-[2px] overflow-hidden rounded-full bg-black/10">
-          <div className="h-full bg-black transition-[width] duration-100" style={{ width: `${pct}%` }} />
+        <div className="h-[2px] overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+          <div className="h-full bg-black dark:bg-white transition-[width] duration-100" style={{ width: `${pct}%` }} />
         </div>
-        <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-black/40">
+        <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-black/40 dark:text-white/40">
           <span>LOADING</span>
           <span>{String(pct).padStart(3, '0')}%</span>
         </div>
@@ -280,6 +281,7 @@ function Navbar({ loaded }) {
   const [active, setActive] = useState('Work')
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { isDark, toggleTheme } = useTheme()
   const links = [
     { id: 'work', label: 'Work' },
     { id: 'experience', label: 'Experience' },
@@ -316,12 +318,12 @@ function Navbar({ loaded }) {
       <div className="mx-auto max-w-[1400px] px-4 md:px-8 pt-5">
         <div className={`flex items-center justify-between gap-3 px-2 py-2 rounded-full border transition-all duration-300 ${
           scrolled
-            ? 'border-black/10 bg-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.10)] backdrop-blur-xl'
+            ? 'border-black/10 bg-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.10)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0b0d]/80 dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
             : 'border-transparent bg-transparent'
         }`}>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10"
+            className="flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10 dark:border-white/15 dark:bg-white/10 dark:text-white"
           >
             GALXTRIA
           </button>
@@ -331,7 +333,7 @@ function Navbar({ loaded }) {
               <button
                 key={l.id}
                 onClick={() => go(l.id, l.label)}
-                className={`transition-colors hover:text-black ${active === l.label ? 'text-black' : 'text-black/55'}`}
+                className={`transition-colors hover:text-black dark:hover:text-white ${active === l.label ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
               >
                 {l.label}
               </button>
@@ -340,8 +342,25 @@ function Navbar({ loaded }) {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDark ? 'Light mode' : 'Dark mode'}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-sm transition-all hover:rotate-12 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+            >
+              {isDark ? (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              ) : (
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+                </svg>
+              )}
+            </button>
+            <button
               onClick={() => go('contact', 'Contact')}
-              className="btn-shine hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
+              className="btn-shine hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               Let&apos;s Talk <span aria-hidden>↗</span>
             </button>
@@ -354,12 +373,12 @@ function Navbar({ loaded }) {
         </div>
 
         {open && (
-          <div className="md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg">
+          <div className="md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg dark:border-white/10 dark:bg-black/90">
             {links.map((l) => (
               <button
                 key={l.id}
                 onClick={() => go(l.id, l.label)}
-                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium ${active === l.label ? 'bg-black text-white' : 'text-black/70'}`}
+                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium ${active === l.label ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/70 dark:text-white/70'}`}
               >
                 {l.label}
               </button>
@@ -407,7 +426,7 @@ function PortraitReveal() {
 
 function Hero({ visible }) {
   return (
-    <section id="home" className="relative flex min-h-[100svh] flex-col bg-white pt-24 md:pt-28">
+    <section id="home" className="relative flex min-h-[100svh] flex-col bg-white dark:bg-[#0b0b0d] pt-24 md:pt-28">
       <div className="flex w-full flex-1 flex-col justify-center px-4 md:px-8">
       <div className="relative mx-auto w-full max-w-[1400px]">
         {/* Nama raksasa satu baris: GALX outline + TRIA solid */}
@@ -418,17 +437,17 @@ function Hero({ visible }) {
           style={{ fontFamily: 'Archivo, Inter, system-ui, sans-serif' }}
         >
           <span className="text-outline">GALX</span>
-          <span className="text-black">TRIA</span>
+          <span className="text-black dark:text-white">TRIA</span>
         </h1>
 
         {/* Baris bawah: info kiri — foto tengah overlap teks — sosmed kanan */}
         <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:gap-4 items-end -mt-[6vw] md:-mt-[6vw]">
           <div className="rise-in order-2 md:order-1 text-center md:text-left md:pb-20" style={{ animationDelay: '300ms' }}>
             <p className="text-xl font-bold">Frontend Developer</p>
-            <p className="mx-auto md:mx-0 mt-1 max-w-[280px] text-[13px] leading-relaxed text-black/55">
+            <p className="mx-auto md:mx-0 mt-1 max-w-[280px] text-[13px] leading-relaxed text-black/55 dark:text-white/55">
               Designing digital products that are clear, usable, and conversion focused.
             </p>
-            <p className="mx-auto md:mx-0 mt-3 flex max-w-[280px] items-center justify-center md:justify-start gap-1.5 text-[12px] font-medium text-black/55">
+            <p className="mx-auto md:mx-0 mt-3 flex max-w-[280px] items-center justify-center md:justify-start gap-1.5 text-[12px] font-medium text-black/55 dark:text-white/55">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                 <circle cx="12" cy="10" r="3" />
@@ -438,7 +457,7 @@ function Hero({ visible }) {
               <a
                 href="/cv.pdf"
                 download="Galxtria-CV.pdf"
-                className="btn-shine mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
+                className="btn-shine mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -460,7 +479,7 @@ function Hero({ visible }) {
                 <SocialPill
                   key={s.label}
                   s={s}
-                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-5 py-2 text-[13px] font-medium text-black/70 shadow-sm hover:border-black hover:text-black transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-5 py-2 text-[13px] font-medium text-black/70 shadow-sm hover:border-black hover:text-black transition-colors dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
                 />
               ))}
             </div>
@@ -497,26 +516,26 @@ function Work() {
   const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
 
   return (
-    <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white">
+    <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
-        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05]">
+        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
           PORTFOLIO
         </span>
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SELECTED WORK</h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
             {String(total).padStart(2, '0')} projects — 2025 / 26
           </p>
         </div>
-        <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55">
+        <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
           Index of selected work — click a row to expand the case study inline.
         </p>
 
-        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-black/10">
+        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-black/10 dark:border-white/10">
           {PROJECTS.map((p, i) => {
             const isOpen = open === i
             return (
-              <div key={p.title} data-reveal className="border-t border-black/10">
+              <div key={p.title} data-reveal className="border-t border-black/10 dark:border-white/10">
                 <div
                   role="button"
                   tabIndex={0}
@@ -529,43 +548,43 @@ function Work() {
                   }}
                   aria-expanded={isOpen}
                   aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${p.title}`}
-                  className={`group relative flex cursor-pointer flex-col gap-4 py-5 transition-colors duration-200 hover:bg-black/[0.025] sm:gap-5 sm:py-6 md:flex-row md:items-center md:gap-8 md:py-7 md:pl-4 md:pr-2 ${isOpen ? 'bg-black/[0.025]' : ''}`}
+                  className={`group relative flex cursor-pointer flex-col gap-4 py-5 transition-colors duration-200 hover:bg-black/[0.025] dark:hover:bg-white/[0.05] sm:gap-5 sm:py-6 md:flex-row md:items-center md:gap-8 md:py-7 md:pl-4 md:pr-2 ${isOpen ? 'bg-black/[0.025] dark:bg-white/[0.05]' : ''}`}
                 >
                   <span className="flex shrink-0 items-center gap-3 md:w-20">
-                    <span className="font-mono text-[12px] tracking-[0.2em] text-black/40">
+                    <span className="font-mono text-[12px] tracking-[0.2em] text-black/40 dark:text-white/40">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <span aria-hidden className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-transform duration-300 md:hidden ${isOpen ? 'rotate-180 border-black bg-black text-white' : 'border-black/15 text-black/50'}`}>
+                    <span aria-hidden className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-transform duration-300 md:hidden ${isOpen ? 'rotate-180 border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' : 'border-black/15 text-black/50 dark:border-white/20 dark:text-white/60'}`}>
                       ↓
                     </span>
                   </span>
 
                   <span className="min-w-0 flex-1">
-                    <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
+                    <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
                       {p.tags[0]} • {p.year} • {p.category}
                     </span>
                     <span className="mt-2 block text-[1.35rem] md:text-[1.9rem] font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
                       {p.title}
                     </span>
-                    <span className="mt-2 block max-w-2xl text-[13px] md:text-sm leading-relaxed text-black/55">
+                    <span className="mt-2 block max-w-2xl text-[13px] md:text-sm leading-relaxed text-black/55 dark:text-white/55">
                       {p.desc}
                     </span>
-                    <span className="mt-3 block font-mono text-[11px] uppercase tracking-[0.18em] text-black/45">
+                    <span className="mt-3 block font-mono text-[11px] uppercase tracking-[0.18em] text-black/45 dark:text-white/45">
                       {p.tech.join('  •  ')}
                     </span>
                   </span>
 
                   {/* Thumb preview disembunyikan saat terbuka di mobile —
                       gambar besarnya sudah tampil di detail, biar tidak dobel & panjang */}
-                  <span className={`relative shrink-0 overflow-hidden rounded-xl border border-black/10 bg-zinc-100 h-[150px] w-full sm:h-[190px] md:block md:h-[168px] md:w-[288px] ${isOpen ? 'hidden' : 'block'}`}>
+                  <span className={`relative shrink-0 overflow-hidden rounded-xl border border-black/10 bg-zinc-100 dark:border-white/10 dark:bg-white/5 h-[150px] w-full sm:h-[190px] md:block md:h-[168px] md:w-[288px] ${isOpen ? 'hidden' : 'block'}`}>
                     <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
                       <Thumbnail p={p} zoom={false} vivid fill />
                     </span>
-                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10" />
+                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
                   </span>
 
-                  <span aria-hidden className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border text-base transition-all duration-300 md:flex ${isOpen ? 'rotate-180 border-black bg-black text-white' : 'border-black/15 text-black/50 group-hover:border-black group-hover:bg-black group-hover:text-white'}`}>
+                  <span aria-hidden className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border text-base transition-all duration-300 md:flex ${isOpen ? 'rotate-180 border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' : 'border-black/15 text-black/50 group-hover:border-black group-hover:bg-black group-hover:text-white dark:border-white/20 dark:text-white/60 dark:group-hover:border-white dark:group-hover:bg-white dark:group-hover:text-black'}`}>
                     ↓
                   </span>
                 </div>
@@ -573,15 +592,15 @@ function Work() {
                 {/* Detail mengembang inline — tanpa popup */}
                 <div className={`service-panel ${isOpen ? 'open' : ''}`}>
                   <div>
-                    <div className="panel-body grid gap-5 border-t border-dashed border-black/10 py-5 md:grid-cols-[1fr_1.1fr] md:gap-10 md:py-8 md:pl-[7.5rem] md:pr-2">
+                    <div className="panel-body grid gap-5 border-t border-dashed border-black/10 dark:border-white/10 py-5 md:grid-cols-[1fr_1.1fr] md:gap-10 md:py-8 md:pl-[7.5rem] md:pr-2">
                       <div className="min-w-0">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">About this project</p>
-                        <p className="mt-3 text-[13.5px] md:text-sm leading-relaxed text-black/65">{p.fullDesc}</p>
-                        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">Tech stack</p>
+                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">About this project</p>
+                        <p className="mt-3 text-[13.5px] md:text-sm leading-relaxed text-black/65 dark:text-white/65">{p.fullDesc}</p>
+                        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">Tech stack</p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           {p.tech.map((t) => (
-                            <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75">
-                              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black" />
+                            <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
                               {t}
                             </span>
                           ))}
@@ -592,13 +611,13 @@ function Work() {
                             target="_blank"
                             rel="noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800"
+                            className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                           >
                             View on GitHub <span aria-hidden>↗</span>
                           </a>
                           <button
                             onClick={() => toggle(i)}
-                            className="rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/60 transition-colors hover:border-black hover:text-black"
+                            className="rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/60 transition-colors hover:border-black hover:text-black dark:border-white/20 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
                           >
                             Collapse ↑
                           </button>
@@ -606,9 +625,9 @@ function Work() {
                       </div>
                       {/* Tinggi DIKUNCI (bukan min-h) agar semua gambar detail SAMA —
                           patokan landscape My Music, shot HP di-crop cover */}
-                      <div className="relative h-[210px] overflow-hidden rounded-xl border border-black/10 bg-zinc-100 sm:h-[260px] md:h-[340px]">
+                      <div className="relative h-[210px] overflow-hidden rounded-xl border border-black/10 bg-zinc-100 dark:border-white/10 dark:bg-white/5 sm:h-[260px] md:h-[340px]">
                         <Thumbnail p={p} zoom={false} vivid fill />
-                        <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10" />
+                        <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
                       </div>
                     </div>
                   </div>
@@ -618,10 +637,10 @@ function Work() {
           })}
         </div>
 
-        <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30">
-          <span aria-hidden className="h-px w-8 bg-black/15" />
+        <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
+          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
           Selected 2025 — 2026 • click a row to expand
-          <span aria-hidden className="h-px w-8 bg-black/15" />
+          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
       </div>
     </section>
@@ -635,24 +654,24 @@ function Experience() {
   const [open, setOpen] = useState(0)
   const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
   return (
-    <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white">
-      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05]">
+    <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
+      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
         EXPERIENCE
       </span>
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
         <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-2xl md:text-4xl font-black tracking-tight">/EXPERIENCE</h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">Denpasar, Bali — ID</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Denpasar, Bali — ID</p>
         </div>
-        <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50">
+        <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50 dark:text-black/60">
           Roles &amp; education — click a row to expand, click again to collapse.
         </p>
 
-        <div data-reveal className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-white/10">
+        <div data-reveal className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-white/10 dark:border-black/10">
           {EXPERIENCE.map((e, i) => {
             const isOpen = open === i
             return (
-              <div key={e.id} className="border-t border-white/15">
+              <div key={e.id} className="border-t border-white/15 dark:border-black/15">
                 <div
                   role="button"
                   tabIndex={0}
@@ -666,18 +685,18 @@ function Experience() {
                   onMouseMove={spotMove}
                   aria-expanded={isOpen}
                   aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${e.place}`}
-                  className="spot-dark-row group grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 py-6 transition-colors duration-200 hover:bg-white/[0.04] md:py-7 md:pl-4 md:pr-2"
+                  className="spot-dark-row group grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 py-6 transition-colors duration-200 hover:bg-white/[0.04] dark:hover:bg-black/[0.04] md:py-7 md:pl-4 md:pr-2"
                 >
                   <div className="min-w-0 transition-transform duration-300 group-hover:translate-x-1">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">{e.kind}</p>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{e.kind}</p>
                     <p className="mt-2 text-2xl md:text-4xl font-extrabold leading-[1.08] tracking-tight">{e.place}</p>
-                    <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60">
-                      {e.role} <span className="text-white/25"> • </span> {e.location}
+                    <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">
+                      {e.role} <span className="text-white/25 dark:text-black/30"> • </span> {e.location}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3 md:gap-4">
-                    <p className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-white/40 sm:block">{e.range}</p>
-                    <span aria-hidden className={`flex h-10 w-10 items-center justify-center rounded-full border text-base transition-all duration-300 md:h-11 md:w-11 ${isOpen ? 'rotate-180 border-white bg-white text-black' : 'border-white/20 text-white/60 group-hover:border-white group-hover:bg-white group-hover:text-black'}`}>
+                    <p className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-white/40 dark:text-black/50 sm:block">{e.range}</p>
+                    <span aria-hidden className={`flex h-10 w-10 items-center justify-center rounded-full border text-base transition-all duration-300 md:h-11 md:w-11 ${isOpen ? 'rotate-180 border-white bg-white text-black dark:border-black dark:bg-black dark:text-white' : 'border-white/20 text-white/60 group-hover:border-white group-hover:bg-white group-hover:text-black dark:border-black/20 dark:text-black/60 dark:group-hover:border-black dark:group-hover:bg-black dark:group-hover:text-white'}`}>
                       ↓
                     </span>
                   </div>
@@ -685,18 +704,18 @@ function Experience() {
 
                 <div className={`service-panel ${isOpen ? 'open' : ''}`}>
                   <div>
-                    <div className="panel-body border-t border-dashed border-white/10 py-6 md:py-7 md:pl-[5.5rem] md:pr-2">
+                    <div className="panel-body border-t border-dashed border-white/10 dark:border-black/10 py-6 md:py-7 md:pl-[5.5rem] md:pr-2">
                       <div className="flex flex-wrap gap-2">
                         {e.dates.map((d, di) => (
-                          <span key={d} className={`rounded-full px-4 py-1.5 text-[12px] ${di === 0 && e.dates.length > 1 ? 'bg-white font-semibold text-black' : 'border border-white/20 font-medium text-white/80'}`}>
+                          <span key={d} className={`rounded-full px-4 py-1.5 text-[12px] ${di === 0 && e.dates.length > 1 ? 'bg-white font-semibold text-black dark:bg-black dark:text-white' : 'border border-white/20 font-medium text-white/80 dark:border-black/20 dark:text-black/70'}`}>
                             {d}
                           </span>
                         ))}
                       </div>
-                      <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-relaxed text-white/55">{e.desc}</p>
+                      <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-relaxed text-white/55 dark:text-black/60">{e.desc}</p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {e.tags.map((t) => (
-                          <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white">
+                          <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white dark:border-black/15 dark:bg-black/5 dark:text-black/70 dark:hover:bg-black/10 dark:hover:text-black">
                             {t}
                           </span>
                         ))}
@@ -757,10 +776,10 @@ function ContactCard({ c }) {
         <SocialIcon label={c.label === 'Email' ? 'Email' : c.label === 'GitHub' ? 'GitHub' : c.label === 'Instagram' ? 'Instagram' : 'LinkedIn'} className={`h-6 w-6 ${c.icon}`} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">{c.label}</span>
-        <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85">{copied ? 'Copied!' : c.value}</span>
+        <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">{c.label}</span>
+        <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85 dark:text-white/90">{copied ? 'Copied!' : c.value}</span>
       </span>
-      <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 group-hover:border-black group-hover:text-white">
+      <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 group-hover:border-black group-hover:text-white dark:border-white/15 dark:text-white/50 dark:group-hover:border-white">
         {c.href ? (
           <span className="text-base leading-none">↗</span>
         ) : copied ? (
@@ -775,7 +794,7 @@ function ContactCard({ c }) {
     </>
   )
 
-  const cls = 'contact-spot group relative flex w-full items-center gap-5 overflow-hidden rounded-2xl border border-black/10 bg-white/90 p-6 md:p-7 text-left shadow-sm backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-black/25 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.25)]'
+  const cls = 'contact-spot group relative flex w-full items-center gap-5 overflow-hidden rounded-2xl border border-black/10 bg-white/90 p-6 md:p-7 text-left shadow-sm backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-black/25 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.25)] dark:border-white/10 dark:bg-white/[0.06] dark:hover:border-white/25 dark:hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.7)]'
 
   if (c.href) {
     return (
@@ -818,20 +837,20 @@ function LocalTime() {
 function Contact() {
   const ref = useReveal(0.1)
   return (
-    <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5">
+    <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5 dark:bg-black/40 dark:border-white/10">
       {/* Watermark + cahaya lembut */}
-      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05]">
+      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
         CONTACT
       </span>
-      <span aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
-      <span aria-hidden className="pointer-events-none absolute bottom-0 left-[8%] h-56 w-56 rounded-full bg-black/[0.04] blur-2xl" />
-      <span aria-hidden className="pointer-events-none absolute bottom-10 right-[6%] h-64 w-64 rounded-full bg-black/[0.05] blur-2xl" />
+      <span aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-white/70 blur-3xl dark:bg-white/[0.07]" />
+      <span aria-hidden className="pointer-events-none absolute bottom-0 left-[8%] h-56 w-56 rounded-full bg-black/[0.04] blur-2xl dark:bg-white/[0.05]" />
+      <span aria-hidden className="pointer-events-none absolute bottom-10 right-[6%] h-64 w-64 rounded-full bg-black/[0.05] blur-2xl dark:bg-white/[0.06]" />
 
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24 text-center">
-        <p data-reveal className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-black/40">
-          <span aria-hidden className="h-px w-8 bg-black/20" />
+        <p data-reveal className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-black/40 dark:text-white/40">
+          <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
           Get in touch
-          <span aria-hidden className="h-px w-8 bg-black/20" />
+          <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
         </p>
         <h2 data-reveal className="contact-headline mt-4 text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
           <span className="rise-in inline-block" style={{ animationDelay: '100ms' }}>Let&apos;s</span>{' '}
@@ -840,7 +859,7 @@ function Contact() {
           <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '320ms' }}>Something</span>{' '}
           <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '420ms' }}>Amazing</span>
         </h2>
-        <p data-reveal className="mx-auto mt-5 max-w-2xl text-sm md:text-[15px] leading-relaxed text-black/55">
+        <p data-reveal className="mx-auto mt-5 max-w-2xl text-sm md:text-[15px] leading-relaxed text-black/55 dark:text-white/55">
           Got a project in mind? Let&apos;s collaborate and create something extraordinary together.
         </p>
         <div className="mx-auto mt-12 grid max-w-4xl gap-5 text-left sm:grid-cols-2">
@@ -849,11 +868,11 @@ function Contact() {
           ))}
         </div>
         <div data-reveal className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2 text-[11px] font-semibold shadow-sm border border-black/10">
+          <span className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2 text-[11px] font-semibold shadow-sm border border-black/10 dark:border-white/10 dark:bg-white/5">
             <span className="avail-dot relative h-2 w-2 rounded-full bg-green-500" />
             Available for projects &amp; collaborations
           </span>
-          <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-black/55">
+          <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-black/55 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/55">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <circle cx="12" cy="12" r="9" />
               <path d="M12 7v5l3 2" />
@@ -862,13 +881,13 @@ function Contact() {
           </span>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold text-black/60 shadow-sm transition-all hover:-translate-y-0.5 hover:border-black hover:text-black"
+            className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold text-black/60 shadow-sm transition-all hover:-translate-y-0.5 hover:border-black hover:text-black dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
           >
             Back to top <span aria-hidden>↑</span>
           </button>
         </div>
       </div>
-      <p className="relative pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35">© 2026 Galxtria</p>
+      <p className="relative pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35 dark:text-white/35">© 2026 Galxtria</p>
     </section>
   )
 }
@@ -883,7 +902,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="cloud-sky relative min-h-screen text-[#111]">
+    <div className="cloud-sky relative min-h-screen text-[#111] dark:text-[#f4f2ed]">
       {!loaded && <Splash onFinish={() => setLoaded(true)} />}
       <Navbar loaded={loaded} />
       <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
