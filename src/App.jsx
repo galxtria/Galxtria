@@ -350,22 +350,10 @@ function Navbar({ loaded }) {
   )
 }
 
-// ── Foto portrait: default hitam-putih, warna mengikuti kursor (spotlight) ──
+// ── Foto portrait: hitam-putih, jadi berwarna penuh + zoom halus saat hover ──
 
 function PortraitReveal() {
-  const wrapRef = useRef(null)
   const [src, setSrc] = useState('/portrait-cutout.png')
-
-  const setActive = (on) => wrapRef.current?.setAttribute('data-active', on ? 'true' : 'false')
-
-  const updateSpot = (clientX, clientY) => {
-    const el = wrapRef.current
-    if (!el) return
-    const r = el.getBoundingClientRect()
-    el.style.setProperty('--mx', `${clientX - r.left}px`)
-    el.style.setProperty('--my', `${clientY - r.top}px`)
-    setActive(true)
-  }
 
   const onFail = () => setSrc((s) => (s === '/portrait-cutout.png' ? '/potrait.png' : 'placeholder'))
 
@@ -382,19 +370,14 @@ function PortraitReveal() {
   }
 
   return (
-    <div
-      ref={wrapRef}
-      data-active="false"
-      onMouseMove={(e) => updateSpot(e.clientX, e.clientY)}
-      onMouseLeave={() => setActive(false)}
-      onTouchMove={(e) => { const t = e.touches[0]; if (t) updateSpot(t.clientX, t.clientY) }}
-      onTouchEnd={() => setActive(false)}
-      className="portrait-reveal relative w-full md:w-fit md:h-full cursor-crosshair select-none [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]"
-    >
-      {/* Lapisan warna (bawah) */}
-      <img src={src} alt="" aria-hidden="true" draggable={false} onError={onFail} className="block w-full md:h-full md:w-auto" />
-      {/* Lapisan hitam-putih (atas) — dilubangi spotlight mengikuti kursor */}
-      <img src={src} alt="Galxtria" draggable={false} onError={onFail} className="reveal-gray absolute inset-0 block h-full w-full grayscale" />
+    <div className="relative w-full md:w-fit md:h-full select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]">
+      <img
+        src={src}
+        alt="Galxtria"
+        draggable={false}
+        onError={onFail}
+        className="block w-full grayscale transition-all duration-700 ease-out hover:scale-[1.02] hover:grayscale-0 active:grayscale-0 md:h-full md:w-auto"
+      />
     </div>
   )
 }
