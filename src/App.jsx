@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // ── Thumbnail memakai screenshot asli di public/shots (tanpa import) ──
 
@@ -76,6 +76,16 @@ const SOCIALS = [
   { label: 'Email', href: 'mailto:utamapradita5@gmail.com' },
 ]
 
+// Helper spotlight: set --mx/--my mengikuti kursor (satu gaya untuk semua section).
+// Pakai via onMouseMove={spotMove} pada elemen ber-class spot-pill / spot-light / spot-dark-row.
+const spotMove = (e) => {
+  const el = e.currentTarget
+  if (!el) return
+  const r = el.getBoundingClientRect()
+  el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+  el.style.setProperty('--my', `${e.clientY - r.top}px`)
+}
+
 function SocialIcon({ label, className }) {
   const cls = className || 'h-[13px] w-[13px] shrink-0 text-black/45'
   if (label === 'GitHub')
@@ -130,9 +140,10 @@ function SocialPill({ s, className }) {
     <a
       href={s.href}
       onClick={onClick}
+      onMouseMove={spotMove}
       {...(s.label !== 'Email' ? { target: '_blank', rel: 'noreferrer' } : {})}
       title={s.label === 'Email' ? 'Klik untuk menyalin email' : s.label}
-      className={className}
+      className={`${className} spot-pill`}
     >
       {copied ? (
         <svg className="h-[13px] w-[13px] shrink-0 text-green-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -309,7 +320,7 @@ function Navbar({ loaded }) {
           <div className="flex items-center gap-2">
             <button
               onClick={() => go('contact', 'Contact')}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
+              className="btn-shine hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
             >
               Let&apos;s Talk <span aria-hidden>↗</span>
             </button>
@@ -427,7 +438,7 @@ function Hero({ visible }) {
               <a
                 href="/cv.pdf"
                 download="Galxtria-CV.pdf"
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
+                className="btn-shine mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -461,95 +472,157 @@ function Hero({ visible }) {
   )
 }
 
-// ── Thumbnail dari screenshot asli: web tampil full-bleed, aplikasi HP dalam bingkai device ──
+// ── Thumbnail: selalu uniform cover (patokan: shot landscape My Music).
+// Shot HP pun di-crop cover agar ukurannya SAMA persis dengan shot web —
+// tanpa mockup HP & tanpa layer blur (blur-2xl repaint tiap frame saat expand → animasi patah).
 
-function Thumbnail({ p, zoom = true }) {
-  const motion = zoom ? 'transition-all duration-500 group-hover:scale-[1.04]' : ''
-  // Di kartu: hitam-putih, berwarna saat hover. Di modal (zoom=false): selalu berwarna.
-  const tone = zoom ? 'grayscale group-hover:grayscale-0' : ''
-  if (p.frame === 'phone') {
-    return (
-      <div className={`relative flex aspect-[16/9] w-full items-start justify-center overflow-hidden bg-gradient-to-br ${p.tint} ${tone} transition-[filter] duration-500`}>
-        <span aria-hidden className="absolute left-1/2 top-1/2 h-[70%] w-[46%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/50 blur-3xl" />
-        <img src={p.shot} alt={p.short} loading="lazy" className={`relative mt-[4%] h-[104%] w-auto rounded-[1.4rem] object-cover object-top shadow-[0_30px_60px_-15px_rgba(0,0,0,0.45)] ring-1 ring-black/15 ${motion}`} />
-      </div>
-    )
-  }
+function Thumbnail({ p, zoom = true, vivid = false, fill = false }) {
+  const motion = zoom ? 'transition-all duration-500 group-hover:scale-[1.04]' : vivid ? 'transition-all duration-500 group-hover:scale-[1.02]' : ''
+  // Di kartu grid: hitam-putih, berwarna saat hover. Di modal/spotlight: selalu berwarna.
+  const tone = zoom && !vivid ? 'grayscale group-hover:grayscale-0' : ''
+  // fill = mengisi parent ber-height tetap agar semua thumbnail SAMA ukurannya.
+  // Tanpa fill = pakai aspect ratio.
+  const box = fill ? 'h-full w-full' : 'aspect-[16/9] w-full'
   return (
-    <img src={p.shot} alt={p.short} loading="lazy" className={`aspect-[16/9] w-full object-cover object-top ${tone} ${motion}`} />
+    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} object-cover object-top ${tone} ${motion}`} />
   )
 }
 
 // ── Selected Work (ref Image 2) ──
 
-function Work({ onSelect }) {
+function Work() {
   const ref = useReveal(0.08)
-  const [filter, setFilter] = useState('All')
-  const filters = ['All', 'Real Project', 'Exploration']
-  const list = PROJECTS.filter((p) => filter === 'All' || p.category === filter)
+  const total = PROJECTS.length
+  const [open, setOpen] = useState(null)
+  const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
 
   return (
-    <section id="work" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center bg-white">
-      <div className="relative mx-auto max-w-[1400px] overflow-hidden px-6 md:px-12 py-12 md:py-16">
-        <span aria-hidden className="watermark absolute top-4 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05]">
+    <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white">
+      <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
+        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05]">
           PORTFOLIO
         </span>
-        <h2 data-reveal className="relative text-center text-2xl md:text-4xl font-black tracking-tight">
-          /SELECTED WORK
-        </h2>
-
-        <div data-reveal className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-1 rounded-full border border-black/10 bg-zinc-50 p-1">
-            {filters.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition-all duration-300 ${filter === f ? 'bg-black text-white shadow' : 'text-black/50 hover:text-black'}`}
-              >
-                {f}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => setFilter('All')}
-            className="inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white shadow-sm hover:bg-zinc-800 transition-colors"
-          >
-            View All Work <span aria-hidden>↗</span>
-          </button>
+        <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SELECTED WORK</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
+            {String(total).padStart(2, '0')} projects — 2025 / 26
+          </p>
         </div>
+        <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55">
+          Index of selected work — click a row to expand the case study inline.
+        </p>
 
-        <div className="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2">
-          {list.map((p, i) => (
-            <article key={p.title} data-reveal>
-              <button onClick={() => onSelect(p)} className="group relative block w-full overflow-hidden rounded-[1.4rem] border border-black/[0.08] bg-white text-left shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_40px_-16px_rgba(0,0,0,0.16)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_32px_70px_-20px_rgba(0,0,0,0.32)]">
-                <div className="relative overflow-hidden">
-                  <Thumbnail p={p} />
-                  <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[1.4rem] ring-1 ring-inset ring-black/10" />
-                  <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/25 to-transparent" />
-                  <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 py-1.5 pl-3 pr-4 text-[11px] font-bold uppercase tracking-wider text-black backdrop-blur">
+        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-black/10">
+          {PROJECTS.map((p, i) => {
+            const isOpen = open === i
+            return (
+              <div key={p.title} data-reveal className="border-t border-black/10">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => toggle(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      toggle(i)
+                    }
+                  }}
+                  aria-expanded={isOpen}
+                  aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${p.title}`}
+                  className={`group relative flex cursor-pointer flex-col gap-4 py-5 transition-colors duration-200 hover:bg-black/[0.025] sm:gap-5 sm:py-6 md:flex-row md:items-center md:gap-8 md:py-7 md:pl-4 md:pr-2 ${isOpen ? 'bg-black/[0.025]' : ''}`}
+                >
+                  <span className="flex shrink-0 items-center gap-3 md:w-20">
+                    <span className="font-mono text-[12px] tracking-[0.2em] text-black/40">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    {p.category}
+                    <span aria-hidden className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-transform duration-300 md:hidden ${isOpen ? 'rotate-180 border-black bg-black text-white' : 'border-black/15 text-black/50'}`}>
+                      ↓
+                    </span>
                   </span>
-                  <span className="absolute bottom-4 right-4 flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-black text-lg text-white opacity-0 shadow-xl transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    ↗
+
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
+                      {p.tags[0]} • {p.year} • {p.category}
+                    </span>
+                    <span className="mt-2 block text-[1.35rem] md:text-[1.9rem] font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                      {p.title}
+                    </span>
+                    <span className="mt-2 block max-w-2xl text-[13px] md:text-sm leading-relaxed text-black/55">
+                      {p.desc}
+                    </span>
+                    <span className="mt-3 block font-mono text-[11px] uppercase tracking-[0.18em] text-black/45">
+                      {p.tech.join('  •  ')}
+                    </span>
+                  </span>
+
+                  {/* Thumb preview disembunyikan saat terbuka di mobile —
+                      gambar besarnya sudah tampil di detail, biar tidak dobel & panjang */}
+                  <span className={`relative shrink-0 overflow-hidden rounded-xl border border-black/10 bg-zinc-100 h-[150px] w-full sm:h-[190px] md:block md:h-[168px] md:w-[288px] ${isOpen ? 'hidden' : 'block'}`}>
+                    <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
+                      <Thumbnail p={p} zoom={false} vivid fill />
+                    </span>
+                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10" />
+                  </span>
+
+                  <span aria-hidden className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border text-base transition-all duration-300 md:flex ${isOpen ? 'rotate-180 border-black bg-black text-white' : 'border-black/15 text-black/50 group-hover:border-black group-hover:bg-black group-hover:text-white'}`}>
+                    ↓
                   </span>
                 </div>
-              </button>
-              <p className="mt-5 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
-                <span>{String(i + 1).padStart(2, '0')} — {p.year}</span>
-                <span>{p.tags[0]}</span>
-              </p>
-              <h3 className="mt-2 text-[19px] font-extrabold leading-snug tracking-tight">{p.title}</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {p.tech.map((t) => (
-                  <span key={t} className="rounded-full border border-black/10 bg-white px-4 py-1.5 text-[12px] font-medium text-black/70 shadow-sm">
-                    {t}
-                  </span>
-                ))}
+
+                {/* Detail mengembang inline — tanpa popup */}
+                <div className={`service-panel ${isOpen ? 'open' : ''}`}>
+                  <div>
+                    <div className="panel-body grid gap-5 border-t border-dashed border-black/10 py-5 md:grid-cols-[1fr_1.1fr] md:gap-10 md:py-8 md:pl-[7.5rem] md:pr-2">
+                      <div className="min-w-0">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">About this project</p>
+                        <p className="mt-3 text-[13.5px] md:text-sm leading-relaxed text-black/65">{p.fullDesc}</p>
+                        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">Tech stack</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {p.tech.map((t) => (
+                            <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75">
+                              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black" />
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="mt-6 flex flex-wrap items-center gap-2.5">
+                          <a
+                            href={p.github}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800"
+                          >
+                            View on GitHub <span aria-hidden>↗</span>
+                          </a>
+                          <button
+                            onClick={() => toggle(i)}
+                            className="rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/60 transition-colors hover:border-black hover:text-black"
+                          >
+                            Collapse ↑
+                          </button>
+                        </div>
+                      </div>
+                      {/* Tinggi DIKUNCI (bukan min-h) agar semua gambar detail SAMA —
+                          patokan landscape My Music, shot HP di-crop cover */}
+                      <div className="relative h-[210px] overflow-hidden rounded-xl border border-black/10 bg-zinc-100 sm:h-[260px] md:h-[340px]">
+                        <Thumbnail p={p} zoom={false} vivid fill />
+                        <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </article>
-          ))}
+            )
+          })}
         </div>
+
+        <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30">
+          <span aria-hidden className="h-px w-8 bg-black/15" />
+          Selected 2025 — 2026 • click a row to expand
+          <span aria-hidden className="h-px w-8 bg-black/15" />
+        </p>
       </div>
     </section>
   )
@@ -588,7 +661,7 @@ function Experience() {
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             {['Responsive Web', 'Graphic Design', 'Figma'].map((t) => (
-              <span key={t} className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white">
+              <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white">
                 {t}
               </span>
             ))}
@@ -597,7 +670,7 @@ function Experience() {
 
         <div data-reveal className="mt-10 md:mt-12 border-t border-white/15">
           {EXPERIENCE_MORE.map((e) => (
-            <div key={e.place} className="group grid grid-cols-[1fr_auto] items-center gap-2 border-b border-white/10 py-6 transition-colors duration-300 hover:bg-white/[0.04]">
+            <div key={e.place} onMouseMove={spotMove} className="spot-dark-row group grid grid-cols-[1fr_auto] items-center gap-2 border-b border-white/10 py-6 transition-colors duration-300 hover:bg-white/[0.04]">
               <div className="transition-transform duration-300 group-hover:translate-x-1">
                 <p className="text-[15px] font-bold">{e.place}</p>
                 <p className="mt-1 text-[13px] text-white/50">{e.detail}</p>
@@ -625,6 +698,7 @@ const CONTACT_CARDS = [
 
 function ContactCard({ c }) {
   const [copied, setCopied] = useState(false)
+  const ref = useRef(null)
 
   const copyEmail = async (e) => {
     e.preventDefault()
@@ -642,22 +716,31 @@ function ContactCard({ c }) {
     setTimeout(() => setCopied(false), 1800)
   }
 
+  const onMove = (e) => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    el.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
   const body = (
     <>
-      <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${c.tile}`}>
+      <span aria-hidden className="contact-glow" />
+      <span className={`contact-tile flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${c.tile}`}>
         <SocialIcon label={c.label === 'Email' ? 'Email' : c.label === 'GitHub' ? 'GitHub' : c.label === 'Instagram' ? 'Instagram' : 'LinkedIn'} className={`h-6 w-6 ${c.icon}`} />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">{c.label}</span>
         <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85">{copied ? 'Copied!' : c.value}</span>
       </span>
-      <span aria-hidden className="shrink-0 text-black/25 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-black">
+      <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 group-hover:border-black group-hover:text-white">
         {c.href ? (
-          <span className="text-lg leading-none">↗</span>
+          <span className="text-base leading-none">↗</span>
         ) : copied ? (
-          <span className="text-lg leading-none text-green-600">✓</span>
+          <span className="text-base leading-none text-green-600">✓</span>
         ) : (
-          <svg className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="h-[16px] w-[16px]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
             <rect x="9" y="9" width="12" height="12" rx="2" />
             <path d="M5 15V5a2 2 0 0 1 2-2h10" />
           </svg>
@@ -666,107 +749,101 @@ function ContactCard({ c }) {
     </>
   )
 
-  const cls = 'group flex w-full items-center gap-5 rounded-2xl border border-black/10 bg-white p-6 md:p-7 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-black/20 hover:shadow-lg'
+  const cls = 'contact-spot group relative flex w-full items-center gap-5 overflow-hidden rounded-2xl border border-black/10 bg-white/90 p-6 md:p-7 text-left shadow-sm backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-black/25 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.25)]'
 
   if (c.href) {
     return (
-      <a href={c.href} target="_blank" rel="noreferrer" className={cls}>
+      <a ref={ref} onMouseMove={onMove} href={c.href} target="_blank" rel="noreferrer" data-reveal className={cls}>
         {body}
       </a>
     )
   }
   return (
-    <button onClick={copyEmail} title="Klik untuk menyalin email" className={cls}>
+    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title="Klik untuk menyalin email" data-reveal className={cls}>
       {body}
     </button>
   )
 }
 
+function LocalTime() {
+  const [time, setTime] = useState('--:--')
+  useEffect(() => {
+    const update = () => {
+      try {
+        setTime(
+          new Intl.DateTimeFormat('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZone: 'Asia/Makassar',
+          }).format(new Date())
+        )
+      } catch {
+        setTime(new Date().toLocaleTimeString())
+      }
+    }
+    update()
+    const id = setInterval(update, 1000)
+    return () => clearInterval(id)
+  }, [])
+  return <span className="tabular-nums">{time} WITA</span>
+}
+
 function Contact() {
   const ref = useReveal(0.1)
   return (
-    <section id="contact" ref={ref} className="flex min-h-screen w-full flex-col justify-center bg-white/55 backdrop-blur border-t border-black/5">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12 py-16 md:py-24 text-center">
-        <p data-reveal className="font-mono text-[11px] uppercase tracking-[0.3em] text-black/40">Get in touch</p>
-        <h2 data-reveal className="mt-4 text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-          Let&apos;s Build<br /><span className="text-outline">Something Amazing</span>
+    <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5">
+      {/* Watermark + cahaya lembut */}
+      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05]">
+        CONTACT
+      </span>
+      <span aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-white/70 blur-3xl" />
+      <span aria-hidden className="pointer-events-none absolute bottom-0 left-[8%] h-56 w-56 rounded-full bg-black/[0.04] blur-2xl" />
+      <span aria-hidden className="pointer-events-none absolute bottom-10 right-[6%] h-64 w-64 rounded-full bg-black/[0.05] blur-2xl" />
+
+      <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24 text-center">
+        <p data-reveal className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-black/40">
+          <span aria-hidden className="h-px w-8 bg-black/20" />
+          Get in touch
+          <span aria-hidden className="h-px w-8 bg-black/20" />
+        </p>
+        <h2 data-reveal className="contact-headline mt-4 text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+          <span className="rise-in inline-block" style={{ animationDelay: '100ms' }}>Let&apos;s</span>{' '}
+          <span className="rise-in inline-block" style={{ animationDelay: '200ms' }}>Build</span>
+          <br />
+          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '320ms' }}>Something</span>{' '}
+          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '420ms' }}>Amazing</span>
         </h2>
         <p data-reveal className="mx-auto mt-5 max-w-2xl text-sm md:text-[15px] leading-relaxed text-black/55">
           Got a project in mind? Let&apos;s collaborate and create something extraordinary together.
         </p>
-        <div data-reveal className="mx-auto mt-12 grid max-w-4xl gap-5 text-left sm:grid-cols-2">
+        <div className="mx-auto mt-12 grid max-w-4xl gap-5 text-left sm:grid-cols-2">
           {CONTACT_CARDS.map((c) => (
             <ContactCard key={c.id} c={c} />
           ))}
         </div>
-        <span data-reveal className="mt-10 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-semibold shadow-sm border border-black/10">
-          <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" /> Available for projects &amp; collaborations
-        </span>
+        <div data-reveal className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <span className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2 text-[11px] font-semibold shadow-sm border border-black/10">
+            <span className="avail-dot relative h-2 w-2 rounded-full bg-green-500" />
+            Available for projects &amp; collaborations
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 font-mono text-[11px] tracking-[0.12em] text-black/55">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+            DENPASAR, ID — <LocalTime />
+          </span>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-[11px] font-semibold text-black/60 shadow-sm transition-all hover:-translate-y-0.5 hover:border-black hover:text-black"
+          >
+            Back to top <span aria-hidden>↑</span>
+          </button>
+        </div>
       </div>
-      <p className="pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35">© 2026 Galxtria</p>
+      <p className="relative pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35">© 2026 Galxtria</p>
     </section>
-  )
-}
-
-// ── Project modal ──
-
-function ProjectModal({ project, onClose }) {
-  useEffect(() => {
-    const h = (e) => e.key === 'Escape' && onClose()
-    window.addEventListener('keydown', h)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      window.removeEventListener('keydown', h)
-      document.body.style.overflow = ''
-    }
-  }, [onClose])
-  if (!project) return null
-  const idx = PROJECTS.indexOf(project)
-  return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6" onClick={onClose}>
-      <div className="backdrop-in absolute inset-0 bg-black/60 backdrop-blur-md" />
-      <div className="modal-in no-scrollbar relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[1.75rem] bg-white shadow-[0_50px_120px_-20px_rgba(0,0,0,0.5)] ring-1 ring-black/10" onClick={(e) => e.stopPropagation()}>
-        <div className="relative">
-          <Thumbnail p={project} zoom={false} />
-          <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-          <div className="absolute bottom-4 left-4 flex items-center gap-2 sm:bottom-5 sm:left-5">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-black backdrop-blur">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              {project.category}
-            </span>
-            <span className="rounded-full bg-black/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur">
-              {project.year}
-            </span>
-          </div>
-          <button onClick={onClose} className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-lg transition-transform duration-300 hover:rotate-90" aria-label="Close">✕</button>
-        </div>
-        <div className="p-7 sm:p-9">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">
-            Project {String(idx + 1).padStart(2, '0')} — {project.tags[0]}
-          </p>
-          <h3 className="mt-2 text-2xl sm:text-[2rem] font-extrabold leading-tight tracking-tight">{project.title}</h3>
-          <p className="mt-1 text-[13px] font-medium text-black/45">{project.desc}</p>
-          <p className="mt-4 text-[14px] leading-relaxed text-black/65">{project.fullDesc}</p>
-          <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.22em] text-black/40">Tech stack</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {project.tech.map((t) => (
-              <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black" />
-                {t}
-              </span>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-black/10 pt-6">
-            <a href={project.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-[13px] font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-zinc-800">
-              View on GitHub <span aria-hidden>↗</span>
-            </a>
-            <button onClick={onClose} className="rounded-full px-5 py-3 text-[13px] font-semibold text-black/60 transition-colors hover:text-black">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -774,7 +851,6 @@ function ProjectModal({ project, onClose }) {
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
-  const [activeProject, setActiveProject] = useState(null)
 
   useEffect(() => {
     document.title = 'Galxtria'
@@ -786,11 +862,10 @@ export default function App() {
       <Navbar loaded={loaded} />
       <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <Hero visible={loaded} />
-        <Work onSelect={setActiveProject} />
+        <Work />
         <Experience />
         <Contact />
       </main>
-      {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
     </div>
   )
 }
