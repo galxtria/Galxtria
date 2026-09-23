@@ -15,6 +15,7 @@ const PROJECTS = [
     tech: ['Laravel', 'MySQL', 'React', 'Tailwind'],
     tags: ['Web App', 'Kumpin Studio'],
     category: 'Real Project',
+    role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/MyMusic.git',
     year: '2025',
     shot: '/shots/mymusic.jpg',
@@ -29,6 +30,7 @@ const PROJECTS = [
     tech: ['TypeScript', 'Tailwind'],
     tags: ['Mobile App', 'Personal'],
     category: 'Real Project',
+    role: 'Frontend Developer',
     github: 'https://github.com/galxtria/MoneyTrackerV2.git',
     year: '2026',
     shot: '/shots/moneytracker-v2.jpg',
@@ -44,6 +46,7 @@ const PROJECTS = [
     tech: ['Java', 'Android', 'Firebase'],
     tags: ['Mobile App', 'KostHub'],
     category: 'Real Project',
+    role: 'Android Developer',
     github: 'https://github.com/galxtria/KostHub.git',
     year: '2026',
     shot: '/shots/kosthub-app.jpg',
@@ -59,6 +62,7 @@ const PROJECTS = [
     tech: ['Laravel', 'React', 'Tailwind'],
     tags: ['Landing Page', 'KostHub'],
     category: 'Exploration',
+    role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/KostHub_Web.git',
     year: '2026',
     shot: '/shots/kosthub-web.jpg',
@@ -66,28 +70,33 @@ const PROJECTS = [
   },
 ]
 
-const EXPERIENCE = [
-  {
-    id: 'benlaris',
-    kind: 'Featured role',
-    place: 'PT Benlaris Sahabat Dewata',
-    role: 'Web & Graphic Design Intern',
-    location: 'Denpasar Selatan',
-    range: '2022 — 2023',
-    dates: ['Des 2022 – Feb 2023', 'Jun 2023 – Sep 2023'],
-    desc: "Two internship periods supporting the company's web presence and visual design needs — from responsive web pages to graphic design assets.",
-    tags: ['Responsive Web', 'Graphic Design', 'Figma'],
-  },
+const EDUCATION = [
   {
     id: 'instiki',
-    kind: 'Education',
+    period: '2024 — Present',
+    badge: 'Undergraduate',
     place: 'Institut Bisnis dan Teknologi Indonesia',
-    role: "Bachelor's Degree — Informatics",
-    location: 'Denpasar, Bali',
-    range: '2024 — Now',
-    dates: ['2024 — Now'],
-    desc: 'Continuing from an RPL background into a Bachelor\u2019s degree in Informatics — focused on frontend development, cross-platform apps, and AI integration.',
-    tags: ['Informatics', 'Frontend Development', 'Mobile Apps'],
+    role: "S1 — Informatics",
+    desc: 'Focused on frontend development, cross-platform apps, and AI integration.',
+  },
+  {
+    id: 'smkn1',
+    period: '2021 — 2024',
+    badge: null,
+    place: 'SMK Negeri 1 Denpasar',
+    role: 'Rekayasa Perangkat Lunak (RPL)',
+    desc: 'Vocational foundation in software engineering, covering programming fundamentals and web basics.',
+  },
+]
+
+const WORK_EXPERIENCE = [
+  {
+    id: 'benlaris',
+    period: 'Des 2022 – Feb 2023 • Jun 2023 – Sep 2023',
+    badge: 'Internship',
+    place: 'PT Benlaris Sahabat Dewata',
+    role: 'Web & Graphic Design Intern',
+    desc: "Supported the company's web presence and visual design, covering responsive web pages and graphic design assets.",
   },
 ]
 
@@ -495,7 +504,7 @@ function Hero({ visible }) {
 // Shot HP pun di-crop cover agar ukurannya SAMA persis dengan shot web —
 // tanpa mockup HP & tanpa layer blur (blur-2xl repaint tiap frame saat expand → animasi patah).
 
-function Thumbnail({ p, zoom = true, vivid = false, fill = false }) {
+function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-cover object-top' }) {
   const motion = zoom ? 'transition-all duration-500 group-hover:scale-[1.04]' : vivid ? 'transition-all duration-500 group-hover:scale-[1.02]' : ''
   // Di kartu grid: hitam-putih, berwarna saat hover. Di modal/spotlight: selalu berwarna.
   const tone = zoom && !vivid ? 'grayscale group-hover:grayscale-0' : ''
@@ -503,17 +512,30 @@ function Thumbnail({ p, zoom = true, vivid = false, fill = false }) {
   // Tanpa fill = pakai aspect ratio.
   const box = fill ? 'h-full w-full' : 'aspect-[16/9] w-full'
   return (
-    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} object-cover object-top ${tone} ${motion}`} />
+    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} ${fit} ${tone} ${motion}`} />
   )
 }
 
-// ── Selected Work (ref Image 2) ──
+// ── Pemisah section: hairline gradasi + belah ketupat kecil, sengaja dibuat samar ──
+
+function SectionDivider({ className = 'bg-white dark:bg-[#0b0b0d]' }) {
+  return (
+    <div aria-hidden className={`relative ${className}`}>
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12">
+        <div className="relative flex items-center justify-center py-1">
+          <span className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-black/15 to-transparent dark:via-white/15" />
+          <span className="relative h-1.5 w-1.5 rotate-45 bg-white ring-1 ring-black/15 dark:bg-[#0b0b0d] dark:ring-white/15" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Selected Work: showcase 2 kolom selang-seling, thumbnail ringkas ──
 
 function Work() {
   const ref = useReveal(0.08)
   const total = PROJECTS.length
-  const [open, setOpen] = useState(null)
-  const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
 
   return (
     <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
@@ -524,121 +546,99 @@ function Work() {
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SELECTED WORK</h2>
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
-            {String(total).padStart(2, '0')} projects — 2025 / 26
+            {String(total).padStart(2, '0')} projects · 2025 / 26
           </p>
         </div>
         <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
-          Index of selected work — click a row to expand the case study inline.
+          Showcase of selected work with previews, stacks, and sources.
         </p>
 
-        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-black/10 dark:border-white/10">
+        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
           {PROJECTS.map((p, i) => {
-            const isOpen = open === i
+            const flip = i % 2 === 1
             return (
-              <div key={p.title} data-reveal className="border-t border-black/10 dark:border-white/10">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => toggle(i)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      toggle(i)
-                    }
-                  }}
-                  aria-expanded={isOpen}
-                  aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${p.title}`}
-                  className={`group relative flex cursor-pointer flex-col gap-4 py-5 transition-colors duration-200 hover:bg-black/[0.025] dark:hover:bg-white/[0.05] sm:gap-5 sm:py-6 md:flex-row md:items-center md:gap-8 md:py-7 md:pl-4 md:pr-2 ${isOpen ? 'bg-black/[0.025] dark:bg-white/[0.05]' : ''}`}
-                >
-                  <span className="flex shrink-0 items-center gap-3 md:w-20">
+              <article
+                key={p.title}
+                data-reveal
+                className="group grid items-center gap-6 border-t border-black/10 py-10 last:border-b dark:border-white/10 md:grid-cols-2 md:gap-10 md:py-12"
+              >
+                <div className={`min-w-0 ${flip ? 'md:order-2' : ''}`}>
+                  <div className="flex flex-wrap items-center gap-3">
                     <span className="font-mono text-[12px] tracking-[0.2em] text-black/40 dark:text-white/40">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span aria-hidden className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full border text-sm transition-transform duration-300 md:hidden ${isOpen ? 'rotate-180 border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' : 'border-black/15 text-black/50 dark:border-white/20 dark:text-white/60'}`}>
-                      ↓
+                    <span className="rounded-full border border-black/15 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/55 dark:border-white/20 dark:text-white/60">
+                      {p.category}
                     </span>
-                  </span>
+                  </div>
+                  <h3 className="mt-4 text-2xl md:text-4xl font-extrabold leading-[1.05] tracking-tight">
+                    {p.title}
+                  </h3>
+                  <p className="mt-4 max-w-xl text-[13px] md:text-sm leading-relaxed text-black/55 dark:text-white/55">
+                    {p.fullDesc}
+                  </p>
 
-                  <span className="min-w-0 flex-1">
-                    <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
-                      {p.tags[0]} • {p.year} • {p.category}
-                    </span>
-                    <span className="mt-2 block text-[1.35rem] md:text-[1.9rem] font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
-                      {p.title}
-                    </span>
-                    <span className="mt-2 block max-w-2xl text-[13px] md:text-sm leading-relaxed text-black/55 dark:text-white/55">
-                      {p.desc}
-                    </span>
-                    <span className="mt-3 block font-mono text-[11px] uppercase tracking-[0.18em] text-black/45 dark:text-white/45">
-                      {p.tech.join('  •  ')}
-                    </span>
-                  </span>
-
-                  {/* Thumb preview disembunyikan saat terbuka di mobile —
-                      gambar besarnya sudah tampil di detail, biar tidak dobel & panjang */}
-                  <span className={`relative shrink-0 overflow-hidden rounded-xl border border-black/10 bg-zinc-100 dark:border-white/10 dark:bg-white/5 h-[150px] w-full sm:h-[190px] md:block md:h-[168px] md:w-[288px] ${isOpen ? 'hidden' : 'block'}`}>
-                    <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.04]">
-                      <Thumbnail p={p} zoom={false} vivid fill />
-                    </span>
-                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
-                  </span>
-
-                  <span aria-hidden className={`hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border text-base transition-all duration-300 md:flex ${isOpen ? 'rotate-180 border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' : 'border-black/15 text-black/50 group-hover:border-black group-hover:bg-black group-hover:text-white dark:border-white/20 dark:text-white/60 dark:group-hover:border-white dark:group-hover:bg-white dark:group-hover:text-black'}`}>
-                    ↓
-                  </span>
-                </div>
-
-                {/* Detail mengembang inline — tanpa popup */}
-                <div className={`service-panel ${isOpen ? 'open' : ''}`}>
-                  <div>
-                    <div className="panel-body grid gap-5 border-t border-dashed border-black/10 dark:border-white/10 py-5 md:grid-cols-[1fr_1.1fr] md:gap-10 md:py-8 md:pl-[7.5rem] md:pr-2">
-                      <div className="min-w-0">
-                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">About this project</p>
-                        <p className="mt-3 text-[13.5px] md:text-sm leading-relaxed text-black/65 dark:text-white/65">{p.fullDesc}</p>
-                        <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">Tech stack</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {p.tech.map((t) => (
-                            <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
-                              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                          <a
-                            href={p.github}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-                          >
-                            View on GitHub <span aria-hidden>↗</span>
-                          </a>
-                          <button
-                            onClick={() => toggle(i)}
-                            className="rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/60 transition-colors hover:border-black hover:text-black dark:border-white/20 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
-                          >
-                            Collapse ↑
-                          </button>
-                        </div>
+                  <dl className="mt-6 grid max-w-md grid-cols-3 gap-4">
+                    {[
+                      ['Year', p.year],
+                      ['Platform', p.tags[0]],
+                      ['Role', p.role],
+                    ].map(([label, value]) => (
+                      <div key={label} className="border-l border-black/15 pl-3 dark:border-white/20">
+                        <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{label}</dt>
+                        <dd className="mt-1.5 text-base md:text-lg font-extrabold tracking-tight">{value}</dd>
                       </div>
-                      {/* Tinggi DIKUNCI (bukan min-h) agar semua gambar detail SAMA —
-                          patokan landscape My Music, shot HP di-crop cover */}
-                      <div className="relative h-[210px] overflow-hidden rounded-xl border border-black/10 bg-zinc-100 dark:border-white/10 dark:bg-white/5 sm:h-[260px] md:h-[340px]">
-                        <Thumbnail p={p} zoom={false} vivid fill />
-                        <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
-                      </div>
-                    </div>
+                    ))}
+                  </dl>
+
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {p.tech.map((t) => (
+                      <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-6">
+                    <a
+                      href={p.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+                    >
+                      View on GitHub <span aria-hidden>↗</span>
+                    </a>
                   </div>
                 </div>
-              </div>
+
+                {/* Satu gaya bingkai & ukuran untuk semua: shot landscape di-crop halus,
+                    shot portrait ditampilkan utuh (contain) di atas tint */}
+                <figure className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
+                  <div className="flex items-center gap-2 border-b border-black/10 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
+                    <span aria-hidden className="flex gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
+                    </span>
+                    <span className="mx-auto font-mono text-[10px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.short}</span>
+                    <span aria-hidden className="w-10" />
+                  </div>
+                  <div className={`relative h-[160px] overflow-hidden bg-gradient-to-br sm:h-[200px] md:h-[230px] ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
+                    <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+                      <Thumbnail p={p} zoom={false} vivid fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
+                    </span>
+                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
+                  </div>
+                </figure>
+              </article>
             )
           })}
         </div>
 
         <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
-          Selected 2025 — 2026 • click a row to expand
+          Selected 2025 / 26 · preview &amp; source
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
       </div>
@@ -646,85 +646,74 @@ function Work() {
   )
 }
 
-// ── Experience — akordeon gelap, Benlaris terbuka default & bisa ditutup ──
+// ── Background: konsep 2 kolom (Education + Experience) sebagai timeline gaya web ──
+
+function TimelineItem({ item, first }) {
+  return (
+    <li
+      data-reveal
+      onMouseMove={spotMove}
+      className="spot-dark-row group relative pb-10 pl-8 last:pb-0 md:pl-10"
+    >
+      <span aria-hidden className="absolute bottom-0 left-[9px] top-6 w-px bg-white/10 dark:bg-black/10" />
+      <span
+        aria-hidden
+        className={`absolute left-[5px] top-2 h-[9px] w-[9px] rounded-full transition-colors duration-300 ${
+          first
+            ? 'bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.12)] dark:bg-black dark:shadow-[0_0_0_4px_rgba(0,0,0,0.10)]'
+            : 'bg-[#131315] ring-1 ring-white/30 group-hover:bg-white/60 dark:bg-[#e9e6e0] dark:ring-black/30 dark:group-hover:bg-black/50'
+        }`}
+      />
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{item.period}</p>
+        {item.badge && (
+          <span className="shrink-0 rounded-full border border-white/20 px-3.5 py-1 text-[11px] font-medium text-white/75 dark:border-black/20 dark:text-black/70">
+            {item.badge}
+          </span>
+        )}
+      </div>
+      <p className="mt-3 text-xl md:text-2xl font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+        {item.place}
+      </p>
+      <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">{item.role}</p>
+      <p className="mt-3 max-w-md text-[13px] md:text-sm leading-relaxed text-white/55 dark:text-black/60">{item.desc}</p>
+    </li>
+  )
+}
 
 function Experience() {
   const ref = useReveal(0.08)
-  const [open, setOpen] = useState(0)
-  const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
       <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
-        EXPERIENCE
+        BACKGROUND
       </span>
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
         <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/EXPERIENCE</h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Denpasar, Bali — ID</p>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/BACKGROUND</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Education &amp; Experience</p>
         </div>
         <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50 dark:text-black/60">
-          Roles &amp; education — click a row to expand, click again to collapse.
+          Schooling &amp; roles, presented as a two column index.
         </p>
 
-        <div data-reveal className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-white/10 dark:border-black/10">
-          {EXPERIENCE.map((e, i) => {
-            const isOpen = open === i
-            return (
-              <div key={e.id} className="border-t border-white/15 dark:border-black/15">
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => toggle(i)}
-                  onKeyDown={(ev) => {
-                    if (ev.key === 'Enter' || ev.key === ' ') {
-                      ev.preventDefault()
-                      toggle(i)
-                    }
-                  }}
-                  onMouseMove={spotMove}
-                  aria-expanded={isOpen}
-                  aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${e.place}`}
-                  className="spot-dark-row group grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 py-6 transition-colors duration-200 hover:bg-white/[0.04] dark:hover:bg-black/[0.04] md:py-7 md:pl-4 md:pr-2"
-                >
-                  <div className="min-w-0 transition-transform duration-300 group-hover:translate-x-1">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{e.kind}</p>
-                    <p className="mt-2 text-2xl md:text-4xl font-extrabold leading-[1.08] tracking-tight">{e.place}</p>
-                    <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">
-                      {e.role} <span className="text-white/25 dark:text-black/30"> • </span> {e.location}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3 md:gap-4">
-                    <p className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-white/40 dark:text-black/50 sm:block">{e.range}</p>
-                    <span aria-hidden className={`flex h-10 w-10 items-center justify-center rounded-full border text-base transition-all duration-300 md:h-11 md:w-11 ${isOpen ? 'rotate-180 border-white bg-white text-black dark:border-black dark:bg-black dark:text-white' : 'border-white/20 text-white/60 group-hover:border-white group-hover:bg-white group-hover:text-black dark:border-black/20 dark:text-black/60 dark:group-hover:border-black dark:group-hover:bg-black dark:group-hover:text-white'}`}>
-                      ↓
-                    </span>
-                  </div>
-                </div>
-
-                <div className={`service-panel ${isOpen ? 'open' : ''}`}>
-                  <div>
-                    <div className="panel-body border-t border-dashed border-white/10 dark:border-black/10 py-6 md:py-7 md:pl-[5.5rem] md:pr-2">
-                      <div className="flex flex-wrap gap-2">
-                        {e.dates.map((d, di) => (
-                          <span key={d} className={`rounded-full px-4 py-1.5 text-[12px] ${di === 0 && e.dates.length > 1 ? 'bg-white font-semibold text-black dark:bg-black dark:text-white' : 'border border-white/20 font-medium text-white/80 dark:border-black/20 dark:text-black/70'}`}>
-                            {d}
-                          </span>
-                        ))}
-                      </div>
-                      <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-relaxed text-white/55 dark:text-black/60">{e.desc}</p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {e.tags.map((t) => (
-                          <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white dark:border-black/15 dark:bg-black/5 dark:text-black/70 dark:hover:bg-black/10 dark:hover:text-black">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+        <div className="mx-auto mt-10 md:mt-14 grid w-full max-w-6xl gap-10 md:grid-cols-2 md:gap-14">
+          <div data-reveal>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Education</p>
+            <ul className="mt-8">
+              {EDUCATION.map((item, i) => (
+                <TimelineItem key={item.id} item={item} first={i === 0} />
+              ))}
+            </ul>
+          </div>
+          <div data-reveal>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Experience</p>
+            <ul className="mt-8">
+              {WORK_EXPERIENCE.map((item, i) => (
+                <TimelineItem key={item.id} item={item} first={i === 0} />
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
@@ -890,6 +879,7 @@ export default function App() {
       <Navbar loaded={loaded} />
       <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <Hero visible={loaded} />
+        <SectionDivider />
         <Work />
         <Experience />
         <Contact />

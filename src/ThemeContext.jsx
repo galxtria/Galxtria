@@ -39,10 +39,19 @@ export function ThemeProvider({ children }) {
     }
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
-    // Browser modern: wipe melingkar dari titik klik (View Transitions API).
+    // Browser modern: wipe melingkar berawal tepat dari tengah tombol toggle.
     if (document.startViewTransition && !reduce) {
-      const x = ev?.clientX ?? window.innerWidth - 60
-      const y = ev?.clientY ?? 60
+      // Titik asal = tengah tombol pemicu (konsisten walau klik di pinggir tombol).
+      let x = window.innerWidth - 60
+      let y = 60
+      const rect = ev?.currentTarget?.getBoundingClientRect?.()
+      if (rect && (rect.width > 0 || rect.height > 0)) {
+        x = rect.left + rect.width / 2
+        y = rect.top + rect.height / 2
+      } else if (typeof ev?.clientX === 'number' && typeof ev?.clientY === 'number') {
+        x = ev.clientX
+        y = ev.clientY
+      }
       const transition = document.startViewTransition(() => {
         flushSync(() => {
           applyTheme(newDark)
