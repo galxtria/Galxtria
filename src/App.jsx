@@ -65,8 +65,29 @@ const PROJECTS = [
   },
 ]
 
-const EXPERIENCE_MORE = [
-  { place: 'Informatics Student', detail: "Bachelor's Degree — RPL graduate continuing to university", date: '2024 — Now' },
+const EXPERIENCE = [
+  {
+    id: 'benlaris',
+    kind: 'Featured role',
+    place: 'PT Benlaris Sahabat Dewata',
+    role: 'Web & Graphic Design Intern',
+    location: 'Denpasar Selatan',
+    range: '2022 — 2023',
+    dates: ['Des 2022 – Feb 2023', 'Jun 2023 – Sep 2023'],
+    desc: "Two internship periods supporting the company's web presence and visual design needs — from responsive web pages to graphic design assets.",
+    tags: ['Responsive Web', 'Graphic Design', 'Figma'],
+  },
+  {
+    id: 'instiki',
+    kind: 'Education',
+    place: 'Institut Bisnis dan Teknologi Indonesia',
+    role: "Bachelor's Degree — Informatics",
+    location: 'Denpasar, Bali',
+    range: '2024 — Now',
+    dates: ['2024 — Now'],
+    desc: 'Continuing from an RPL background into a Bachelor\u2019s degree in Informatics — focused on frontend development, cross-platform apps, and AI integration.',
+    tags: ['Informatics', 'Frontend Development', 'Mobile Apps'],
+  },
 ]
 
 const SOCIALS = [
@@ -414,10 +435,6 @@ function Hero({ visible }) {
               </svg>
               Denpasar, Bali — ID
             </p>
-            <p className="mx-auto md:mx-0 mt-2 max-w-[280px] text-[12px] leading-relaxed text-black/55">
-              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500 align-middle" />
-              Currently into <span className="font-semibold text-black/80">TypeScript, React &amp; Tailwind</span>
-            </p>
               <a
                 href="/cv.pdf"
                 download="Galxtria-CV.pdf"
@@ -611,10 +628,12 @@ function Work() {
   )
 }
 
-// ── Experience — full gelap tanpa card, sorot internship asli ──
+// ── Experience — akordeon gelap, Benlaris terbuka default & bisa ditutup ──
 
 function Experience() {
   const ref = useReveal(0.08)
+  const [open, setOpen] = useState(0)
+  const toggle = (i) => setOpen((cur) => (cur === i ? null : i))
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white">
       <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05]">
@@ -625,45 +644,69 @@ function Experience() {
           <h2 className="text-2xl md:text-4xl font-black tracking-tight">/EXPERIENCE</h2>
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">Denpasar, Bali — ID</p>
         </div>
+        <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50">
+          Roles &amp; education — click a row to expand, click again to collapse.
+        </p>
 
-        <article data-reveal className="mt-10 md:mt-14 border-t border-white/15 pt-8 md:pt-10">
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">Featured role</p>
-          <h3 className="mt-3 text-3xl md:text-5xl font-extrabold leading-[1.08] tracking-tight">
-            PT Benlaris<br /> Sahabat Dewata
-          </h3>
-          <p className="mt-4 text-[15px] md:text-lg font-medium text-white/75">
-            Web &amp; Graphic Design Intern <span className="text-white/25"> • </span> Denpasar Selatan
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <span className="rounded-full bg-white px-4 py-1.5 text-[12px] font-semibold text-black">Des 2022 – Feb 2023</span>
-            <span className="rounded-full border border-white/20 px-4 py-1.5 text-[12px] font-medium text-white/80">Jun 2023 – Sep 2023</span>
-          </div>
-          <p className="mt-6 max-w-2xl text-sm md:text-[15px] leading-relaxed text-white/55">
-            Two internship periods supporting the company&apos;s web presence and visual design needs —
-            from responsive web pages to graphic design assets.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {['Responsive Web', 'Graphic Design', 'Figma'].map((t) => (
-              <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white">
-                {t}
-              </span>
-            ))}
-          </div>
-        </article>
+        <div data-reveal className="mx-auto mt-10 md:mt-14 w-full max-w-6xl border-b border-white/10">
+          {EXPERIENCE.map((e, i) => {
+            const isOpen = open === i
+            return (
+              <div key={e.id} className="border-t border-white/15">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => toggle(i)}
+                  onKeyDown={(ev) => {
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                      ev.preventDefault()
+                      toggle(i)
+                    }
+                  }}
+                  onMouseMove={spotMove}
+                  aria-expanded={isOpen}
+                  aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${e.place}`}
+                  className="spot-dark-row group grid cursor-pointer grid-cols-[1fr_auto] items-center gap-4 py-6 transition-colors duration-200 hover:bg-white/[0.04] md:py-7 md:pl-4 md:pr-2"
+                >
+                  <div className="min-w-0 transition-transform duration-300 group-hover:translate-x-1">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">{e.kind}</p>
+                    <p className="mt-2 text-2xl md:text-4xl font-extrabold leading-[1.08] tracking-tight">{e.place}</p>
+                    <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60">
+                      {e.role} <span className="text-white/25"> • </span> {e.location}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3 md:gap-4">
+                    <p className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-white/40 sm:block">{e.range}</p>
+                    <span aria-hidden className={`flex h-10 w-10 items-center justify-center rounded-full border text-base transition-all duration-300 md:h-11 md:w-11 ${isOpen ? 'rotate-180 border-white bg-white text-black' : 'border-white/20 text-white/60 group-hover:border-white group-hover:bg-white group-hover:text-black'}`}>
+                      ↓
+                    </span>
+                  </div>
+                </div>
 
-        <div data-reveal className="mt-10 md:mt-12 border-t border-white/15">
-          {EXPERIENCE_MORE.map((e) => (
-            <div key={e.place} onMouseMove={spotMove} className="spot-dark-row group grid grid-cols-[1fr_auto] items-center gap-2 border-b border-white/10 py-6 transition-colors duration-300 hover:bg-white/[0.04]">
-              <div className="transition-transform duration-300 group-hover:translate-x-1">
-                <p className="text-[15px] font-bold">{e.place}</p>
-                <p className="mt-1 text-[13px] text-white/50">{e.detail}</p>
+                <div className={`service-panel ${isOpen ? 'open' : ''}`}>
+                  <div>
+                    <div className="panel-body border-t border-dashed border-white/10 py-6 md:py-7 md:pl-[5.5rem] md:pr-2">
+                      <div className="flex flex-wrap gap-2">
+                        {e.dates.map((d, di) => (
+                          <span key={d} className={`rounded-full px-4 py-1.5 text-[12px] ${di === 0 && e.dates.length > 1 ? 'bg-white font-semibold text-black' : 'border border-white/20 font-medium text-white/80'}`}>
+                            {d}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="mt-4 max-w-2xl text-sm md:text-[15px] leading-relaxed text-white/55">{e.desc}</p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {e.tags.map((t) => (
+                          <span key={t} className="chip-glow chip-glow-dark rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-[12px] font-medium text-white/75 transition-all duration-300 hover:bg-white/10 hover:text-white">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <p className="text-[12px] md:text-[13px] text-white/60 whitespace-nowrap">{e.date}</p>
-                <span aria-hidden className="-translate-x-1 text-white opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">↗</span>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
