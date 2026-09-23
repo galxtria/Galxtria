@@ -7,21 +7,6 @@ import { useTheme } from './ThemeContext.jsx'
 
 const PROJECTS = [
   {
-    title: 'My Music - Automated Music Player',
-    short: 'My Music',
-    desc: 'Automated music player with intelligent playlist organization and seamless audio playback.',
-    fullDesc:
-      'My Music is a feature-rich music player with intelligent playlist curation, crossfade transitions, equalizer controls, and a responsive interface. Backend handles library indexing, metadata parsing, and preference storage.',
-    tech: ['Laravel', 'MySQL', 'React', 'Tailwind'],
-    tags: ['Web App', 'Kumpin Studio'],
-    category: 'Real Project',
-    role: 'Full-Stack Developer',
-    github: 'https://github.com/galxtria/MyMusic.git',
-    year: '2025',
-    shot: '/shots/mymusic.jpg',
-    frame: 'browser',
-  },
-  {
     title: 'MoneyTrackerV2 - Smart Budget Planner',
     short: 'MoneyTrackerV2',
     desc: 'Smart budget planner with daily safe-spend limits and automatic insights.',
@@ -33,25 +18,9 @@ const PROJECTS = [
     role: 'Frontend Developer',
     github: 'https://github.com/galxtria/MoneyTrackerV2.git',
     year: '2026',
-    shot: '/shots/moneytracker-v2.jpg',
+    shot: '/shots/moneytrackerv2_new.png',
     frame: 'phone',
     tint: 'from-[#dbe7ff] to-[#aec6f5]',
-  },
-  {
-    title: 'KostHub App - Boarding House Manager',
-    short: 'KostHub App',
-    desc: 'Boarding house management with financial efficiency and real-time room tracking.',
-    fullDesc:
-      'KostHub is a boarding house management platform: real-time occupancy tracking, automated financial reports, tenant management with digital contracts, and payment reminder notifications.',
-    tech: ['Java', 'Android', 'Firebase'],
-    tags: ['Mobile App', 'KostHub'],
-    category: 'Real Project',
-    role: 'Android Developer',
-    github: 'https://github.com/galxtria/KostHub.git',
-    year: '2026',
-    shot: '/shots/kosthub-app.jpg',
-    frame: 'phone',
-    tint: 'from-[#d7f1ea] to-[#aedfd3]',
   },
   {
     title: 'KostHub Web - Property Platform',
@@ -66,6 +35,37 @@ const PROJECTS = [
     github: 'https://github.com/galxtria/KostHub_Web.git',
     year: '2026',
     shot: '/shots/kosthub-web.jpg',
+    frame: 'browser',
+  },
+  {
+    title: 'KostHub App - Boarding House Manager',
+    short: 'KostHub App',
+    desc: 'Boarding house management with financial efficiency and real-time room tracking.',
+    fullDesc:
+      'KostHub is a boarding house management platform: real-time occupancy tracking, automated financial reports, tenant management with digital contracts, and payment reminder notifications.',
+    tech: ['Java', 'Android', 'Firebase'],
+    tags: ['Mobile App', 'KostHub'],
+    category: 'Real Project',
+    role: 'Android Developer',
+    github: 'https://github.com/galxtria/KostHub.git',
+    year: '2026',
+    shot: '/shots/kosthub_app_new.png',
+    frame: 'phone',
+    tint: 'from-[#d7f1ea] to-[#aedfd3]',
+  },
+  {
+    title: 'My Music - Automated Music Player',
+    short: 'My Music',
+    desc: 'Automated music player with intelligent playlist organization and seamless audio playback.',
+    fullDesc:
+      'My Music is a feature-rich music player with intelligent playlist curation, crossfade transitions, equalizer controls, and a responsive interface. Backend handles library indexing, metadata parsing, and preference storage.',
+    tech: ['Laravel', 'MySQL', 'React', 'Tailwind'],
+    tags: ['Web App', 'Kumpin Studio'],
+    category: 'Real Project',
+    role: 'Full-Stack Developer',
+    github: 'https://github.com/galxtria/MyMusic.git',
+    year: '2025',
+    shot: '/shots/mymusic.jpg',
     frame: 'browser',
   },
 ]
@@ -531,6 +531,41 @@ function SectionDivider({ className = 'bg-white dark:bg-[#0b0b0d]' }) {
   )
 }
 
+// ── Efek 3D tilt mengikuti kursor untuk preview project (pengganti zoom) ──
+
+function Tilt({ className = '', max = 7, children }) {
+  const ref = useRef(null)
+
+  const onMove = (e) => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    const r = el.getBoundingClientRect()
+    const px = (e.clientX - r.left) / r.width - 0.5
+    const py = (e.clientY - r.top) / r.height - 0.5
+    el.style.transition = 'transform 0.08s linear, box-shadow 0.4s ease'
+    el.style.transform = `perspective(1100px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg)`
+  }
+
+  const onLeave = () => {
+    const el = ref.current
+    if (!el) return
+    el.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease'
+    el.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg)'
+  }
+
+  return (
+    <figure
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className={`${className} will-change-transform transition-shadow duration-500 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] dark:hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]`}
+    >
+      {children}
+    </figure>
+  )
+}
+
 // ── Selected Work: showcase 2 kolom selang-seling, thumbnail ringkas ──
 
 function Work() {
@@ -614,7 +649,7 @@ function Work() {
 
                 {/* Satu gaya bingkai & ukuran untuk semua: shot landscape di-crop halus,
                     shot portrait ditampilkan utuh (contain) di atas tint */}
-                <figure className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
+                <Tilt className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
                   <div className="flex items-center gap-2 border-b border-black/10 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
                     <span aria-hidden className="flex gap-1.5">
                       <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
@@ -624,13 +659,13 @@ function Work() {
                     <span className="mx-auto font-mono text-[10px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.short}</span>
                     <span aria-hidden className="w-10" />
                   </div>
-                  <div className={`relative h-[160px] overflow-hidden bg-gradient-to-br sm:h-[200px] md:h-[230px] ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
-                    <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
-                      <Thumbnail p={p} zoom={false} vivid fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
+                  <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
+                    <span className="block h-full w-full">
+                      <Thumbnail p={p} zoom={false} vivid={false} fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
                     </span>
                     <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
                   </div>
-                </figure>
+                </Tilt>
               </article>
             )
           })}
