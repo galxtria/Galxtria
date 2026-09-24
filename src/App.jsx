@@ -473,14 +473,19 @@ function PortraitReveal() {
   }
 
   return (
-    <div className="relative w-full md:w-fit md:h-full select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]">
+    <div className="group/portrait relative w-full md:w-fit md:h-full select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.35)] hover:ring-1 hover:ring-black/15 dark:hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.8)] dark:hover:ring-white/25">
       <img
         src={src}
         alt="Galxtria"
         draggable={false}
         onError={onFail}
-        className="block w-full grayscale transition-all duration-700 ease-out hover:scale-[1.02] hover:grayscale-0 active:grayscale-0 md:h-full md:w-auto"
+        className="block w-full grayscale brightness-[.94] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/portrait:grayscale-0 group-hover/portrait:brightness-105 md:h-full md:w-auto"
       />
+      {/* Badge status mono muncul saat hover */}
+      <span className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/85 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white opacity-0 backdrop-blur transition-all duration-500 group-hover/portrait:opacity-100 dark:bg-white/90 dark:text-black">
+        <span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-white dark:bg-black" />
+        {t('hero_badge')}
+      </span>
     </div>
   )
 }
