@@ -13,15 +13,15 @@ const PROJECTS = [
     short: 'MoneyTrackerV2',
     desc: {
       en: 'Smart budget planner with daily safe-spend limits and automatic insights.',
-      id: 'Perencana budget pintar dengan batas aman harian dan insight otomatis.',
+      id: 'Perencana anggaran cerdas dengan batas belanja harian dan wawasan otomatis.',
     },
     fullDesc: {
-      en: 'MoneyTrackerV2 is an offline-first budget planner built with React, TypeScript, and Tailwind. Monthly budget tracking with daily safe-spend allowance, expense logging stored locally via Dexie.js (IndexedDB), charts with Recharts, and installable PWA support.',
-      id: 'MoneyTrackerV2 itu perencana budget yang offline-first, dibangun pakai React, TypeScript, dan Tailwind. Pantau budget bulanan plus jatah aman harian, catat pengeluaran yang kesimpen lokal via Dexie.js (IndexedDB), grafik pakai Recharts, dan bisa di-install sebagai PWA.',
+      en: 'MoneyTrackerV2 is a budget planner that works fully offline, built with React, TypeScript, and Tailwind. Monthly budget tracking with a daily safe-spend allowance, expense logging stored locally via Dexie.js (IndexedDB), charts with Recharts, and installable PWA support.',
+      id: 'MoneyTrackerV2 adalah perencana anggaran yang bekerja sepenuhnya offline, dibangun dengan React, TypeScript, dan Tailwind. Dilengkapi pelacakan anggaran bulanan beserta batas belanja harian, pencatatan pengeluaran yang tersimpan lokal melalui Dexie.js (IndexedDB), grafik dengan Recharts, serta dukungan PWA yang dapat diinstal.',
     },
     tech: ['React', 'TypeScript', 'Tailwind', 'Dexie.js', 'Recharts'],
     tags: { en: ['Mobile App', 'Personal'], id: ['Aplikasi Mobile', 'Personal'] },
-    category: { en: 'Real Project', id: 'Projek Nyata' },
+    category: { en: 'Real Project', id: 'Proyek Nyata' },
     role: 'Frontend Developer',
     github: 'https://github.com/galxtria/MoneyTrackerV2.git',
     demo: 'https://moneytrackerv2-woad.vercel.app',
@@ -35,11 +35,11 @@ const PROJECTS = [
     short: 'KostHub Web',
     desc: {
       en: 'Full-stack boarding house web app with admin and user dashboards for property and order management.',
-      id: 'Web app kos-kosan full-stack dengan dashboard admin dan user buat ngatur properti sama order.',
+      id: 'Aplikasi web kos full-stack dengan dasbor admin dan pengguna untuk mengelola properti serta pesanan.',
     },
     fullDesc: {
-      en: 'KostHub Web is a monorepo full-stack web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
-      id: 'KostHub Web itu web app full-stack monorepo: REST API Laravel 12 dengan auth Sanctum dan penyimpanan SQLite, plus frontend React + Vite dengan React Router, Zustand, Tailwind, peta Leaflet, dan dukungan QR-code. Ada dashboard admin buat properti dan order, dan portal user buat cari properti dan booking.',
+      en: 'KostHub Web is a full-stack monorepo web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React and Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
+      id: 'KostHub Web adalah aplikasi web full-stack monorepo: REST API Laravel 12 dengan autentikasi Sanctum dan penyimpanan SQLite, serta frontend React dan Vite dengan React Router, Zustand, Tailwind, peta Leaflet, dan dukungan kode QR. Dilengkapi dasbor admin untuk properti dan pesanan, serta portal pengguna untuk pencarian properti dan pemesanan.',
     },
     tech: ['Laravel', 'React', 'Tailwind', 'SQLite'],
     tags: { en: ['Web App', 'KostHub'], id: ['Web App', 'KostHub'] },
@@ -59,15 +59,15 @@ const PROJECTS = [
     short: 'My Music',
     desc: {
       en: 'Automated music player with intelligent playlist organization and seamless audio playback.',
-      id: 'Pemutar musik otomatis dengan playlist yang rapi dan playback yang mulus.',
+      id: 'Pemutar musik otomatis dengan pengelolaan playlist cerdas dan pemutaran yang mulus.',
     },
     fullDesc: {
-      en: 'My Music is a Laravel 12 + React music library app with Bootstrap and Tailwind styling, React Router navigation, and SQLite storage. Backend handles library indexing, metadata parsing, and preference storage with a Vite build setup.',
-      id: 'My Music itu aplikasi library musik Laravel 12 + React dengan styling Bootstrap dan Tailwind, navigasi React Router, dan penyimpanan SQLite. Backend-nya ngurus indexing library, parsing metadata, dan nyimpen preferensi, dibangun dengan setup Vite.',
+      en: 'My Music is a Laravel 12 and React music library app with Bootstrap and Tailwind styling, React Router navigation, and SQLite storage. The backend handles library indexing, metadata parsing, and preference storage with a Vite build setup.',
+      id: 'My Music adalah aplikasi pustaka musik Laravel 12 dan React dengan gaya Bootstrap dan Tailwind, navigasi React Router, serta penyimpanan SQLite. Backend-nya menangani pengindeksan pustaka, penguraian metadata, dan penyimpanan preferensi, dibangun dengan konfigurasi Vite.',
     },
     tech: ['Laravel', 'React', 'Bootstrap', 'Tailwind', 'SQLite'],
     tags: { en: ['Web App', 'Kumpin Studio'], id: ['Web App', 'Kumpin Studio'] },
-    category: { en: 'Real Project', id: 'Projek Nyata' },
+    category: { en: 'Real Project', id: 'Proyek Nyata' },
     role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/MyMusic.git',
     year: '2025',
@@ -82,10 +82,10 @@ const EDUCATION = [
     period: '2024 — Present',
     badge: { en: 'Undergraduate', id: 'Mahasiswa' },
     place: 'Institut Bisnis dan Teknologi Indonesia',
-    role: "S1 — Informatics",
+    role: { en: 'S1 · Informatics', id: 'S1 · Informatika' },
     desc: {
-      en: 'Focused on frontend development, cross-platform apps, and AI integration.',
-      id: 'Fokus di frontend, aplikasi cross-platform, sama integrasi AI.',
+      en: 'Focused on frontend development, multi-platform apps, and AI integration.',
+      id: 'Berfokus pada pengembangan frontend, aplikasi lintas platform, dan integrasi AI.',
     },
   },
   {
@@ -96,7 +96,7 @@ const EDUCATION = [
     role: 'Rekayasa Perangkat Lunak (RPL)',
     desc: {
       en: 'Vocational foundation in software engineering, covering programming fundamentals and web basics.',
-      id: 'Bekal SMK di rekayasa perangkat lunak — dasar programming sama web.',
+      id: 'Dasar rekayasa perangkat lunak dari SMK, meliputi fundamental pemrograman dan web.',
     },
   },
 ]
@@ -110,7 +110,7 @@ const WORK_EXPERIENCE = [
     role: { en: 'Web & Graphic Design Intern', id: 'Magang Web & Desain Grafis' },
     desc: {
       en: "Supported the company's web presence and visual design, covering responsive web pages and graphic design assets.",
-      id: 'Bantuin website sama desain visual perusahaan — dari halaman web responsif sampai aset grafis.',
+      id: 'Mendukung website dan desain visual perusahaan, mulai dari halaman web responsif hingga aset grafis.',
     },
   },
 ]
@@ -511,7 +511,7 @@ function Hero({ visible }) {
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                 <circle cx="12" cy="10" r="3" />
               </svg>
-              Denpasar, Bali — ID
+              Denpasar, Bali, Indonesia
             </p>
               <a
                 href="/cv.pdf"
@@ -665,7 +665,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
           </div>
           <h3 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight">{p.title}</h3>
           <p className="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">{L(p.fullDesc)}</p>
-          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{t('role_prefix')} — {p.role}</p>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{t('role_prefix')}: {p.role}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {p.tech.map((tech) => (
               <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
