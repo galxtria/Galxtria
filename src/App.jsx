@@ -17,6 +17,7 @@ const PROJECTS = [
     category: 'Real Project',
     role: 'Frontend Developer',
     github: 'https://github.com/galxtria/MoneyTrackerV2.git',
+    demo: 'https://moneytrackerv2-woad.vercel.app',
     year: '2026',
     shot: '/shots/moneytrackerv2_new.png',
     frame: 'phone',
@@ -25,11 +26,11 @@ const PROJECTS = [
   {
     title: 'KostHub Web - Property Platform',
     short: 'KostHub Web',
-    desc: 'Full-stack boarding house platform with property discovery and order management.',
+    desc: 'Full-stack boarding house web app with admin and user dashboards for property and order management.',
     fullDesc:
-      'KostHub Web is a monorepo full-stack app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support for property discovery and order management.',
+      'KostHub Web is a monorepo full-stack web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
     tech: ['Laravel', 'React', 'Tailwind', 'SQLite'],
-    tags: ['Landing Page', 'KostHub'],
+    tags: ['Web App', 'KostHub'],
     category: 'Exploration',
     role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/KostHub_Web.git',
@@ -37,22 +38,10 @@ const PROJECTS = [
     shot: '/shots/kosthub-web.jpg',
     frame: 'browser',
   },
-  {
-    title: 'KostHub App - Boarding House Manager',
-    short: 'KostHub App',
-    desc: 'Boarding house management with financial efficiency and real-time room tracking.',
-    fullDesc:
-      'KostHub is a boarding house management platform: real-time occupancy tracking, automated financial reports, tenant management with digital contracts, and payment reminder notifications.',
-    tech: ['Java', 'Android', 'Firebase'],
-    tags: ['Mobile App', 'KostHub'],
-    category: 'Real Project',
-    role: 'Android Developer',
-    github: 'https://github.com/galxtria/KostHub.git',
-    year: '2026',
-    shot: '/shots/kosthub_app_new.png',
-    frame: 'phone',
-    tint: 'from-[#d7f1ea] to-[#aedfd3]',
-  },
+  // NOTE: Kartu "KostHub App" disembunyikan sementara — link
+  // https://github.com/galxtria/KostHub mengembalikan 404 dan stack-nya
+  // (Java/Android/Firebase) tidak terverifikasi. Tampilkan lagi setelah
+  // repo dipublikasikan / link diperbaiki.
   {
     title: 'My Music - Automated Music Player',
     short: 'My Music',
@@ -173,7 +162,7 @@ function SocialPill({ s, className }) {
       onClick={onClick}
       onMouseMove={spotMove}
       {...(s.label !== 'Email' ? { target: '_blank', rel: 'noreferrer' } : {})}
-      title={s.label === 'Email' ? 'Klik untuk menyalin email' : s.label}
+      title={s.label === 'Email' ? 'Click to copy email' : s.label}
       className={`${className} spot-pill`}
     >
       {copied ? (
@@ -293,6 +282,7 @@ function Navbar({ loaded }) {
   const { isDark, toggleTheme } = useTheme()
   const links = [
     { id: 'work', label: 'Work' },
+    { id: 'skills', label: 'Skills' },
     { id: 'experience', label: 'Experience' },
     { id: 'contact', label: 'Contact' },
   ]
@@ -412,7 +402,7 @@ function PortraitReveal() {
         <span className="absolute top-8 text-[64px] md:text-[84px] font-black text-white/60 select-none">G</span>
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
         <p className="relative z-10 pb-4 px-4 text-center text-[10px] font-medium text-white/90 leading-snug">
-          Foto tidak ditemukan
+          Photo not available
         </p>
       </div>
     )
@@ -516,15 +506,29 @@ function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-
   )
 }
 
-// ── Pemisah section: hairline gradasi + belah ketupat kecil, sengaja dibuat samar ──
+// ── Pemisah section: garis gradasi + pill label bernomor (nama section berikutnya) ──
 
-function SectionDivider({ className = 'bg-white dark:bg-[#0b0b0d]' }) {
+function SectionDivider({ className = 'bg-white dark:bg-[#0b0b0d]', index, label }) {
   return (
     <div aria-hidden className={`relative ${className}`}>
       <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="relative flex items-center justify-center py-1">
-          <span className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-black/15 to-transparent dark:via-white/15" />
-          <span className="relative h-1.5 w-1.5 rotate-45 bg-white ring-1 ring-black/15 dark:bg-[#0b0b0d] dark:ring-white/15" />
+        <div className="relative flex items-center gap-4 py-4">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent to-black/25 dark:to-white/25" />
+          {label ? (
+            <span className="flex shrink-0 items-center gap-2.5 rounded-full border border-black/10 bg-white px-4 py-1.5 shadow-sm dark:border-white/10 dark:bg-white/5">
+              {index && (
+                <>
+                  <span className="font-mono text-[10px] tracking-[0.2em] text-black/40 dark:text-white/40">{index}</span>
+                  <span className="h-3 w-px bg-black/15 dark:bg-white/15" />
+                </>
+              )}
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/60 dark:text-white/60">{label}</span>
+              <span className="h-1.5 w-1.5 rotate-45 bg-black/40 dark:bg-white/40" />
+            </span>
+          ) : (
+            <span className="relative h-1.5 w-1.5 rotate-45 bg-white ring-1 ring-black/15 dark:bg-[#0b0b0d] dark:ring-white/15" />
+          )}
+          <span className="h-px flex-1 bg-gradient-to-l from-transparent to-black/25 dark:to-white/25" />
         </div>
       </div>
     </div>
@@ -568,10 +572,13 @@ function Tilt({ className = '', max = 7, children }) {
 
 // ── Modal detail project + lightbox fullscreen (klik thumbnail → detail, klik gambar di modal → zoom) ──
 
-function ProjectModal({ p, index, onClose, onZoom }) {
+function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused }) {
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
+      if (paused) return
+      if (e.key === 'ArrowLeft') onPrev()
+      if (e.key === 'ArrowRight') onNext()
     }
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
@@ -579,7 +586,7 @@ function ProjectModal({ p, index, onClose, onZoom }) {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
     }
-  }, [onClose])
+  }, [onClose, onPrev, onNext, paused])
 
   return (
     <div
@@ -595,21 +602,21 @@ function ProjectModal({ p, index, onClose, onZoom }) {
       >
         <button
           onClick={onClose}
-          aria-label="Tutup detail"
+          aria-label="Close details"
           className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:bg-black/60 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
         >
           ✕
         </button>
         <button
           onClick={onZoom}
-          title="Klik untuk perbesar gambar"
+          title="Click to enlarge image"
           className="group/img relative block w-full cursor-zoom-in"
         >
           <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
             <Thumbnail p={p} zoom={false} vivid fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
             <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity group-hover/img:opacity-100">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-              Perbesar
+              Enlarge
             </span>
           </div>
         </button>
@@ -643,11 +650,41 @@ function ProjectModal({ p, index, onClose, onZoom }) {
             >
               View on GitHub <span aria-hidden>↗</span>
             </a>
+            {p.demo && (
+              <a
+                href={p.demo}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+              >
+                Live Demo <span aria-hidden>↗</span>
+              </a>
+            )}
             <button
               onClick={onClose}
               className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
             >
-              Tutup
+              Close
+            </button>
+          </div>
+          {/* Prev / Next antar project */}
+          <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-4 dark:border-white/10">
+            <button
+              onClick={onPrev}
+              aria-label="Previous project"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-black/50 hover:bg-black/5 hover:text-black transition-colors dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
+            >
+              <span aria-hidden>←</span> Prev
+            </button>
+            <span className="font-mono text-[11px] tracking-[0.2em] text-black/40 dark:text-white/40">
+              {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </span>
+            <button
+              onClick={onNext}
+              aria-label="Next project"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-black/50 hover:bg-black/5 hover:text-black transition-colors dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
+            >
+              Next <span aria-hidden>→</span>
             </button>
           </div>
         </div>
@@ -675,7 +712,7 @@ function Lightbox({ p, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`Perbesaran ${p.short}`}
+      aria-label={`Enlarged view of ${p.short}`}
     >
       <img
         src={p.shot}
@@ -684,9 +721,112 @@ function Lightbox({ p, onClose }) {
         className={`max-h-[85vh] w-auto max-w-full rounded-xl shadow-2xl ${p.frame === 'phone' ? 'object-contain' : 'object-contain'}`}
       />
       <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-white/60">
-        {p.short} · klik di mana saja / ESC untuk tutup
+        {p.short} · click anywhere or press ESC to close
       </p>
     </div>
+  )
+}
+
+// ── Skills: ringkasan stack yang dipakai di repo GitHub ──
+
+const SKILLS = [
+  {
+    group: 'Frontend',
+    blurb: 'Interfaces shipped to production across every project.',
+    icon: 'code',
+    items: ['React', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Bootstrap', 'Sass'],
+  },
+  {
+    group: 'Backend & Data',
+    blurb: 'The APIs and storage behind the web apps.',
+    icon: 'db',
+    items: ['Laravel', 'PHP', 'REST API', 'Sanctum Auth', 'SQLite', 'IndexedDB'],
+  },
+  {
+    group: 'Tools & Platform',
+    blurb: 'Build, deploy, and development support.',
+    icon: 'tool',
+    items: ['Vite', 'Git & GitHub', 'Vercel', 'PWA', 'Recharts', 'Leaflet', 'Zustand'],
+  },
+]
+
+function SkillIcon({ name, className }) {
+  const cls = className || 'h-5 w-5 text-white'
+  if (name === 'db')
+    return (
+      <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M3 5v14a9 3 0 0 0 18 0V5" />
+        <path d="M3 12a9 3 0 0 0 18 0" />
+      </svg>
+    )
+  if (name === 'tool')
+    return (
+      <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+      </svg>
+    )
+  return (
+    <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  )
+}
+
+function Skills() {
+  const ref = useReveal(0.08)
+  return (
+    <section id="skills" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
+      <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
+        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
+          SKILLS
+        </span>
+        <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SKILLS</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+            Stacks &amp; tools I use
+          </p>
+        </div>
+        <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
+          Tech taken from real projects — matching the source on GitHub.
+        </p>
+
+        {/* Index rows: ikon + label kiri, pills kanan, pemisah hairline */}
+        <div className="mx-auto mt-10 w-full max-w-6xl border-t border-black/10 dark:border-white/10">
+          {SKILLS.map((g, gi) => (
+            <div
+              key={g.group}
+              data-reveal
+              className="group grid gap-5 border-b border-black/10 py-6 transition-colors duration-300 hover:bg-black/[0.02] md:grid-cols-[300px_1fr] md:gap-8 md:px-4 dark:border-white/10 dark:hover:bg-white/[0.03]"
+            >
+              <div className="flex items-start gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-900 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-1 group-hover:-rotate-6 dark:bg-white dark:shadow-[0_10px_24px_-12px_rgba(0,0,0,0.8)]">
+                  <SkillIcon name={g.icon} className="h-5 w-5 text-white dark:text-black" />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+                    {String(gi + 1).padStart(2, '0')} — {g.items.length} stacks
+                  </p>
+                  <p className="mt-1.5 text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                    {g.group}
+                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-black/50 dark:text-white/50">{g.blurb}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap content-start gap-2 md:justify-end md:pt-1">
+                {g.items.map((s) => (
+                  <span key={s} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/30 hover:shadow-[0_10px_22px_-12px_rgba(0,0,0,0.35)] dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30">
+                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -761,7 +901,7 @@ function Work() {
                     ))}
                   </div>
 
-                  <div className="mt-6">
+                  <div className="mt-6 flex flex-wrap gap-3">
                     <a
                       href={p.github}
                       target="_blank"
@@ -770,6 +910,16 @@ function Work() {
                     >
                       View on GitHub <span aria-hidden>↗</span>
                     </a>
+                    {p.demo && (
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 transition-all hover:-translate-y-0.5 hover:border-black hover:text-black dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+                      >
+                        Live Demo <span aria-hidden>↗</span>
+                      </a>
+                    )}
                   </div>
                 </div>
 
@@ -787,8 +937,8 @@ function Work() {
                   <button
                     onClick={() => setActive(i)}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActive(i) }}
-                    title={`Lihat detail ${p.short}`}
-                    aria-label={`Lihat detail ${p.short}`}
+                    title={`View details ${p.short}`}
+                    aria-label={`View details ${p.short}`}
                     className="group/shot relative block w-full cursor-zoom-in text-left"
                   >
                   <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
@@ -799,7 +949,7 @@ function Work() {
                     <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/55 via-black/0 to-transparent pb-4 opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100">
                       <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[12px] font-semibold text-black shadow-lg dark:bg-black/85 dark:text-white">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                        Lihat detail
+                        View details
                       </span>
                     </span>
                   </div>
@@ -820,8 +970,12 @@ function Work() {
         <ProjectModal
           p={PROJECTS[active]}
           index={active}
+          total={total}
           onClose={() => setActive(null)}
           onZoom={() => setZoomed(true)}
+          onPrev={() => setActive((a) => (a - 1 + total) % total)}
+          onNext={() => setActive((a) => (a + 1) % total)}
+          paused={zoomed}
         />
       )}
       {zoomed && active !== null && (
@@ -977,7 +1131,7 @@ function ContactCard({ c }) {
     )
   }
   return (
-    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title="Klik untuk menyalin email" data-reveal className={cls}>
+    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title="Click to copy email" data-reveal className={cls}>
       {body}
     </button>
   )
@@ -1064,8 +1218,11 @@ export default function App() {
       <Navbar loaded={loaded} />
       <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <Hero visible={loaded} />
-        <SectionDivider />
+        <SectionDivider index="01" label="Selected Work" />
         <Work />
+        <SectionDivider index="02" label="Skills" />
+        <Skills />
+        <SectionDivider index="03" label="Background" />
         <Experience />
         <Contact />
       </main>
