@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useTheme } from './ThemeContext.jsx'
+import { useLang, localize } from './LanguageContext.jsx'
 
 // ── Thumbnail memakai screenshot asli di public/shots (tanpa import) ──
 
@@ -9,12 +11,17 @@ const PROJECTS = [
   {
     title: 'MoneyTrackerV2 - Smart Budget Planner',
     short: 'MoneyTrackerV2',
-    desc: 'Smart budget planner with daily safe-spend limits and automatic insights.',
-    fullDesc:
-      'MoneyTrackerV2 is an offline-first budget planner built with React, TypeScript, and Tailwind. Monthly budget tracking with daily safe-spend allowance, expense logging stored locally via Dexie.js (IndexedDB), charts with Recharts, and installable PWA support.',
+    desc: {
+      en: 'Smart budget planner with daily safe-spend limits and automatic insights.',
+      id: 'Perencana budget pintar dengan batas aman harian dan insight otomatis.',
+    },
+    fullDesc: {
+      en: 'MoneyTrackerV2 is an offline-first budget planner built with React, TypeScript, and Tailwind. Monthly budget tracking with daily safe-spend allowance, expense logging stored locally via Dexie.js (IndexedDB), charts with Recharts, and installable PWA support.',
+      id: 'MoneyTrackerV2 itu perencana budget yang offline-first, dibangun pakai React, TypeScript, dan Tailwind. Pantau budget bulanan plus jatah aman harian, catat pengeluaran yang kesimpen lokal via Dexie.js (IndexedDB), grafik pakai Recharts, dan bisa di-install sebagai PWA.',
+    },
     tech: ['React', 'TypeScript', 'Tailwind', 'Dexie.js', 'Recharts'],
-    tags: ['Mobile App', 'Personal'],
-    category: 'Real Project',
+    tags: { en: ['Mobile App', 'Personal'], id: ['Aplikasi Mobile', 'Personal'] },
+    category: { en: 'Real Project', id: 'Projek Nyata' },
     role: 'Frontend Developer',
     github: 'https://github.com/galxtria/MoneyTrackerV2.git',
     demo: 'https://moneytrackerv2-woad.vercel.app',
@@ -26,12 +33,17 @@ const PROJECTS = [
   {
     title: 'KostHub Web - Property Platform',
     short: 'KostHub Web',
-    desc: 'Full-stack boarding house web app with admin and user dashboards for property and order management.',
-    fullDesc:
-      'KostHub Web is a monorepo full-stack web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
+    desc: {
+      en: 'Full-stack boarding house web app with admin and user dashboards for property and order management.',
+      id: 'Web app kos-kosan full-stack dengan dashboard admin dan user buat ngatur properti sama order.',
+    },
+    fullDesc: {
+      en: 'KostHub Web is a monorepo full-stack web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
+      id: 'KostHub Web itu web app full-stack monorepo: REST API Laravel 12 dengan auth Sanctum dan penyimpanan SQLite, plus frontend React + Vite dengan React Router, Zustand, Tailwind, peta Leaflet, dan dukungan QR-code. Ada dashboard admin buat properti dan order, dan portal user buat cari properti dan booking.',
+    },
     tech: ['Laravel', 'React', 'Tailwind', 'SQLite'],
-    tags: ['Web App', 'KostHub'],
-    category: 'Exploration',
+    tags: { en: ['Web App', 'KostHub'], id: ['Web App', 'KostHub'] },
+    category: { en: 'Exploration', id: 'Eksplorasi' },
     role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/KostHub_Web.git',
     year: '2026',
@@ -45,12 +57,17 @@ const PROJECTS = [
   {
     title: 'My Music - Automated Music Player',
     short: 'My Music',
-    desc: 'Automated music player with intelligent playlist organization and seamless audio playback.',
-    fullDesc:
-      'My Music is a Laravel 12 + React music library app with Bootstrap and Tailwind styling, React Router navigation, and SQLite storage. Backend handles library indexing, metadata parsing, and preference storage with a Vite build setup.',
+    desc: {
+      en: 'Automated music player with intelligent playlist organization and seamless audio playback.',
+      id: 'Pemutar musik otomatis dengan playlist yang rapi dan playback yang mulus.',
+    },
+    fullDesc: {
+      en: 'My Music is a Laravel 12 + React music library app with Bootstrap and Tailwind styling, React Router navigation, and SQLite storage. Backend handles library indexing, metadata parsing, and preference storage with a Vite build setup.',
+      id: 'My Music itu aplikasi library musik Laravel 12 + React dengan styling Bootstrap dan Tailwind, navigasi React Router, dan penyimpanan SQLite. Backend-nya ngurus indexing library, parsing metadata, dan nyimpen preferensi, dibangun dengan setup Vite.',
+    },
     tech: ['Laravel', 'React', 'Bootstrap', 'Tailwind', 'SQLite'],
-    tags: ['Web App', 'Kumpin Studio'],
-    category: 'Real Project',
+    tags: { en: ['Web App', 'Kumpin Studio'], id: ['Web App', 'Kumpin Studio'] },
+    category: { en: 'Real Project', id: 'Projek Nyata' },
     role: 'Full-Stack Developer',
     github: 'https://github.com/galxtria/MyMusic.git',
     year: '2025',
@@ -63,10 +80,13 @@ const EDUCATION = [
   {
     id: 'instiki',
     period: '2024 — Present',
-    badge: 'Undergraduate',
+    badge: { en: 'Undergraduate', id: 'Mahasiswa' },
     place: 'Institut Bisnis dan Teknologi Indonesia',
     role: "S1 — Informatics",
-    desc: 'Focused on frontend development, cross-platform apps, and AI integration.',
+    desc: {
+      en: 'Focused on frontend development, cross-platform apps, and AI integration.',
+      id: 'Fokus di frontend, aplikasi cross-platform, sama integrasi AI.',
+    },
   },
   {
     id: 'smkn1',
@@ -74,7 +94,10 @@ const EDUCATION = [
     badge: null,
     place: 'SMK Negeri 1 Denpasar',
     role: 'Rekayasa Perangkat Lunak (RPL)',
-    desc: 'Vocational foundation in software engineering, covering programming fundamentals and web basics.',
+    desc: {
+      en: 'Vocational foundation in software engineering, covering programming fundamentals and web basics.',
+      id: 'Bekal SMK di rekayasa perangkat lunak — dasar programming sama web.',
+    },
   },
 ]
 
@@ -82,10 +105,13 @@ const WORK_EXPERIENCE = [
   {
     id: 'benlaris',
     period: 'Des 2022 – Feb 2023 • Jun 2023 – Sep 2023',
-    badge: 'Internship',
+    badge: { en: 'Internship', id: 'Magang' },
     place: 'PT Benlaris Sahabat Dewata',
-    role: 'Web & Graphic Design Intern',
-    desc: "Supported the company's web presence and visual design, covering responsive web pages and graphic design assets.",
+    role: { en: 'Web & Graphic Design Intern', id: 'Magang Web & Desain Grafis' },
+    desc: {
+      en: "Supported the company's web presence and visual design, covering responsive web pages and graphic design assets.",
+      id: 'Bantuin website sama desain visual perusahaan — dari halaman web responsif sampai aset grafis.',
+    },
   },
 ]
 
@@ -137,6 +163,7 @@ function SocialIcon({ label, className }) {
 // Pill sosmed: Email menyalin alamat saat diklik (dengan status "Copied!")
 function SocialPill({ s, className }) {
   const [copied, setCopied] = useState(false)
+  const { t } = useLang()
   const EMAIL = 'utamapradita5@gmail.com'
 
   const onClick = async (e) => {
@@ -162,7 +189,7 @@ function SocialPill({ s, className }) {
       onClick={onClick}
       onMouseMove={spotMove}
       {...(s.label !== 'Email' ? { target: '_blank', rel: 'noreferrer' } : {})}
-      title={s.label === 'Email' ? 'Click to copy email' : s.label}
+      title={s.label === 'Email' ? t('copy_title') : s.label}
       className={`${className} spot-pill`}
     >
       {copied ? (
@@ -172,7 +199,7 @@ function SocialPill({ s, className }) {
       ) : (
         <SocialIcon label={s.label} />
       )}
-      {copied ? 'Copied!' : s.label}
+      {copied ? t('copied') : s.label}
     </a>
   )
 }
@@ -273,37 +300,67 @@ function Splash({ onFinish }) {
   )
 }
 
+// ── Toggle bahasa US / ID ala segmented pill ──
+
+function LangToggle() {
+  const { lang, setLang, t } = useLang()
+  const seg = (code, label) => {
+    const on = lang === code
+    return (
+      <button
+        key={code}
+        onClick={() => setLang(code)}
+        aria-pressed={on}
+        title={code === 'en' ? 'English' : 'Bahasa Indonesia'}
+        className={`rounded-full px-2.5 py-1 text-[11px] transition-all ${
+          on
+            ? 'bg-zinc-200 font-extrabold text-black dark:bg-white/15 dark:text-white'
+            : 'font-medium text-black/40 hover:text-black dark:text-white/40 dark:hover:text-white'
+        }`}
+      >
+        {label}
+      </button>
+    )
+  }
+  return (
+    <div role="group" aria-label={t('lang_label')} className="flex items-center rounded-full border border-black/10 bg-white p-1 shadow-sm dark:border-white/15 dark:bg-white/5">
+      {seg('en', 'EN')}
+      {seg('id', 'ID')}
+    </div>
+  )
+}
+
 // ── Navbar (ref Image 1) ──
 
 function Navbar({ loaded }) {
-  const [active, setActive] = useState('Work')
+  const [active, setActive] = useState('work')
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { isDark, toggleTheme } = useTheme()
+  const { t } = useLang()
   const links = [
-    { id: 'work', label: 'Work' },
-    { id: 'skills', label: 'Skills' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'work', label: t('nav_work') },
+    { id: 'skills', label: t('nav_skills') },
+    { id: 'experience', label: t('nav_experience') },
+    { id: 'contact', label: t('nav_contact') },
   ]
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 24)
-      let cur = 'Work'
-      for (const l of links) {
-        const el = document.getElementById(l.id)
-        if (el && el.getBoundingClientRect().top <= 240) cur = l.label
+      let cur = 'work'
+      for (const l of ['work', 'skills', 'experience', 'contact']) {
+        const el = document.getElementById(l)
+        if (el && el.getBoundingClientRect().top <= 240) cur = l
       }
       setActive(cur)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const go = (id, label) => {
-    setActive(label)
+  const go = (id) => {
+    setActive(id)
     setOpen(false)
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -315,31 +372,32 @@ function Navbar({ loaded }) {
       }`}
     >
       <div className="mx-auto max-w-[1400px] px-4 md:px-8 pt-5">
-        <div className={`flex items-center justify-between gap-3 px-2 py-2 rounded-full border transition-all duration-300 ${
+        <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-2 py-2 rounded-full border transition-all duration-300 ${
           scrolled
             ? 'border-black/10 bg-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.10)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0b0d]/80 dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
             : 'border-transparent bg-transparent'
         }`}>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10 dark:border-white/15 dark:bg-white/10 dark:text-white"
+            className="flex w-fit items-center gap-2 justify-self-start rounded-full bg-white px-4 py-1.5 text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10 dark:border-white/15 dark:bg-white/10 dark:text-white"
           >
             GALXTRIA
           </button>
 
-          <nav className="hidden md:flex items-center gap-7 text-[13px] font-medium">
+          <nav className="hidden md:flex items-center gap-7 text-[13px] font-medium justify-self-center">
             {links.map((l) => (
               <button
                 key={l.id}
-                onClick={() => go(l.id, l.label)}
-                className={`transition-colors hover:text-black dark:hover:text-white ${active === l.label ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
+                onClick={() => go(l.id)}
+                className={`transition-colors hover:text-black dark:hover:text-white ${active === l.id ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
               >
                 {l.label}
               </button>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 justify-self-end">
+            <LangToggle />
             <button
               onClick={toggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -358,12 +416,12 @@ function Navbar({ loaded }) {
               )}
             </button>
             <button
-              onClick={() => go('contact', 'Contact')}
+              onClick={() => go('contact')}
               className="btn-shine hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
-              Let&apos;s Talk <span aria-hidden>↗</span>
+              {t('nav_talk')} <span aria-hidden>↗</span>
             </button>
-            <button onClick={() => setOpen((o) => !o)} className="md:hidden p-2" aria-label="Menu">
+            <button onClick={() => setOpen((o) => !o)} className="md:hidden p-2" aria-label={t('nav_menu')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 {open ? (<><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></>) : (<><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></>)}
               </svg>
@@ -376,8 +434,8 @@ function Navbar({ loaded }) {
             {links.map((l) => (
               <button
                 key={l.id}
-                onClick={() => go(l.id, l.label)}
-                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium ${active === l.label ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/70 dark:text-white/70'}`}
+                onClick={() => go(l.id)}
+                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium ${active === l.id ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/70 dark:text-white/70'}`}
               >
                 {l.label}
               </button>
@@ -392,6 +450,7 @@ function Navbar({ loaded }) {
 // ── Foto portrait: hitam-putih, jadi berwarna penuh + zoom halus saat hover ──
 
 function PortraitReveal() {
+  const { t } = useLang()
   const [src, setSrc] = useState('/portrait-cutout.png')
 
   const onFail = () => setSrc((s) => (s === '/portrait-cutout.png' ? '/potrait.png' : 'placeholder'))
@@ -402,7 +461,7 @@ function PortraitReveal() {
         <span className="absolute top-8 text-[64px] md:text-[84px] font-black text-white/60 select-none">G</span>
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
         <p className="relative z-10 pb-4 px-4 text-center text-[10px] font-medium text-white/90 leading-snug">
-          Photo not available
+          {t('photo_na')}
         </p>
       </div>
     )
@@ -424,6 +483,7 @@ function PortraitReveal() {
 // ── Hero (ref Image 1): 1 baris outline+solid, foto overlap teks, info kiri-bawah + sosmed kanan-bawah ──
 
 function Hero({ visible }) {
+  const { t } = useLang()
   return (
     <section id="home" className="relative flex min-h-[100svh] flex-col bg-white dark:bg-[#0b0b0d] pt-24 md:pt-28">
       <div className="flex w-full flex-1 flex-col justify-center px-4 md:px-8">
@@ -442,9 +502,9 @@ function Hero({ visible }) {
         {/* Baris bawah: info kiri — foto tengah overlap teks — sosmed kanan */}
         <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:gap-4 items-end -mt-[6vw] md:-mt-[6vw]">
           <div className="rise-in order-2 md:order-1 text-center md:text-left md:pb-20" style={{ animationDelay: '300ms' }}>
-            <p className="text-xl font-bold">Frontend Developer</p>
+            <p className="text-xl font-bold">{t('hero_role')}</p>
             <p className="mx-auto md:mx-0 mt-1 max-w-[280px] text-[13px] leading-relaxed text-black/55 dark:text-white/55">
-              Designing digital products that are clear, usable, and conversion focused.
+              {t('hero_tagline')}
             </p>
             <p className="mx-auto md:mx-0 mt-3 flex max-w-[280px] items-center justify-center md:justify-start gap-1.5 text-[12px] font-medium text-black/55 dark:text-white/55">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -463,7 +523,7 @@ function Hero({ visible }) {
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
-                Download CV
+                {t('hero_cv')}
               </a>
           </div>
 
@@ -506,35 +566,6 @@ function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-
   )
 }
 
-// ── Pemisah section: garis gradasi + pill label bernomor (nama section berikutnya) ──
-
-function SectionDivider({ className = 'bg-white dark:bg-[#0b0b0d]', index, label }) {
-  return (
-    <div aria-hidden className={`relative ${className}`}>
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12">
-        <div className="relative flex items-center gap-4 py-4">
-          <span className="h-px flex-1 bg-gradient-to-r from-transparent to-black/25 dark:to-white/25" />
-          {label ? (
-            <span className="flex shrink-0 items-center gap-2.5 rounded-full border border-black/10 bg-white px-4 py-1.5 shadow-sm dark:border-white/10 dark:bg-white/5">
-              {index && (
-                <>
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-black/40 dark:text-white/40">{index}</span>
-                  <span className="h-3 w-px bg-black/15 dark:bg-white/15" />
-                </>
-              )}
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/60 dark:text-white/60">{label}</span>
-              <span className="h-1.5 w-1.5 rotate-45 bg-black/40 dark:bg-white/40" />
-            </span>
-          ) : (
-            <span className="relative h-1.5 w-1.5 rotate-45 bg-white ring-1 ring-black/15 dark:bg-[#0b0b0d] dark:ring-white/15" />
-          )}
-          <span className="h-px flex-1 bg-gradient-to-l from-transparent to-black/25 dark:to-white/25" />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ── Efek 3D tilt mengikuti kursor untuk preview project (pengganti zoom) ──
 
 function Tilt({ className = '', max = 7, children }) {
@@ -573,6 +604,8 @@ function Tilt({ className = '', max = 7, children }) {
 // ── Modal detail project + lightbox fullscreen (klik thumbnail → detail, klik gambar di modal → zoom) ──
 
 function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused }) {
+  const { lang, t } = useLang()
+  const L = (v) => localize(lang, v)
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -590,7 +623,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm"
+      className="backdrop-in fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -598,25 +631,25 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#141416]"
+        className="modal-in relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#141416]"
       >
         <button
           onClick={onClose}
-          aria-label="Close details"
-          className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:bg-black/60 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+          aria-label={t('modal_close_details')}
+          className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/70 shadow-lg hover:border-black hover:text-black transition-colors dark:border-white/15 dark:bg-black/60 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
         >
           ✕
         </button>
         <button
           onClick={onZoom}
-          title="Click to enlarge image"
+          title={t('modal_enlarge_title')}
           className="group/img relative block w-full cursor-zoom-in"
         >
           <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
             <Thumbnail p={p} zoom={false} vivid fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
             <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity group-hover/img:opacity-100">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-              Enlarge
+              {t('modal_enlarge')}
             </span>
           </div>
         </button>
@@ -626,18 +659,18 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
               {String(index + 1).padStart(2, '0')}
             </span>
             <span className="rounded-full border border-black/15 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/55 dark:border-white/20 dark:text-white/60">
-              {p.category}
+              {L(p.category)}
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.year} · {p.tags[0]}</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.year} · {L(p.tags)[0]}</span>
           </div>
           <h3 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight">{p.title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">{p.fullDesc}</p>
-          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">Role — {p.role}</p>
+          <p className="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">{L(p.fullDesc)}</p>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{t('role_prefix')} — {p.role}</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            {p.tech.map((t) => (
-              <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+            {p.tech.map((tech) => (
+              <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
-                {t}
+                {tech}
               </span>
             ))}
           </div>
@@ -648,7 +681,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
               rel="noreferrer"
               className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
-              View on GitHub <span aria-hidden>↗</span>
+              {t('btn_github')} <span aria-hidden>↗</span>
             </a>
             {p.demo && (
               <a
@@ -657,34 +690,34 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
               >
-                Live Demo <span aria-hidden>↗</span>
+                {t('btn_demo')} <span aria-hidden>↗</span>
               </a>
             )}
             <button
               onClick={onClose}
               className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
             >
-              Close
+              {t('modal_close')}
             </button>
           </div>
           {/* Prev / Next antar project */}
           <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-4 dark:border-white/10">
             <button
               onClick={onPrev}
-              aria-label="Previous project"
+              aria-label={t('modal_prev_aria')}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-black/50 hover:bg-black/5 hover:text-black transition-colors dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
             >
-              <span aria-hidden>←</span> Prev
+              <span aria-hidden>←</span> {t('modal_prev')}
             </button>
             <span className="font-mono text-[11px] tracking-[0.2em] text-black/40 dark:text-white/40">
               {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
             </span>
             <button
               onClick={onNext}
-              aria-label="Next project"
+              aria-label={t('modal_next_aria')}
               className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-black/50 hover:bg-black/5 hover:text-black transition-colors dark:text-white/50 dark:hover:bg-white/10 dark:hover:text-white"
             >
-              Next <span aria-hidden>→</span>
+              {t('modal_next')} <span aria-hidden>→</span>
             </button>
           </div>
         </div>
@@ -694,6 +727,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
 }
 
 function Lightbox({ p, onClose }) {
+  const { t } = useLang()
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -712,7 +746,7 @@ function Lightbox({ p, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`Enlarged view of ${p.short}`}
+      aria-label={t('lightbox_of', { x: p.short })}
     >
       <img
         src={p.shot}
@@ -721,7 +755,7 @@ function Lightbox({ p, onClose }) {
         className={`max-h-[85vh] w-auto max-w-full rounded-xl shadow-2xl ${p.frame === 'phone' ? 'object-contain' : 'object-contain'}`}
       />
       <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-white/60">
-        {p.short} · click anywhere or press ESC to close
+        {p.short} · {t('lightbox_hint')}
       </p>
     </div>
   )
@@ -731,51 +765,23 @@ function Lightbox({ p, onClose }) {
 
 const SKILLS = [
   {
-    group: 'Frontend',
-    blurb: 'Interfaces shipped to production across every project.',
-    icon: 'code',
+    group: { en: 'Frontend', id: 'Frontend' },
     items: ['React', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Bootstrap', 'Sass'],
   },
   {
-    group: 'Backend & Data',
-    blurb: 'The APIs and storage behind the web apps.',
-    icon: 'db',
+    group: { en: 'Backend & Data', id: 'Backend & Data' },
     items: ['Laravel', 'PHP', 'REST API', 'Sanctum Auth', 'SQLite', 'IndexedDB'],
   },
   {
-    group: 'Tools & Platform',
-    blurb: 'Build, deploy, and development support.',
-    icon: 'tool',
-    items: ['Vite', 'Git & GitHub', 'Vercel', 'PWA', 'Recharts', 'Leaflet', 'Zustand'],
+    group: { en: 'Tools & Platform', id: 'Tools & Platform' },
+    items: ['Vite', 'Git & GitHub', 'Vercel', 'PWA', 'Recharts', 'Leaflet', 'Zustand', 'Figma', 'VS Code', 'npm', 'Chrome DevTools'],
   },
 ]
 
-function SkillIcon({ name, className }) {
-  const cls = className || 'h-5 w-5 text-white'
-  if (name === 'db')
-    return (
-      <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <ellipse cx="12" cy="5" rx="9" ry="3" />
-        <path d="M3 5v14a9 3 0 0 0 18 0V5" />
-        <path d="M3 12a9 3 0 0 0 18 0" />
-      </svg>
-    )
-  if (name === 'tool')
-    return (
-      <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-      </svg>
-    )
-  return (
-    <svg className={cls} fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
-    </svg>
-  )
-}
-
 function Skills() {
   const ref = useReveal(0.08)
+  const { lang, t } = useLang()
+  const L = (v) => localize(lang, v)
   return (
     <section id="skills" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
@@ -783,40 +789,34 @@ function Skills() {
           SKILLS
         </span>
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SKILLS</h2>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t('skills_title')}</h2>
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
-            Stacks &amp; tools I use
+            {t('skills_sub')}
           </p>
         </div>
         <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
-          Tech taken from real projects — matching the source on GitHub.
+          {t('skills_desc')}
         </p>
 
-        {/* Index rows: ikon + label kiri, pills kanan, pemisah hairline */}
+        {/* Daftar grup simpel: nomor + nama di kiri, pills di kanan */}
         <div className="mx-auto mt-10 w-full max-w-6xl border-t border-black/10 dark:border-white/10">
           {SKILLS.map((g, gi) => (
             <div
-              key={g.group}
+              key={L(g.group)}
               data-reveal
-              className="group grid gap-5 border-b border-black/10 py-6 transition-colors duration-300 hover:bg-black/[0.02] md:grid-cols-[300px_1fr] md:gap-8 md:px-4 dark:border-white/10 dark:hover:bg-white/[0.03]"
+              className="group flex flex-col gap-4 border-b border-black/10 py-7 transition-colors duration-300 hover:bg-black/[0.02] md:flex-row md:items-baseline md:gap-8 dark:border-white/10 dark:hover:bg-white/[0.03]"
             >
-              <div className="flex items-start gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-900 shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-1 group-hover:-rotate-6 dark:bg-white dark:shadow-[0_10px_24px_-12px_rgba(0,0,0,0.8)]">
-                  <SkillIcon name={g.icon} className="h-5 w-5 text-white dark:text-black" />
+              <p className="flex shrink-0 items-baseline gap-3 md:w-60">
+                <span className="font-mono text-[11px] tracking-[0.2em] text-black/40 dark:text-white/40">
+                  {String(gi + 1).padStart(2, '0')}
                 </span>
-                <div className="min-w-0">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
-                    {String(gi + 1).padStart(2, '0')} — {g.items.length} stacks
-                  </p>
-                  <p className="mt-1.5 text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
-                    {g.group}
-                  </p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-black/50 dark:text-white/50">{g.blurb}</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap content-start gap-2 md:justify-end md:pt-1">
+                <span className="text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+                  {L(g.group)}
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-2">
                 {g.items.map((s) => (
-                  <span key={s} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/30 hover:shadow-[0_10px_22px_-12px_rgba(0,0,0,0.35)] dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30">
+                  <span key={s} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 transition-colors duration-300 hover:border-black/30 dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30">
                     <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
                     {s}
                   </span>
@@ -834,6 +834,8 @@ function Skills() {
 
 function Work() {
   const ref = useReveal(0.08)
+  const { lang, t } = useLang()
+  const L = (v) => localize(lang, v)
   const [active, setActive] = useState(null)
   const [zoomed, setZoomed] = useState(false)
   const total = PROJECTS.length
@@ -845,13 +847,13 @@ function Work() {
           PORTFOLIO
         </span>
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/SELECTED WORK</h2>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t('work_title')}</h2>
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
-            {String(total).padStart(2, '0')} projects · 2025 / 26
+            {String(total).padStart(2, '0')} {t('work_meta')}
           </p>
         </div>
         <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
-          Showcase of selected work with previews, stacks, and sources.
+          {t('work_sub')}
         </p>
 
         <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
@@ -869,21 +871,21 @@ function Work() {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className="rounded-full border border-black/15 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/55 dark:border-white/20 dark:text-white/60">
-                      {p.category}
+                      {L(p.category)}
                     </span>
                   </div>
                   <h3 className="mt-4 text-2xl md:text-4xl font-extrabold leading-[1.05] tracking-tight">
                     {p.title}
                   </h3>
                   <p className="mt-4 max-w-xl text-[13px] md:text-sm leading-relaxed text-black/55 dark:text-white/55">
-                    {p.fullDesc}
+                    {L(p.fullDesc)}
                   </p>
 
                   <dl className="mt-6 grid max-w-md grid-cols-3 gap-4">
                     {[
-                      ['Year', p.year],
-                      ['Platform', p.tags[0]],
-                      ['Role', p.role],
+                      [t('lbl_year'), p.year],
+                      [t('lbl_platform'), L(p.tags)[0]],
+                      [t('lbl_role'), p.role],
                     ].map(([label, value]) => (
                       <div key={label} className="border-l border-black/15 pl-3 dark:border-white/20">
                         <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{label}</dt>
@@ -893,10 +895,10 @@ function Work() {
                   </dl>
 
                   <div className="mt-5 flex flex-wrap gap-2">
-                    {p.tech.map((t) => (
-                      <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                    {p.tech.map((tech) => (
+                      <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
                         <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
-                        {t}
+                        {tech}
                       </span>
                     ))}
                   </div>
@@ -908,7 +910,7 @@ function Work() {
                       rel="noreferrer"
                       className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                     >
-                      View on GitHub <span aria-hidden>↗</span>
+                      {t('btn_github')} <span aria-hidden>↗</span>
                     </a>
                     {p.demo && (
                       <a
@@ -917,7 +919,7 @@ function Work() {
                         rel="noreferrer"
                         className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 transition-all hover:-translate-y-0.5 hover:border-black hover:text-black dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
                       >
-                        Live Demo <span aria-hidden>↗</span>
+                        {t('btn_demo')} <span aria-hidden>↗</span>
                       </a>
                     )}
                   </div>
@@ -937,8 +939,8 @@ function Work() {
                   <button
                     onClick={() => setActive(i)}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActive(i) }}
-                    title={`View details ${p.short}`}
-                    aria-label={`View details ${p.short}`}
+                    title={t('view_details', { x: p.short })}
+                    aria-label={t('view_details', { x: p.short })}
                     className="group/shot relative block w-full cursor-zoom-in text-left"
                   >
                   <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
@@ -949,7 +951,7 @@ function Work() {
                     <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/55 via-black/0 to-transparent pb-4 opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100">
                       <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[12px] font-semibold text-black shadow-lg dark:bg-black/85 dark:text-white">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                        View details
+                        {t('view_details_short')}
                       </span>
                     </span>
                   </div>
@@ -962,25 +964,28 @@ function Work() {
 
         <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
-          Selected 2025 / 26 · preview &amp; source
+          {t('work_foot')}
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
       </div>
-      {active !== null && (
-        <ProjectModal
-          p={PROJECTS[active]}
-          index={active}
-          total={total}
-          onClose={() => setActive(null)}
-          onZoom={() => setZoomed(true)}
-          onPrev={() => setActive((a) => (a - 1 + total) % total)}
-          onNext={() => setActive((a) => (a + 1) % total)}
-          paused={zoomed}
-        />
-      )}
-      {zoomed && active !== null && (
-        <Lightbox p={PROJECTS[active]} onClose={() => setZoomed(false)} />
-      )}
+      {/* Portal ke body: keluar dari stacking context <main>, jadi tidak ketutup navbar */}
+      {active !== null &&
+        createPortal(
+          <ProjectModal
+            p={PROJECTS[active]}
+            index={active}
+            total={total}
+            onClose={() => setActive(null)}
+            onZoom={() => setZoomed(true)}
+            onPrev={() => setActive((a) => (a - 1 + total) % total)}
+            onNext={() => setActive((a) => (a + 1) % total)}
+            paused={zoomed}
+          />,
+          document.body
+        )}
+      {zoomed &&
+        active !== null &&
+        createPortal(<Lightbox p={PROJECTS[active]} onClose={() => setZoomed(false)} />, document.body)}
     </section>
   )
 }
@@ -988,6 +993,8 @@ function Work() {
 // ── Background: konsep 2 kolom (Education + Experience) sebagai timeline gaya web ──
 
 function TimelineItem({ item, first }) {
+  const { lang } = useLang()
+  const L = (v) => localize(lang, v)
   return (
     <li
       data-reveal
@@ -1007,21 +1014,22 @@ function TimelineItem({ item, first }) {
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{item.period}</p>
         {item.badge && (
           <span className="shrink-0 rounded-full border border-white/20 px-3.5 py-1 text-[11px] font-medium text-white/75 dark:border-black/20 dark:text-black/70">
-            {item.badge}
+            {L(item.badge)}
           </span>
         )}
       </div>
       <p className="mt-3 text-xl md:text-2xl font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
         {item.place}
       </p>
-      <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">{item.role}</p>
-      <p className="mt-3 max-w-md text-[13px] md:text-sm leading-relaxed text-white/55 dark:text-black/60">{item.desc}</p>
+      <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">{L(item.role)}</p>
+      <p className="mt-3 max-w-md text-[13px] md:text-sm leading-relaxed text-white/55 dark:text-black/60">{L(item.desc)}</p>
     </li>
   )
 }
 
 function Experience() {
   const ref = useReveal(0.08)
+  const { t } = useLang()
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
       <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
@@ -1029,16 +1037,16 @@ function Experience() {
       </span>
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
         <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl md:text-4xl font-black tracking-tight">/BACKGROUND</h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Education &amp; Experience</p>
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t('exp_title')}</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_sub')}</p>
         </div>
         <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50 dark:text-black/60">
-          Schooling &amp; roles, presented as a two column index.
+          {t('exp_desc')}
         </p>
 
         <div className="mx-auto mt-10 md:mt-14 grid w-full max-w-6xl gap-10 md:grid-cols-2 md:gap-14">
           <div data-reveal>
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Education</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_edu')}</p>
             <ul className="mt-8">
               {EDUCATION.map((item, i) => (
                 <TimelineItem key={item.id} item={item} first={i === 0} />
@@ -1046,7 +1054,7 @@ function Experience() {
             </ul>
           </div>
           <div data-reveal>
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">Experience</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_exp')}</p>
             <ul className="mt-8">
               {WORK_EXPERIENCE.map((item, i) => (
                 <TimelineItem key={item.id} item={item} first={i === 0} />
@@ -1070,6 +1078,7 @@ const CONTACT_CARDS = [
 
 function ContactCard({ c }) {
   const [copied, setCopied] = useState(false)
+  const { t } = useLang()
   const ref = useRef(null)
 
   const copyEmail = async (e) => {
@@ -1104,7 +1113,7 @@ function ContactCard({ c }) {
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">{c.label}</span>
-        <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85 dark:text-white/90">{copied ? 'Copied!' : c.value}</span>
+        <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85 dark:text-white/90">{copied ? t('copied') : c.value}</span>
       </span>
       <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 group-hover:border-black group-hover:text-white dark:border-white/15 dark:text-white/50 dark:group-hover:border-white">
         {c.href ? (
@@ -1131,7 +1140,7 @@ function ContactCard({ c }) {
     )
   }
   return (
-    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title="Click to copy email" data-reveal className={cls}>
+    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title={t('copy_title')} data-reveal className={cls}>
       {body}
     </button>
   )
@@ -1141,6 +1150,7 @@ function ContactCard({ c }) {
 
 function BackToTop({ visible }) {
   const [show, setShow] = useState(false)
+  const { t } = useLang()
 
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 600)
@@ -1153,8 +1163,8 @@ function BackToTop({ visible }) {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      aria-label="Back to top"
-      title="Back to top"
+      aria-label={t('back_top')}
+      title={t('back_top')}
       className={`fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/10 dark:text-white/70 dark:hover:border-white dark:hover:text-white ${
         show ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
       }`}
@@ -1166,6 +1176,7 @@ function BackToTop({ visible }) {
 
 function Contact() {
   const ref = useReveal(0.1)
+  const { t } = useLang()
   return (
     <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5 dark:bg-black/40 dark:border-white/10">
       {/* Watermark + cahaya lembut */}
@@ -1179,18 +1190,18 @@ function Contact() {
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24 text-center">
         <p data-reveal className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-black/40 dark:text-white/40">
           <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
-          Get in touch
+          {t('contact_eyebrow')}
           <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
         </p>
         <h2 data-reveal className="contact-headline mt-4 text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-          <span className="rise-in inline-block" style={{ animationDelay: '100ms' }}>Let&apos;s</span>{' '}
-          <span className="rise-in inline-block" style={{ animationDelay: '200ms' }}>Build</span>
+          <span className="rise-in inline-block" style={{ animationDelay: '100ms' }}>{t('contact_hl_1')}</span>{' '}
+          <span className="rise-in inline-block" style={{ animationDelay: '200ms' }}>{t('contact_hl_2')}</span>
           <br />
-          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '320ms' }}>Something</span>{' '}
-          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '420ms' }}>Amazing</span>
+          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '320ms' }}>{t('contact_hl_3')}</span>{' '}
+          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '420ms' }}>{t('contact_hl_4')}</span>
         </h2>
         <p data-reveal className="mx-auto mt-5 max-w-2xl text-sm md:text-[15px] leading-relaxed text-black/55 dark:text-white/55">
-          Got a project in mind? Let&apos;s collaborate and create something extraordinary together.
+          {t('contact_desc')}
         </p>
         <div className="mx-auto mt-12 grid max-w-4xl gap-5 text-left sm:grid-cols-2">
           {CONTACT_CARDS.map((c) => (
@@ -1218,11 +1229,8 @@ export default function App() {
       <Navbar loaded={loaded} />
       <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
         <Hero visible={loaded} />
-        <SectionDivider index="01" label="Selected Work" />
         <Work />
-        <SectionDivider index="02" label="Skills" />
         <Skills />
-        <SectionDivider index="03" label="Background" />
         <Experience />
         <Contact />
       </main>
