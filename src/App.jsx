@@ -216,8 +216,13 @@ function useReveal(threshold = 0.12) {
     const revealNew = () => {
       const fresh = [...el.querySelectorAll('[data-reveal]:not(.revealed)')]
       fresh.forEach((c, i) => {
-        c.style.transitionDelay = `${i * 90}ms`
+        const delay = i * 90
+        c.style.transitionDelay = `${delay}ms`
         requestAnimationFrame(() => requestAnimationFrame(() => c.classList.add('revealed')))
+        // Hapus delay setelah animasi selesai agar transisi hover tidak ikut tertunda.
+        setTimeout(() => {
+          c.style.transitionDelay = ''
+        }, 1000 + delay)
       })
     }
     const obs = new IntersectionObserver(
@@ -568,7 +573,7 @@ function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-
 
 // ── Efek 3D tilt mengikuti kursor untuk preview project (pengganti zoom) ──
 
-function Tilt({ className = '', max = 7, children }) {
+function Tilt({ className = '', max = 7, reveal, children }) {
   const ref = useRef(null)
 
   const onMove = (e) => {
@@ -592,6 +597,7 @@ function Tilt({ className = '', max = 7, children }) {
   return (
     <figure
       ref={ref}
+      data-reveal={reveal}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       className={`${className} will-change-transform transition-shadow duration-500 hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] dark:hover:shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)]`}
@@ -785,7 +791,7 @@ function Skills() {
   return (
     <section id="skills" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
-        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
+        <span data-reveal="fade" aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
           SKILLS
         </span>
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
@@ -843,7 +849,7 @@ function Work() {
   return (
     <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
-        <span aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
+        <span data-reveal="fade" aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
           PORTFOLIO
         </span>
         <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
@@ -926,7 +932,7 @@ function Work() {
                 </div>
 
                 {/* Klik thumbnail → buka modal detail; gambar di modal bisa di-zoom fullscreen */}
-                <Tilt className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
+                <Tilt reveal="scale" className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
                   <div className="flex items-center gap-2 border-b border-black/10 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
                     <span aria-hidden className="flex gap-1.5">
                       <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
@@ -1032,7 +1038,7 @@ function Experience() {
   const { t } = useLang()
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
-      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
+      <span data-reveal="fade" aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
         BACKGROUND
       </span>
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
@@ -1180,7 +1186,7 @@ function Contact() {
   return (
     <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5 dark:bg-black/40 dark:border-white/10">
       {/* Watermark + cahaya lembut */}
-      <span aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
+      <span data-reveal="fade" aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
         CONTACT
       </span>
       <span aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-white/70 blur-3xl dark:bg-white/[0.07]" />

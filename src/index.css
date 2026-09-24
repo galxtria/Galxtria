@@ -133,16 +133,33 @@ body {
   -webkit-text-stroke: 1.5px rgba(255,255,255,0.22);
 }
 
-/* ── Reveal on scroll ── */
+/* ── Reveal on scroll: naik + blur menipis + sedikit scale, easing buttery ── */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(34px) scale(0.985);
+  filter: blur(8px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16,1,0.3,1),
+    transform 0.9s cubic-bezier(0.16,1,0.3,1),
+    filter 0.9s cubic-bezier(0.16,1,0.3,1);
+  will-change: opacity, transform, filter;
 }
 [data-reveal].revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  will-change: auto;
 }
+/* Varian arah */
+[data-reveal="left"] { transform: translateX(-40px) scale(0.985); }
+[data-reveal="left"].revealed { transform: translateX(0) scale(1); }
+[data-reveal="right"] { transform: translateX(40px) scale(0.985); }
+[data-reveal="right"].revealed { transform: translateX(0) scale(1); }
+[data-reveal="scale"] { transform: translateY(16px) scale(0.94); }
+[data-reveal="scale"].revealed { transform: translateY(0) scale(1); }
+/* Watermark & dekorasi: hanya memudar perlahan */
+[data-reveal="fade"] { transform: none; filter: none; transition-duration: 1.4s; }
+[data-reveal="fade"].revealed { transform: none; filter: none; }
 
 /* ── Hero entrance ── */
 @keyframes rise-in {
