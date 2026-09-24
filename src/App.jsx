@@ -11,8 +11,8 @@ const PROJECTS = [
     short: 'MoneyTrackerV2',
     desc: 'Smart budget planner with daily safe-spend limits and automatic insights.',
     fullDesc:
-      'MoneyTrackerV2 is a budget planning app built with TypeScript and Tailwind. Monthly budget tracking with remaining-budget overview, daily safe-spend allowance calculation, expense logging, and automatic insights that update with every new transaction.',
-    tech: ['TypeScript', 'Tailwind'],
+      'MoneyTrackerV2 is an offline-first budget planner built with React, TypeScript, and Tailwind. Monthly budget tracking with daily safe-spend allowance, expense logging stored locally via Dexie.js (IndexedDB), charts with Recharts, and installable PWA support.',
+    tech: ['React', 'TypeScript', 'Tailwind', 'Dexie.js', 'Recharts'],
     tags: ['Mobile App', 'Personal'],
     category: 'Real Project',
     role: 'Frontend Developer',
@@ -27,8 +27,8 @@ const PROJECTS = [
     short: 'KostHub Web',
     desc: 'Full-stack boarding house platform with property discovery and order management.',
     fullDesc:
-      'KostHub Web is the web counterpart built with Laravel, React, and Tailwind. Property search with filters, curated recommendations, tenant dashboard, and billing management.',
-    tech: ['Laravel', 'React', 'Tailwind'],
+      'KostHub Web is a monorepo full-stack app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React + Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR-code support for property discovery and order management.',
+    tech: ['Laravel', 'React', 'Tailwind', 'SQLite'],
     tags: ['Landing Page', 'KostHub'],
     category: 'Exploration',
     role: 'Full-Stack Developer',
@@ -58,8 +58,8 @@ const PROJECTS = [
     short: 'My Music',
     desc: 'Automated music player with intelligent playlist organization and seamless audio playback.',
     fullDesc:
-      'My Music is a feature-rich music player with intelligent playlist curation, crossfade transitions, equalizer controls, and a responsive interface. Backend handles library indexing, metadata parsing, and preference storage.',
-    tech: ['Laravel', 'MySQL', 'React', 'Tailwind'],
+      'My Music is a Laravel 12 + React music library app with Bootstrap and Tailwind styling, React Router navigation, and SQLite storage. Backend handles library indexing, metadata parsing, and preference storage with a Vite build setup.',
+    tech: ['Laravel', 'React', 'Bootstrap', 'Tailwind', 'SQLite'],
     tags: ['Web App', 'Kumpin Studio'],
     category: 'Real Project',
     role: 'Full-Stack Developer',
@@ -566,10 +566,136 @@ function Tilt({ className = '', max = 7, children }) {
   )
 }
 
+// ── Modal detail project + lightbox fullscreen (klik thumbnail → detail, klik gambar di modal → zoom) ──
+
+function ProjectModal({ p, index, onClose, onZoom }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={p.title}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#141416]"
+      >
+        <button
+          onClick={onClose}
+          aria-label="Tutup detail"
+          className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:bg-black/60 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+        >
+          ✕
+        </button>
+        <button
+          onClick={onZoom}
+          title="Klik untuk perbesar gambar"
+          className="group/img relative block w-full cursor-zoom-in"
+        >
+          <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
+            <Thumbnail p={p} zoom={false} vivid fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
+            <span className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-white opacity-0 transition-opacity group-hover/img:opacity-100">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+              Perbesar
+            </span>
+          </div>
+        </button>
+        <div className="p-6 md:p-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="font-mono text-[12px] tracking-[0.2em] text-black/40 dark:text-white/40">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span className="rounded-full border border-black/15 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/55 dark:border-white/20 dark:text-white/60">
+              {p.category}
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.year} · {p.tags[0]}</span>
+          </div>
+          <h3 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight">{p.title}</h3>
+          <p className="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">{p.fullDesc}</p>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">Role — {p.role}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {p.tech.map((t) => (
+              <span key={t} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a
+              href={p.github}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            >
+              View on GitHub <span aria-hidden>↗</span>
+            </a>
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Lightbox({ p, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm cursor-zoom-out"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Perbesaran ${p.short}`}
+    >
+      <img
+        src={p.shot}
+        alt={p.short}
+        onClick={onClose}
+        className={`max-h-[85vh] w-auto max-w-full rounded-xl shadow-2xl ${p.frame === 'phone' ? 'object-contain' : 'object-contain'}`}
+      />
+      <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-white/60">
+        {p.short} · klik di mana saja / ESC untuk tutup
+      </p>
+    </div>
+  )
+}
+
 // ── Selected Work: showcase 2 kolom selang-seling, thumbnail ringkas ──
 
 function Work() {
   const ref = useReveal(0.08)
+  const [active, setActive] = useState(null)
+  const [zoomed, setZoomed] = useState(false)
   const total = PROJECTS.length
 
   return (
@@ -647,8 +773,7 @@ function Work() {
                   </div>
                 </div>
 
-                {/* Satu gaya bingkai & ukuran untuk semua: shot landscape di-crop halus,
-                    shot portrait ditampilkan utuh (contain) di atas tint */}
+                {/* Klik thumbnail → buka modal detail; gambar di modal bisa di-zoom fullscreen */}
                 <Tilt className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
                   <div className="flex items-center gap-2 border-b border-black/10 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
                     <span aria-hidden className="flex gap-1.5">
@@ -659,12 +784,26 @@ function Work() {
                     <span className="mx-auto font-mono text-[10px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.short}</span>
                     <span aria-hidden className="w-10" />
                   </div>
+                  <button
+                    onClick={() => setActive(i)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActive(i) }}
+                    title={`Lihat detail ${p.short}`}
+                    aria-label={`Lihat detail ${p.short}`}
+                    className="group/shot relative block w-full cursor-zoom-in text-left"
+                  >
                   <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
-                    <span className="block h-full w-full">
+                    <span className="block h-full w-full transition-transform duration-500 group-hover/shot:scale-[1.03]">
                       <Thumbnail p={p} zoom={false} vivid={false} fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
                     </span>
                     <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
+                    <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/55 via-black/0 to-transparent pb-4 opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[12px] font-semibold text-black shadow-lg dark:bg-black/85 dark:text-white">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
+                        Lihat detail
+                      </span>
+                    </span>
                   </div>
+                  </button>
                 </Tilt>
               </article>
             )
@@ -677,6 +816,17 @@ function Work() {
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
       </div>
+      {active !== null && (
+        <ProjectModal
+          p={PROJECTS[active]}
+          index={active}
+          onClose={() => setActive(null)}
+          onZoom={() => setZoomed(true)}
+        />
+      )}
+      {zoomed && active !== null && (
+        <Lightbox p={PROJECTS[active]} onClose={() => setZoomed(false)} />
+      )}
     </section>
   )
 }
