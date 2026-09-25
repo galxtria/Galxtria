@@ -245,61 +245,53 @@ function useReveal(threshold = 0.12) {
   return ref
 }
 
-// ── Splash sinematik: huruf stagger + counter persen + exit tirai ke atas ──
+// ── Splash tipografi: nama besar fade-blur + garis tipis ──
 
 function Splash({ onFinish }) {
+  const [show, setShow] = useState(false)
   const [leaving, setLeaving] = useState(false)
-  const [pct, setPct] = useState(0)
 
   useEffect(() => {
-    let raf
-    const start = performance.now()
-    const DUR = 1500
-    const tick = (t) => {
-      const p = Math.min(1, (t - start) / DUR)
-      setPct(Math.round(p * 100))
-      if (p < 1) {
-        raf = requestAnimationFrame(tick)
-      } else {
-        setLeaving(true)
-        setTimeout(onFinish, 780)
-      }
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setShow(true)))
+    const t1 = setTimeout(() => setLeaving(true), 1050)
+    const t2 = setTimeout(onFinish, 1500)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(t1)
+      clearTimeout(t2)
     }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
   }, [onFinish])
 
-  const word = 'GALXTRIA'
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#f2f2f4] dark:bg-[#0e0e11] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        leaving ? '-translate-y-full' : 'translate-y-0'
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white transition-opacity duration-500 ease-out dark:bg-[#0b0b0d] ${
+        leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-black/40 dark:text-white/40 rise-in">Portfolio © 2026</p>
-      <p className="mt-3 text-5xl md:text-6xl font-black tracking-tighter" aria-label="Galxtria">
-        {word.split('').map((ch, i) => (
-          <span
-            key={i}
-            aria-hidden
-            className={`rise-in inline-block ${i < 4 ? 'text-outline' : 'text-black dark:text-white'}`}
-            style={{ animationDelay: `${150 + i * 70}ms` }}
-          >
-            {ch}
-          </span>
-        ))}
-      </p>
-      <p className="mt-3 text-[12px] font-medium tracking-[0.2em] uppercase text-black/50 dark:text-white/50 rise-in" style={{ animationDelay: '700ms' }}>
+      <h1
+        aria-label="Galxtria"
+        className={`relative z-0 whitespace-nowrap text-center font-black leading-none tracking-[-0.02em] text-[clamp(2.8rem,11.5vw,10rem)] transition-all duration-700 ease-out ${
+          show ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-4 opacity-0 blur-md'
+        }`}
+        style={{ fontFamily: 'Archivo, Inter, system-ui, sans-serif', transitionDelay: '100ms' }}
+      >
+        <span className="text-outline">GALX</span>
+        <span className="text-black dark:text-white">TRIA</span>
+      </h1>
+      <p
+        className={`mt-4 text-[12px] font-medium uppercase tracking-[0.3em] text-black/45 transition-all duration-700 ease-out dark:text-white/45 ${
+          show ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+        }`}
+        style={{ transitionDelay: '220ms' }}
+      >
         Frontend Developer
       </p>
-      <div className="mt-8 w-52 rise-in" style={{ animationDelay: '850ms' }}>
-        <div className="h-[2px] overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
-          <div className="h-full bg-black dark:bg-white transition-[width] duration-100" style={{ width: `${pct}%` }} />
-        </div>
-        <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.25em] text-black/40 dark:text-white/40">
-          <span>LOADING</span>
-          <span>{String(pct).padStart(3, '0')}%</span>
-        </div>
+      <div className="mt-8 h-px w-40 overflow-hidden bg-black/10 dark:bg-white/10">
+        <div
+          className={`h-full w-full origin-left bg-black/60 transition-transform duration-[1000ms] ease-out dark:bg-white/60 ${
+            show ? 'scale-x-100' : 'scale-x-0'
+          }`}
+        />
       </div>
     </div>
   )
