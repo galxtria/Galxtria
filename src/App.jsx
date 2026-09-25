@@ -305,33 +305,44 @@ function Splash({ onFinish }) {
   )
 }
 
-// ── Toggle bahasa US / ID ala segmented pill ──
+// ── Toggle bahasa: satu tombol, sekali pencet langsung ganti EN ↔ ID ──
 
 function LangToggle() {
   const { lang, setLang, t } = useLang()
-  const seg = (code, label) => {
-    const on = lang === code
-    return (
-      <button
-        key={code}
-        onClick={() => setLang(code)}
-        aria-pressed={on}
-        title={code === 'en' ? 'English' : 'Bahasa Indonesia'}
-        className={`rounded-full px-2.5 py-1 text-[11px] transition-all ${
-          on
-            ? 'bg-zinc-200 font-extrabold text-black dark:bg-white/15 dark:text-white'
-            : 'font-medium text-black/40 hover:text-black dark:text-white/40 dark:hover:text-white'
-        }`}
-      >
-        {label}
-      </button>
-    )
-  }
+  const isEN = lang === 'en'
   return (
-    <div role="group" aria-label={t('lang_label')} className="flex items-center rounded-full border border-black/10 bg-white p-1 shadow-sm dark:border-white/15 dark:bg-white/5">
-      {seg('en', 'EN')}
-      {seg('id', 'ID')}
-    </div>
+    <button
+      onClick={() => setLang(isEN ? 'id' : 'en')}
+      title={isEN ? 'Ganti ke Bahasa Indonesia' : 'Switch to English'}
+      aria-label={`${t('lang_label')}: ${lang.toUpperCase()} → ${(isEN ? 'id' : 'en').toUpperCase()}`}
+      className="group flex h-9 shrink-0 items-center rounded-full border border-black/10 bg-white/80 p-1 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-px hover:border-black/25 hover:shadow-md active:translate-y-0 active:scale-95 dark:border-white/15 dark:bg-white/[0.06] dark:hover:border-white/35"
+    >
+      <span className="relative grid grid-cols-2 rounded-full bg-black/[0.06] p-0.5 dark:bg-white/10">
+        <span
+          aria-hidden
+          className={`absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-black shadow-[0_2px_8px_rgba(0,0,0,0.3)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] dark:bg-white dark:shadow-[0_2px_8px_rgba(0,0,0,0.5)] ${
+            isEN ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        />
+        {['en', 'id'].map((code) => {
+          const on = (code === 'en') === isEN
+          return (
+            <span
+              key={code}
+              aria-hidden={!on}
+              className={`relative z-10 w-8 py-1 text-center text-[10px] font-black tracking-[0.12em] transition-colors duration-300 ${
+                on ? 'text-white dark:text-black' : 'text-black/35 dark:text-white/35'
+              }`}
+            >
+              {code.toUpperCase()}
+            </span>
+          )
+        })}
+      </span>
+      <span aria-live="polite" className="sr-only">
+        {lang.toUpperCase()}
+      </span>
+    </button>
   )
 }
 
@@ -360,8 +371,15 @@ function Navbar({ loaded }) {
       }
       setActive(cur)
     }
+    const onResize = () => {
+      if (window.innerWidth >= 768) setOpen(false)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
 
   const go = (id) => {
@@ -376,38 +394,38 @@ function Navbar({ loaded }) {
         loaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
       }`}
     >
-      <div className="mx-auto max-w-[1400px] px-4 md:px-8 pt-5">
-        <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-2 py-2 rounded-full border transition-all duration-300 ${
+      <div className="mx-auto max-w-[1400px] px-3 sm:px-4 md:px-8 pt-3 sm:pt-5">
+        <div className={`flex items-center justify-between gap-2 px-2 py-2 rounded-full border transition-all duration-300 ${
           scrolled
             ? 'border-black/10 bg-white/85 shadow-[0_8px_30px_rgba(0,0,0,0.10)] backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0b0d]/80 dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
             : 'border-transparent bg-transparent'
         }`}>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex w-fit items-center gap-2 justify-self-start rounded-full bg-white px-4 py-1.5 text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10 dark:border-white/15 dark:bg-white/10 dark:text-white"
+            className="flex shrink-0 items-center gap-2 rounded-full bg-white px-3 sm:px-4 py-1.5 text-[11px] sm:text-[12px] font-black tracking-[0.18em] shadow-sm border border-black/10 dark:border-white/15 dark:bg-white/10 dark:text-white"
           >
             GALXTRIA
           </button>
 
-          <nav className="hidden md:flex items-center gap-7 text-[13px] font-medium justify-self-center">
+          <nav className="hidden md:flex min-w-0 flex-1 items-center justify-center gap-7 text-[13px] font-medium">
             {links.map((l) => (
               <button
                 key={l.id}
                 onClick={() => go(l.id)}
-                className={`transition-colors hover:text-black dark:hover:text-white ${active === l.id ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
+                className={`shrink-0 transition-colors hover:text-black dark:hover:text-white ${active === l.id ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
               >
                 {l.label}
               </button>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 justify-self-end">
+          <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
             <LangToggle />
             <button
               onClick={toggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               title={isDark ? 'Light mode' : 'Dark mode'}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-sm transition-all hover:rotate-12 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-sm transition-all hover:rotate-12 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
             >
               {isDark ? (
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -422,12 +440,18 @@ function Navbar({ loaded }) {
             </button>
             <button
               onClick={() => go('contact')}
-              className="btn-shine hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+              className="btn-shine hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               {t('nav_talk')} <span aria-hidden>↗</span>
             </button>
-            <button onClick={() => setOpen((o) => !o)} className="md:hidden p-2" aria-label={t('nav_menu')}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={t('nav_menu')}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-sm transition-colors hover:border-black hover:text-black md:hidden dark:border-white/15 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 {open ? (<><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></>) : (<><line x1="4" y1="8" x2="20" y2="8" /><line x1="4" y1="16" x2="20" y2="16" /></>)}
               </svg>
             </button>
@@ -435,16 +459,22 @@ function Navbar({ loaded }) {
         </div>
 
         {open && (
-          <div className="md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg dark:border-white/10 dark:bg-black/90">
+          <div id="mobile-nav" className="md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg dark:border-white/10 dark:bg-[#141416]/95">
             {links.map((l) => (
               <button
                 key={l.id}
                 onClick={() => go(l.id)}
-                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium ${active === l.id ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/70 dark:text-white/70'}`}
+                className={`block w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${active === l.id ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/70 hover:bg-black/5 dark:text-white/70 dark:hover:bg-white/10'}`}
               >
                 {l.label}
               </button>
             ))}
+            <button
+              onClick={() => go('contact')}
+              className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-xl bg-black px-4 py-3 text-sm font-semibold text-white sm:hidden dark:bg-white dark:text-black"
+            >
+              {t('nav_talk')} <span aria-hidden>↗</span>
+            </button>
           </div>
         )}
       </div>
