@@ -1108,19 +1108,18 @@ function Experience() {
   )
 }
 
-// ── Contact (gaya referensi: headline besar + grid kartu 2×2, dalam style terang) ──
+// ── Contact: daftar index ala Skills/Work (tanpa form) ──
 
 const CONTACT_CARDS = [
-  { id: 'email', label: 'Email', value: 'utamapradita5@gmail.com', href: null, copy: 'utamapradita5@gmail.com', tile: 'bg-zinc-900', icon: 'text-white' },
-  { id: 'github', label: 'GitHub', value: 'github.com/galxtria', href: 'https://github.com/galxtria', tile: 'bg-zinc-900', icon: 'text-white' },
-  { id: 'instagram', label: 'Instagram', value: '@galxtria', href: 'https://www.instagram.com/galxtria/', tile: 'bg-zinc-900', icon: 'text-white' },
-  { id: 'linkedin', label: 'LinkedIn', value: 'Pradita Utama', href: 'https://www.linkedin.com/in/praditautama25', tile: 'bg-zinc-900', icon: 'text-white' },
+  { id: 'email', label: 'Email', value: 'utamapradita5@gmail.com', href: null, copy: 'utamapradita5@gmail.com' },
+  { id: 'github', label: 'GitHub', value: 'github.com/galxtria', href: 'https://github.com/galxtria' },
+  { id: 'instagram', label: 'Instagram', value: '@galxtria', href: 'https://www.instagram.com/galxtria/' },
+  { id: 'linkedin', label: 'LinkedIn', value: 'Pradita Utama', href: 'https://www.linkedin.com/in/praditautama25' },
 ]
 
-function ContactCard({ c }) {
+function ContactCard({ c, index }) {
   const [copied, setCopied] = useState(false)
   const { t } = useLang()
-  const ref = useRef(null)
 
   const copyEmail = async (e) => {
     e.preventDefault()
@@ -1138,25 +1137,26 @@ function ContactCard({ c }) {
     setTimeout(() => setCopied(false), 1800)
   }
 
-  const onMove = (e) => {
-    const el = ref.current
-    if (!el) return
-    const r = el.getBoundingClientRect()
-    el.style.setProperty('--mx', `${e.clientX - r.left}px`)
-    el.style.setProperty('--my', `${e.clientY - r.top}px`)
-  }
-
   const body = (
     <>
-      <span aria-hidden className="contact-glow" />
-      <span className={`contact-tile flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${c.tile}`}>
-        <SocialIcon label={c.label === 'Email' ? 'Email' : c.label === 'GitHub' ? 'GitHub' : c.label === 'Instagram' ? 'Instagram' : 'LinkedIn'} className={`h-6 w-6 ${c.icon}`} />
+      <span aria-hidden className="font-mono text-[11px] tracking-[0.2em] text-black/40 transition-colors duration-300 group-hover:text-black dark:text-white/40 dark:group-hover:text-white">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/10 bg-zinc-50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-black/30 group-hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)] dark:border-white/10 dark:bg-white/10 dark:group-hover:border-white/30">
+        <SocialIcon label={c.label} className="h-[15px] w-[15px] text-black/70 dark:text-white/70" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">{c.label}</span>
-        <span className="mt-1 block truncate text-base md:text-lg font-semibold text-black/85 dark:text-white/90">{copied ? t('copied') : c.value}</span>
+        <span className="block text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+          {c.label}
+        </span>
+        <span className="mt-0.5 block truncate font-mono text-[12px] tracking-wide text-black/55 dark:text-white/55">
+          {copied ? t('copied') : c.value}
+        </span>
       </span>
-      <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 group-hover:border-black group-hover:text-white dark:border-white/15 dark:text-white/50 dark:group-hover:border-white">
+      <span aria-hidden className="hidden shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-black/30 transition-colors duration-300 group-hover:text-black/60 sm:block dark:text-white/30 dark:group-hover:text-white/60">
+        {c.href ? t('contact_open') : t('contact_copy')}
+      </span>
+      <span aria-hidden className="contact-arrow flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-black/40 dark:border-white/15 dark:text-white/50">
         {c.href ? (
           <span className="text-base leading-none">↗</span>
         ) : copied ? (
@@ -1171,17 +1171,17 @@ function ContactCard({ c }) {
     </>
   )
 
-  const cls = 'contact-spot group relative flex w-full items-center gap-5 overflow-hidden rounded-2xl border border-black/10 bg-white/90 p-6 md:p-7 text-left shadow-sm backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-black/25 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.25)] dark:border-white/10 dark:bg-white/[0.06] dark:hover:border-white/25 dark:hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.7)]'
+  const cls = 'group flex w-full items-center gap-4 md:gap-6 border-b border-black/10 py-5 md:py-6 text-left transition-colors duration-300 hover:bg-black/[0.02] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black dark:border-white/10 dark:hover:bg-white/[0.03] dark:focus-visible:outline-white'
 
   if (c.href) {
     return (
-      <a ref={ref} onMouseMove={onMove} href={c.href} target="_blank" rel="noreferrer" data-reveal className={cls}>
+      <a href={c.href} target="_blank" rel="noreferrer" data-reveal className={cls}>
         {body}
       </a>
     )
   }
   return (
-    <button ref={ref} onMouseMove={onMove} onClick={copyEmail} title={t('copy_title')} data-reveal className={cls}>
+    <button onClick={copyEmail} title={t('copy_title')} data-reveal className={cls}>
       {body}
     </button>
   )
@@ -1216,41 +1216,85 @@ function BackToTop({ visible }) {
 }
 
 function Contact() {
-  const ref = useReveal(0.1)
+  const ref = useReveal(0.08)
   const { t } = useLang()
-  return (
-    <section id="contact" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-white/55 backdrop-blur border-t border-black/5 dark:bg-black/40 dark:border-white/10">
-      {/* Watermark + cahaya lembut */}
-      <span data-reveal="fade" aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
-        CONTACT
-      </span>
-      <span aria-hidden className="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-white/70 blur-3xl dark:bg-white/[0.07]" />
-      <span aria-hidden className="pointer-events-none absolute bottom-0 left-[8%] h-56 w-56 rounded-full bg-black/[0.04] blur-2xl dark:bg-white/[0.05]" />
-      <span aria-hidden className="pointer-events-none absolute bottom-10 right-[6%] h-64 w-64 rounded-full bg-black/[0.05] blur-2xl dark:bg-white/[0.06]" />
 
-      <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24 text-center">
-        <p data-reveal className="flex items-center justify-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-black/40 dark:text-white/40">
-          <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
-          {t('contact_eyebrow')}
-          <span aria-hidden className="h-px w-8 bg-black/20 dark:bg-white/20" />
-        </p>
-        <h2 data-reveal className="contact-headline mt-4 text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-          <span className="rise-in inline-block" style={{ animationDelay: '100ms' }}>{t('contact_hl_1')}</span>{' '}
-          <span className="rise-in inline-block" style={{ animationDelay: '200ms' }}>{t('contact_hl_2')}</span>
-          <br />
-          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '320ms' }}>{t('contact_hl_3')}</span>{' '}
-          <span className="hl-outline text-outline rise-in inline-block" style={{ animationDelay: '420ms' }}>{t('contact_hl_4')}</span>
-        </h2>
-        <p data-reveal className="mx-auto mt-5 max-w-2xl text-sm md:text-[15px] leading-relaxed text-black/55 dark:text-white/55">
+  const goWork = () => {
+    document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  return (
+    <section id="contact" ref={ref} className="relative w-full scroll-mt-16 overflow-hidden bg-white dark:bg-[#0b0b0d]">
+      <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
+        <span data-reveal="fade" aria-hidden className="watermark absolute top-6 left-1/2 -translate-x-1/2 text-[clamp(3rem,10vw,7rem)] font-black tracking-tight text-black/[0.05] dark:text-white/[0.06]">
+          CONTACT
+        </span>
+        <div data-reveal className="relative flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t('contact_title')}</h2>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+            {t('contact_sub')}
+          </p>
+        </div>
+        <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
           {t('contact_desc')}
         </p>
-        <div className="mx-auto mt-12 grid max-w-4xl gap-5 text-left sm:grid-cols-2">
-          {CONTACT_CARDS.map((c) => (
-            <ContactCard key={c.id} c={c} />
+
+        <div className="mx-auto mt-8 w-full max-w-6xl border-t border-black/10 dark:border-white/10">
+          {CONTACT_CARDS.map((c, i) => (
+            <ContactCard key={c.id} c={c} index={i} />
           ))}
         </div>
+
+        <div data-reveal className="relative mx-auto mt-10 w-full max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#1c1c20] via-[#131315] to-black text-white shadow-[0_32px_64px_-24px_rgba(0,0,0,0.5)] ring-1 ring-white/10 dark:from-[#f4f1eb] dark:via-[#e9e6e0] dark:to-[#d8d4cc] dark:text-[#161614] dark:ring-black/10">
+          <span aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.05] dark:opacity-[0.07]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, backgroundSize: '180px 180px' }} />
+          <span aria-hidden className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-black/30" />
+          <span aria-hidden className="pointer-events-none absolute -top-24 right-[8%] h-72 w-72 rounded-full bg-white/10 blur-3xl dark:bg-black/[0.07]" />
+          <span aria-hidden className="pointer-events-none absolute -bottom-32 left-[4%] h-72 w-72 rounded-full bg-white/[0.07] blur-3xl dark:bg-black/[0.05]" />
+          <span aria-hidden className="pointer-events-none absolute bottom-2 right-8 hidden select-none text-[100px] font-black leading-none text-white/10 md:block dark:text-black/10">
+            ↗
+          </span>
+          <div className="relative flex flex-col gap-8 p-8 sm:p-10 md:flex-row md:items-end md:justify-between md:p-14">
+            <div className="min-w-0">
+              <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">
+                <span aria-hidden className="h-px w-8 bg-white/25 dark:bg-black/25" />
+                {t('contact_eyebrow')}
+              </p>
+              <p className="mt-4 text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">
+                {t('contact_cta_title')}
+              </p>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 dark:text-black/60">
+                {t('contact_cta_desc')}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col">
+              <button
+                onClick={goWork}
+                className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-7 py-3.5 text-[13px] font-semibold text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-12px_rgba(255,255,255,0.4)] dark:bg-black dark:text-white dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)]"
+              >
+                {t('contact_cta_work')} <span aria-hidden>↗</span>
+              </button>
+              <a
+                href="/cv.pdf"
+                download="Galxtria-CV.pdf"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-[13px] font-semibold text-white/80 transition-all hover:-translate-y-0.5 hover:border-white hover:text-white dark:border-black/20 dark:text-black/70 dark:hover:border-black dark:hover:text-black"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {t('hero_cv')}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
+          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
+          © 2026 Galxtria
+          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
+        </p>
       </div>
-      <p className="relative pb-8 text-center font-mono text-[10px] tracking-[0.25em] uppercase text-black/35 dark:text-white/35">© 2026 Galxtria</p>
     </section>
   )
 }
