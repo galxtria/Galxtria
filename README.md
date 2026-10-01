@@ -23,4 +23,24 @@ Frontend Developer crafting clean, component-driven interfaces with intuitive in
 
 ### Connect
 
-[Portfolio](https://galxtria.vercel.app/) · [Email](mailto:utamapradita5@gmail.com) · [GitHub](https://github.com/galxtria) · [LinkedIn](https://www.linkedin.com/in/praditautama25) · [Instagram](https://www.instagram.com/galxtria/)
+<div align="left">
+  <a href="https://galxtria.vercel.app/" title="Portfolio">
+    <img src="https://skillicons.dev/icons?i=vercel" width="32" height="32" alt="Portfolio" />
+  </a>
+  <img width="8" />
+  <a href="mailto:utamapradita5@gmail.com" title="Email">
+    <img src="https://skillicons.dev/icons?i=gmail" width="32" height="32" alt="Email" />
+  </a>
+  <img width="8" />
+  <a href="https://github.com/galxtria" title="GitHub">
+    <img src="https://skillicons.dev/icons?i=github" width="32" height="32" alt="GitHub" />
+  </a>
+  <img width="8" />
+  <a href="https://www.linkedin.com/in/praditautama25" title="LinkedIn">
+    <img src="https://skillicons.dev/icons?i=linkedin" width="32" height="32" alt="LinkedIn" />
+  </a>
+  <img width="8" />
+  <a href="https://www.instagram.com/galxtria/" title="Instagram">
+    <img src="https://skillicons.dev/icons?i=instagram" width="32" height="32" alt="Instagram" />
+  </a>
+</div>
