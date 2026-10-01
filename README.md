@@ -4,7 +4,6 @@ Frontend Developer crafting clean, component-driven interfaces with intuitive in
 
 - Focus on React, Mobile & Cross-Platform Apps
 - Currently building multi-platform apps & exploring AI integration
-- Background: RPL → Web & Design Intern → Informatics
 - Open for projects and collaboration
 
 ---
