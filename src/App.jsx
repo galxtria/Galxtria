@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, cloneElement } from 'react'
 import { createPortal } from 'react-dom'
 import { useTheme } from './ThemeContext.jsx'
 import { useLang, localize } from './LanguageContext.jsx'
@@ -245,6 +245,86 @@ function useReveal(threshold = 0.12) {
   return ref
 }
 
+// ── Efek scroll global: watermark parallax + parallax gambar + garis timeline ──
+// Semua properti transform/translate saja (60fps), mati total saat reduced-motion.
+
+function useScrollFx() {
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    document.documentElement.classList.add('js-parallax')
+    let raf = 0
+    const update = () => {
+      raf = 0
+      const vh = window.innerHeight
+      const mobile = window.innerWidth < 768
+      document.querySelectorAll('.watermark').forEach((el) => {
+        if (mobile) {
+          if (el.style.translate) el.style.translate = ''
+          return
+        }
+        const r = el.getBoundingClientRect()
+        const off = (r.top + r.height / 2 - vh / 2) / vh
+        el.style.translate = `calc(-50% + ${(-off * 60).toFixed(1)}px) 0px`
+      })
+      if (!mobile) {
+        document.querySelectorAll('.parallax-img').forEach((el) => {
+          const frame = el.closest('.parallax-frame') || el
+          const r = frame.getBoundingClientRect()
+          if (r.bottom < -100 || r.top > vh + 100) return
+          const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2)
+          const c = Math.max(-1, Math.min(1, p))
+          el.style.transform = `translateY(${(c * -6).toFixed(2)}%)`
+        })
+      }
+      document.querySelectorAll('[data-timeline]').forEach((col) => {
+        const bar = col.querySelector('.timeline-progress')
+        if (!bar) return
+        const r = col.getBoundingClientRect()
+        const p = (vh * 0.8 - r.top) / (r.height || 1)
+        bar.style.transform = `scaleY(${Math.max(0, Math.min(1, p)).toFixed(3)})`
+      })
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+      document.documentElement.classList.remove('js-parallax')
+    }
+  }, [])
+}
+
+// ── Magnetic: tombol tertarik ringan ke kursor (max 6px), kembali springy ──
+
+function Magnetic({ children, max = 6 }) {
+  const ref = useRef(null)
+  const onPointerMove = (e) => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia?.('(hover: none)').matches) return
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    const r = el.getBoundingClientRect()
+    const dx = e.clientX - (r.left + r.width / 2)
+    const dy = e.clientY - (r.top + r.height / 2)
+    const x = Math.max(-max, Math.min(max, dx * 0.25))
+    const y = Math.max(-max, Math.min(max, dy * 0.25))
+    el.style.transition = 'transform 0.12s ease-out'
+    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`
+  }
+  const onPointerLeave = () => {
+    const el = ref.current
+    if (!el) return
+    el.style.transition = 'transform 0.5s cubic-bezier(0.16,1,0.3,1)'
+    el.style.transform = 'translate(0px, 0px)'
+  }
+  return cloneElement(children, { ref, onPointerMove, onPointerLeave })
+}
+
 // ── Splash tipografi: nama besar fade-blur + garis tipis ──
 
 function Splash({ onFinish }) {
@@ -344,8 +424,14 @@ function Navbar({ loaded }) {
   const [active, setActive] = useState('work')
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const [pill, setPill] = useState({ left: 0, width: 0, show: false })
+  const navRef = useRef(null)
+  const lastY = useRef(0)
+  const openRef = useRef(open)
+  openRef.current = open
   const { isDark, toggleTheme } = useTheme()
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const links = [
     { id: 'work', label: t('nav_work') },
     { id: 'skills', label: t('nav_skills') },
@@ -355,7 +441,12 @@ function Navbar({ loaded }) {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 24)
+      const y = window.scrollY
+      setScrolled(y > 24)
+      const last = lastY.current
+      if (y > last + 4 && y > 320 && !openRef.current) setHidden(true)
+      else if (y < last - 4 || y <= 320) setHidden(false)
+      if (Math.abs(y - last) > 4) lastY.current = y
       let cur = 'work'
       for (const l of ['work', 'skills', 'experience', 'contact']) {
         const el = document.getElementById(l)
@@ -374,6 +465,23 @@ function Navbar({ loaded }) {
     }
   }, [])
 
+  // Pill indikator: mengikuti posisi tombol link aktif
+  useEffect(() => {
+    const place = () => {
+      const nav = navRef.current
+      if (!nav) return
+      const btn = nav.querySelector(`[data-link="${active}"]`)
+      if (!btn) {
+        setPill((p) => ({ ...p, show: false }))
+        return
+      }
+      setPill({ left: btn.offsetLeft, width: btn.offsetWidth, show: true })
+    }
+    place()
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [active, lang, loaded])
+
   const go = (id) => {
     setActive(id)
     setOpen(false)
@@ -382,8 +490,8 @@ function Navbar({ loaded }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
-        loaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        !loaded || (hidden && !open) ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
       }`}
     >
       <div className="mx-auto max-w-[1400px] px-3 sm:px-4 md:px-8 pt-3 sm:pt-5">
@@ -399,12 +507,18 @@ function Navbar({ loaded }) {
             GALXTRIA
           </button>
 
-          <nav className="hidden md:flex min-w-0 flex-1 items-center justify-center gap-7 text-[13px] font-medium">
+          <nav ref={navRef} className="hidden md:flex relative min-w-0 flex-1 items-center justify-center gap-1 text-[13px] font-medium">
+            <span
+              aria-hidden
+              className="nav-pill"
+              style={{ width: pill.width, transform: `translateX(${pill.left}px)`, opacity: pill.show ? 1 : 0 }}
+            />
             {links.map((l) => (
               <button
                 key={l.id}
+                data-link={l.id}
                 onClick={() => go(l.id)}
-                className={`shrink-0 transition-colors hover:text-black dark:hover:text-white ${active === l.id ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
+                className={`relative z-10 shrink-0 rounded-full px-3 py-1.5 transition-colors hover:text-black dark:hover:text-white ${active === l.id ? 'text-black dark:text-white' : 'text-black/55 dark:text-white/55'}`}
               >
                 {l.label}
               </button>
@@ -451,7 +565,7 @@ function Navbar({ loaded }) {
         </div>
 
         {open && (
-          <div id="mobile-nav" className="md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg dark:border-white/10 dark:bg-[#141416]/95">
+          <div id="mobile-nav" className="menu-in md:hidden mt-2 rounded-2xl border border-black/10 bg-white/95 backdrop-blur-xl p-2 shadow-lg dark:border-white/10 dark:bg-[#141416]/95">
             {links.map((l) => (
               <button
                 key={l.id}
@@ -476,11 +590,38 @@ function Navbar({ loaded }) {
 
 // ── Foto portrait: hitam-putih, jadi berwarna penuh + zoom halus saat hover ──
 
-function PortraitReveal() {
+// ── Foto portrait: diam total, B&W → full-color statis saat hover ──
+// Efek besarnya ada di teks GALXTRIA belakang (fill-pour), bukan di foto.
+
+function PortraitReveal({ onActiveChange }) {
   const { t } = useLang()
   const [src, setSrc] = useState('/portrait-cutout.png')
+  const [active, setActive] = useState(false)
+  const timer = useRef(null)
+
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   const onFail = () => setSrc((s) => (s === '/portrait-cutout.png' ? '/potrait.png' : 'placeholder'))
+
+  const setBoth = (v) => {
+    setActive(v)
+    onActiveChange?.(v)
+  }
+
+  const handleEnter = (e) => {
+    if (e.pointerType === 'touch') return
+    setBoth(true)
+  }
+
+  const handleLeave = () => setBoth(false)
+
+  // Fallback touch: tap tampilkan warna + picu teks 1.5 detik
+  const handleClick = () => {
+    if (window.matchMedia?.('(hover: hover)').matches) return
+    setBoth(true)
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => setBoth(false), 1500)
+  }
 
   if (src === 'placeholder') {
     return (
@@ -495,16 +636,33 @@ function PortraitReveal() {
   }
 
   return (
-    <div className="group/portrait relative w-full md:w-fit md:h-full select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.35)] hover:ring-1 hover:ring-black/15 dark:hover:shadow-[0_24px_50px_-16px_rgba(0,0,0,0.8)] dark:hover:ring-white/25">
-      <img
-        src={src}
-        alt="Galxtria"
-        draggable={false}
-        onError={onFail}
-        className="block w-full grayscale brightness-[.94] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/portrait:grayscale-0 group-hover/portrait:brightness-105 md:h-full md:w-auto"
-      />
+    <div
+      data-active={active ? 'true' : 'false'}
+      onPointerEnter={handleEnter}
+      onPointerLeave={handleLeave}
+      onClick={handleClick}
+      className="portrait-reveal group/portrait relative w-full md:w-fit md:h-full select-none overflow-hidden [@media(hover:hover)]:cursor-crosshair [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]"
+    >
+      <div className="grid">
+        {/* Lapisan bawah: versi berwarna */}
+        <img
+          src={src}
+          alt="Galxtria"
+          draggable={false}
+          onError={onFail}
+          className="col-start-1 row-start-1 block w-full brightness-105 md:h-full md:w-auto"
+        />
+        {/* Lapisan atas: B&W, fade-out statis saat aktif (tanpa spotlight/tilt/zoom) */}
+        <img
+          src={src}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="reveal-gray col-start-1 row-start-1 block w-full grayscale brightness-[.94] md:h-full md:w-auto"
+        />
+      </div>
       {/* Badge status mono muncul saat hover */}
-      <span className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/85 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white opacity-0 backdrop-blur transition-all duration-500 group-hover/portrait:opacity-100 dark:bg-white/90 dark:text-black">
+      <span className={`pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/85 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur transition-opacity duration-300 group-hover/portrait:opacity-100 dark:bg-white/90 dark:text-black ${active ? 'opacity-100' : 'opacity-0'}`}>
         <span aria-hidden className="mr-2 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-white dark:bg-black" />
         {t('hero_badge')}
       </span>
@@ -516,20 +674,51 @@ function PortraitReveal() {
 
 function Hero({ visible }) {
   const { t } = useLang()
+  const [heroActive, setHeroActive] = useState(false)
+  // Stagger wipe kiri → kanan untuk fill-pour (dipertajam 0–350ms)
+  const letters = [
+    { ch: 'G', cls: 'hl-outline', d: '0ms' },
+    { ch: 'A', cls: 'hl-outline', d: '50ms' },
+    { ch: 'L', cls: 'hl-outline', d: '100ms' },
+    { ch: 'X', cls: 'hl-outline', d: '150ms' },
+    { ch: 'T', cls: 'hl-solid', d: '200ms' },
+    { ch: 'R', cls: 'hl-solid', d: '250ms' },
+    { ch: 'I', cls: 'hl-solid', d: '300ms' },
+    { ch: 'A', cls: 'hl-solid', d: '350ms' },
+  ]
+  const filled = heroActive ? letters.length : 0
   return (
     <section id="home" className="relative flex min-h-[100svh] flex-col bg-white dark:bg-[#0b0b0d] pt-24 md:pt-28">
       <div className="flex w-full flex-1 flex-col justify-center px-4 md:px-8">
       <div className="relative mx-auto w-full max-w-[1400px]">
-        {/* Nama raksasa satu baris: GALX outline + TRIA solid */}
-        <h1
-          className={`relative z-0 text-center font-black leading-none tracking-[-0.02em] whitespace-nowrap text-[clamp(2.8rem,11.5vw,10rem)] transition-all duration-700 ${
-            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-          }`}
-          style={{ fontFamily: 'Archivo, Inter, system-ui, sans-serif' }}
-        >
-          <span className="text-outline">GALX</span>
-          <span className="text-black dark:text-white">TRIA</span>
-        </h1>
+        {/* Nama raksasa: hover foto → GALX terisi solid, TRIA jadi outline (fill-pour) */}
+        <div className="hero-title-wrap relative" data-hero-active={heroActive ? 'true' : 'false'}>
+          <div aria-hidden className="hero-glow" />
+          <h1
+            data-hero-active={heroActive ? 'true' : 'false'}
+            className={`hero-title relative z-0 text-center font-black leading-none whitespace-nowrap text-[clamp(2.8rem,11.5vw,10rem)] transition-all duration-700 ${
+              visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            }`}
+            style={{ fontFamily: 'Archivo, Inter, system-ui, sans-serif' }}
+          >
+            {letters.map((l, i) => (
+              <span key={i} aria-hidden="true" className={`hl-letter ${l.cls}`} style={{ transitionDelay: l.d }}>
+                {l.ch}
+              </span>
+            ))}
+            <span aria-hidden="true" className="hero-shine">
+              GALXTRIA
+            </span>
+            <span className="sr-only">GALXTRIA</span>
+          </h1>
+          {/* Baseline wipe + counter mono */}
+          <div aria-hidden className="hero-baseline-row">
+            <span className="hero-baseline" />
+            <span className="hero-count">
+              {String(filled).padStart(2, '0')}/08
+            </span>
+          </div>
+        </div>
 
         {/* Baris bawah: info kiri — foto tengah overlap teks — sosmed kanan */}
         <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto_1fr] md:gap-4 items-end -mt-[6vw] md:-mt-[6vw]">
@@ -561,7 +750,7 @@ function Hero({ visible }) {
 
           {/* Foto: tinggi mengikuti layar, badan ditempel ke tepi bawah hero */}
           <div className="order-1 md:order-2 mx-auto md:mx-0 w-[300px] sm:w-[380px] md:w-auto md:h-[70svh] md:flex md:justify-center md:justify-self-center">
-            <PortraitReveal />
+            <PortraitReveal onActiveChange={setHeroActive} />
           </div>
 
           <div className="rise-in order-3 flex md:justify-end justify-center md:pb-20" style={{ animationDelay: '450ms' }}>
@@ -586,7 +775,7 @@ function Hero({ visible }) {
 // Shot HP pun di-crop cover agar ukurannya SAMA persis dengan shot web —
 // tanpa mockup HP & tanpa layer blur (blur-2xl repaint tiap frame saat expand → animasi patah).
 
-function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-cover object-top' }) {
+function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-cover object-top', imgClass = '' }) {
   const motion = zoom ? 'transition-all duration-500 group-hover:scale-[1.04]' : vivid ? 'transition-all duration-500 group-hover:scale-[1.02]' : ''
   // Di kartu grid: hitam-putih, berwarna saat hover. Di modal/spotlight: selalu berwarna.
   const tone = zoom && !vivid ? 'grayscale group-hover:grayscale-0' : ''
@@ -594,7 +783,7 @@ function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = 'object-
   // Tanpa fill = pakai aspect ratio.
   const box = fill ? 'h-full w-full' : 'aspect-[16/9] w-full'
   return (
-    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} ${fit} ${tone} ${motion}`} />
+    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} ${fit} ${tone} ${motion} ${imgClass}`} />
   )
 }
 
@@ -795,21 +984,129 @@ function Lightbox({ p, onClose }) {
 }
 
 // ── Skills: ringkasan stack yang dipakai di repo GitHub ──
+// core = senjata utama (dot solid + border tegas + hitungan bukti proyek)
+// Tanpa core = familiar (dot hollow). icon = slug skillicons.dev (null = dot saja).
 
 const SKILLS = [
   {
     group: { en: 'Frontend', id: 'Frontend' },
-    items: ['React', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Bootstrap', 'Sass'],
+    items: [
+      { name: 'React', icon: 'react', core: true },
+      { name: 'TypeScript', icon: 'ts', core: true },
+      { name: 'JavaScript', icon: 'js', core: false },
+      { name: 'Tailwind CSS', icon: 'tailwind', core: true },
+      { name: 'Bootstrap', icon: 'bootstrap', core: false },
+      { name: 'Sass', icon: 'sass', core: false },
+    ],
   },
   {
     group: { en: 'Backend & Data', id: 'Backend & Data' },
-    items: ['Laravel', 'PHP', 'REST API', 'Sanctum Auth', 'SQLite', 'IndexedDB'],
+    items: [
+      { name: 'Laravel', icon: 'laravel', core: true },
+      { name: 'PHP', icon: 'php', core: true },
+      { name: 'REST API', icon: null, core: false },
+      { name: 'Sanctum Auth', icon: null, core: false },
+      { name: 'SQLite', icon: 'sqlite', core: true },
+      { name: 'IndexedDB', icon: null, core: false },
+    ],
   },
   {
     group: { en: 'Tools & Platform', id: 'Tools & Platform' },
-    items: ['Vite', 'Git & GitHub', 'Vercel', 'PWA', 'Recharts', 'Leaflet', 'Zustand', 'Figma', 'VS Code', 'npm', 'Chrome DevTools'],
+    subs: [
+      {
+        label: { en: 'Platform', id: 'Platform' },
+        items: [
+          { name: 'Vite', icon: 'vite', core: true },
+          { name: 'Git & GitHub', icon: 'git', core: true },
+          { name: 'Vercel', icon: 'vercel', core: true },
+          { name: 'Figma', icon: 'figma', core: false },
+          { name: 'VS Code', icon: 'vscode', core: false },
+        ],
+      },
+      {
+        label: { en: 'Libraries & Workflow', id: 'Pustaka & Alur Kerja' },
+        items: [
+          { name: 'PWA', icon: null, core: false },
+          { name: 'Recharts', icon: null, core: true },
+          { name: 'Leaflet', icon: null, core: false },
+          { name: 'Zustand', icon: null, core: false },
+          { name: 'npm', icon: 'npm', core: false },
+          { name: 'Chrome DevTools', icon: null, core: false },
+        ],
+      },
+    ],
   },
 ]
+
+// Normalisasi nama tech agar 'Tailwind CSS' cocok dengan 'Tailwind', dll.
+const normTech = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+// Hitung di berapa proyek sebuah skill terbukti dipakai (data PROJECTS).
+function techUsage(name) {
+  const n = normTech(name)
+  if (!n) return 0
+  return PROJECTS.filter((p) =>
+    p.tech.some((tech) => {
+      const m = normTech(tech)
+      return m.includes(n) || n.includes(m)
+    })
+  ).length
+}
+
+function SkillPills({ items }) {
+  const { t } = useLang()
+  const goWork = () => {
+    document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
+  }
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((s) => {
+        const n = s.core ? techUsage(s.name) : 0
+        const cls = `skill-pill inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-all duration-300 ${
+          s.core
+            ? 'border-black/25 bg-zinc-100 text-black/85 hover:-translate-y-0.5 hover:border-black/40 dark:border-white/25 dark:bg-white/15 dark:text-white/90 dark:hover:border-white/40'
+            : 'border-black/10 bg-zinc-50 text-black/75 hover:border-black/30 dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30'
+        }${n > 0 ? ' cursor-pointer' : ''}`
+        const body = (
+          <>
+            <span className="relative flex h-[14px] w-[14px] shrink-0 items-center justify-center">
+              <span
+                aria-hidden
+                className={`h-1.5 w-1.5 rounded-full ${
+                  s.core ? 'bg-black dark:bg-white' : 'border border-black/40 bg-transparent dark:border-white/40'
+                }`}
+              />
+              {s.icon && (
+                <img
+                  src={`https://skillicons.dev/icons?i=${s.icon}`}
+                  alt=""
+                  aria-hidden
+                  loading="lazy"
+                  draggable={false}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                  }}
+                  className="skill-icon absolute inset-0 h-full w-full"
+                />
+              )}
+            </span>
+            {s.name}
+            {n > 0 && <span className="font-mono text-[10px] opacity-50">· {t('skills_projects', { n })}</span>}
+          </>
+        )
+        return n > 0 ? (
+          <button key={s.name} onClick={goWork} title={t('contact_cta_work')} className={cls}>
+            {body}
+          </button>
+        ) : (
+          <span key={s.name} className={cls}>
+            {body}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
 
 function Skills() {
   const ref = useReveal(0.08)
@@ -831,15 +1128,15 @@ function Skills() {
           {t('skills_desc')}
         </p>
 
-        {/* Daftar grup simpel: nomor + nama di kiri, pills di kanan */}
+        {/* Daftar grup: nomor + nama di kiri, pills di kanan */}
         <div className="mx-auto mt-10 w-full max-w-6xl border-t border-black/10 dark:border-white/10">
           {SKILLS.map((g, gi) => (
             <div
               key={L(g.group)}
               data-reveal
-              className="group flex flex-col gap-4 border-b border-black/10 py-7 transition-colors duration-300 hover:bg-black/[0.02] md:flex-row md:items-baseline md:gap-8 dark:border-white/10 dark:hover:bg-white/[0.03]"
+              className="group flex flex-col gap-4 border-b border-black/10 py-7 transition-colors duration-300 hover:bg-black/[0.02] md:flex-row md:gap-8 dark:border-white/10 dark:hover:bg-white/[0.03]"
             >
-              <p className="flex shrink-0 items-baseline gap-3 md:w-60">
+              <p className="flex shrink-0 items-baseline gap-3 md:w-60 md:pt-1">
                 <span className="font-mono text-[11px] tracking-[0.2em] text-black/40 dark:text-white/40">
                   {String(gi + 1).padStart(2, '0')}
                 </span>
@@ -847,13 +1144,21 @@ function Skills() {
                   {L(g.group)}
                 </span>
               </p>
-              <div className="flex flex-wrap gap-2">
-                {g.items.map((s) => (
-                  <span key={s} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 transition-colors duration-300 hover:border-black/30 dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30">
-                    <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
-                    {s}
-                  </span>
-                ))}
+              <div className="min-w-0 flex-1">
+                {g.items ? (
+                  <SkillPills items={g.items} />
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {g.subs.map((sub) => (
+                      <div key={L(sub.label)}>
+                        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">
+                          {L(sub.label)}
+                        </p>
+                        <SkillPills items={sub.items} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -871,7 +1176,48 @@ function Work() {
   const L = (v) => localize(lang, v)
   const [active, setActive] = useState(null)
   const [zoomed, setZoomed] = useState(false)
+  const [filter, setFilter] = useState('all')
+  const [railVisible, setRailVisible] = useState(false)
+  const [railActive, setRailActive] = useState(0)
+  const listRef = useRef(null)
   const total = PROJECTS.length
+
+  // Kategori unik untuk tabs filter (kunci stabil: nilai EN)
+  const filters = ['all', ...new Set(PROJECTS.map((p) => p.category.en))]
+  const visible =
+    filter === 'all' ? PROJECTS.map((p, i) => ({ p, i })) : PROJECTS.map((p, i) => ({ p, i })).filter(({ p }) => p.category.en === filter)
+  const filterLabel = (f) => (f === 'all' ? t('filter_all') : L(PROJECTS.find((p) => p.category.en === f).category))
+
+  // Index rail: tampil saat section benar-benar dimasuki, sorot kartu yang sedang dibaca
+  useEffect(() => {
+    const section = ref.current
+    if (!section) return
+    const secObs = new IntersectionObserver(([entry]) => setRailVisible(entry.isIntersecting), {
+      rootMargin: '-30% 0px -30% 0px',
+    })
+    secObs.observe(section)
+    return () => secObs.disconnect()
+  }, [ref])
+  useEffect(() => {
+    const root = listRef.current
+    if (!root) return
+    const arts = [...root.querySelectorAll('[data-work-index]')]
+    if (!arts.length) return
+    const artObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) setRailActive(Number(en.target.dataset.workIndex))
+        })
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    )
+    arts.forEach((a) => artObs.observe(a))
+    return () => artObs.disconnect()
+  }, [filter])
+
+  const goCard = (origIndex) => {
+    document.getElementById(`work-card-${origIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   return (
     <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
@@ -888,14 +1234,41 @@ function Work() {
         <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
           {t('work_sub')}
         </p>
+        {/* Filter kategori: state lokal, tanpa backend */}
+        <div data-reveal className="relative mt-6 flex flex-wrap gap-2">
+          {filters.map((f) => {
+            const on = filter === f
+            const count = f === 'all' ? total : PROJECTS.filter((p) => p.category.en === f).length
+            return (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                aria-pressed={on}
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-all duration-300 ${
+                  on
+                    ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black'
+                    : 'border-black/10 bg-transparent text-black/55 hover:border-black/30 hover:text-black dark:border-white/10 dark:text-white/55 dark:hover:border-white/30 dark:hover:text-white'
+                }`}
+              >
+                {filterLabel(f)}
+                <span aria-hidden className={`font-mono text-[10px] ${on ? 'opacity-70' : 'opacity-40'}`}>
+                  {String(count).padStart(2, '0')}
+                </span>
+              </button>
+            )
+          })}
+        </div>
 
-        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
-          {PROJECTS.map((p, i) => {
+        <div ref={listRef} className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
+          {visible.map(({ p, i }, k) => {
             const flip = i % 2 === 1
+            const [firstWord, ...restWords] = p.title.split(' ')
             return (
               <article
-                key={p.title}
-                data-reveal
+                key={`${filter}-${p.title}`}
+                id={`work-card-${i}`}
+                data-work-index={k}
+                data-reveal={flip ? 'right' : 'left'}
                 className="group grid items-center gap-6 border-t border-black/10 py-10 last:border-b dark:border-white/10 md:grid-cols-2 md:gap-10 md:py-12"
               >
                 <div className={`min-w-0 ${flip ? 'md:order-2' : ''}`}>
@@ -907,33 +1280,44 @@ function Work() {
                       {L(p.category)}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-2xl md:text-4xl font-extrabold leading-[1.05] tracking-tight">
-                    {p.title}
+                  <h3 className="mt-4 text-2xl md:text-4xl font-extrabold leading-[1.05] tracking-tight transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1">
+                    <span className="work-title-first">{firstWord}</span>{' '}
+                    {restWords.join(' ')}
+                    <span aria-hidden className="work-title-arrow">
+                      ↗
+                    </span>
                   </h3>
                   <p className="mt-4 max-w-xl text-[13px] md:text-sm leading-relaxed text-black/55 dark:text-white/55">
-                    {L(p.fullDesc)}
+                    <span className="line-clamp-2">{L(p.desc)}</span>{' '}
+                    <button
+                      onClick={() => setActive(i)}
+                      className="font-semibold text-black underline decoration-black/30 underline-offset-4 transition-colors hover:decoration-black dark:text-white dark:decoration-white/30 dark:hover:decoration-white"
+                    >
+                      {t('read_case')} →
+                    </button>
                   </p>
 
-                  <dl className="mt-6 grid max-w-md grid-cols-3 gap-4">
-                    {[
-                      [t('lbl_year'), p.year],
-                      [t('lbl_platform'), L(p.tags)[0]],
-                      [t('lbl_role'), p.role],
-                    ].map(([label, value]) => (
-                      <div key={label} className="border-l border-black/15 pl-3 dark:border-white/20">
-                        <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{label}</dt>
-                        <dd className="mt-1.5 text-base md:text-lg font-extrabold tracking-tight">{value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                  {/* Strip meta satu baris: tahun · platform · peran */}
+                  <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.18em] text-black/45 dark:text-white/45">
+                    {p.year}
+                    <span aria-hidden className="mx-2 opacity-40">·</span>
+                    {L(p.tags)[0]}
+                    <span aria-hidden className="mx-2 opacity-40">·</span>
+                    {p.role}
+                  </p>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {p.tech.map((tech) => (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {p.tech.slice(0, 4).map((tech) => (
                       <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
                         <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
                         {tech}
                       </span>
                     ))}
+                    {p.tech.length > 4 && (
+                      <span className="inline-flex items-center rounded-full border border-dashed border-black/20 px-4 py-1.5 font-mono text-[12px] text-black/50 dark:border-white/20 dark:text-white/50">
+                        +{p.tech.length - 4}
+                      </span>
+                    )}
                   </div>
 
                   <div className="mt-6 flex flex-wrap gap-3">
@@ -959,7 +1343,7 @@ function Work() {
                 </div>
 
                 {/* Klik thumbnail → buka modal detail; gambar di modal bisa di-zoom fullscreen */}
-                <Tilt reveal="scale" className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm dark:border-white/10 dark:bg-white/5 ${flip ? 'md:order-1' : ''}`}>
+                <Tilt reveal="scale" className={`min-w-0 overflow-hidden rounded-2xl border border-black/10 bg-zinc-100 shadow-sm transition-transform duration-500 hover:-translate-y-1 hover:shadow-[0_28px_56px_-20px_rgba(0,0,0,0.3)] dark:border-white/10 dark:bg-white/5 dark:hover:shadow-[0_28px_56px_-20px_rgba(0,0,0,0.7)] ${flip ? 'md:order-1' : ''}`}>
                   <div className="flex items-center gap-2 border-b border-black/10 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-white/5">
                     <span aria-hidden className="flex gap-1.5">
                       <span className="h-2.5 w-2.5 rounded-full bg-black/15 dark:bg-white/20" />
@@ -976,18 +1360,15 @@ function Work() {
                     aria-label={t('view_details', { x: p.short })}
                     className="group/shot relative block w-full cursor-zoom-in text-left"
                   >
-                  <div className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
-                    <span className="block h-full w-full transition-transform duration-500 group-hover/shot:scale-[1.03]">
-                      <Thumbnail p={p} zoom={false} vivid={false} fill fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
-                    </span>
-                    <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
-                    <span className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/55 via-black/0 to-transparent pb-4 opacity-0 transition-opacity duration-300 group-hover/shot:opacity-100">
-                      <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[12px] font-semibold text-black shadow-lg dark:bg-black/85 dark:text-white">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M9 21H3v-6" /><path d="M21 3l-7 7" /><path d="M3 21l7-7" /></svg>
-                        {t('view_details_short')}
+                    <div className={`parallax-frame relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${p.frame === 'phone' ? (p.tint || 'from-zinc-100 to-zinc-200') : 'from-zinc-100 to-zinc-200'} dark:from-white/10 dark:to-white/5`}>
+                      <span className="block h-full w-full transition-transform duration-500 group-hover/shot:scale-[1.03]">
+                        <Thumbnail p={p} zoom={false} vivid={false} fill imgClass="parallax-img" fit={p.frame === 'phone' ? 'object-contain' : 'object-cover object-top'} />
                       </span>
+                      <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/10 dark:ring-white/15" />
+                    </div>
+                    <span aria-hidden className="work-shot-arrow">
+                      ↗
                     </span>
-                  </div>
                   </button>
                 </Tilt>
               </article>
@@ -1000,6 +1381,31 @@ function Work() {
           {t('work_foot')}
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
+      </div>
+      {/* Index rail: kapsul blur navigasi antar proyek, hanya desktop lebar */}
+      <div aria-hidden={!railVisible} className={`work-rail ${railVisible ? 'work-rail-on' : ''}`}>
+        <div className="work-rail-box">
+          <span aria-hidden className="work-rail-track">
+            <span
+              aria-hidden
+              className="work-rail-fill"
+              style={{ height: `${(((Math.min(railActive, visible.length - 1) + 1) / Math.max(1, visible.length)) * 100).toFixed(1)}%` }}
+            />
+          </span>
+          <div className="work-rail-nums">
+            {visible.map(({ p, i }, k) => (
+              <button
+                key={p.title}
+                onClick={() => goCard(i)}
+                tabIndex={railVisible ? 0 : -1}
+                aria-label={`${String(i + 1).padStart(2, '0')} — ${p.short}`}
+                className={`work-rail-dot ${k === Math.min(railActive, visible.length - 1) ? 'work-rail-dot-on' : ''}`}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       {/* Portal ke body: keluar dari stacking context <main>, jadi tidak ketutup navbar */}
       {active !== null &&
@@ -1028,6 +1434,7 @@ function Work() {
 function TimelineItem({ item, first }) {
   const { lang } = useLang()
   const L = (v) => localize(lang, v)
+  const ghost = (item.period.match(/\d{4}/g) || [])[0]?.slice(2)
   return (
     <li
       data-reveal
@@ -1039,10 +1446,15 @@ function TimelineItem({ item, first }) {
         aria-hidden
         className={`absolute left-[5px] top-2 h-[9px] w-[9px] rounded-full transition-colors duration-300 ${
           first
-            ? 'bg-white shadow-[0_0_0_4px_rgba(255,255,255,0.12)] dark:bg-black dark:shadow-[0_0_0_4px_rgba(0,0,0,0.10)]'
+            ? 'timeline-first bg-white dark:bg-black'
             : 'bg-[#131315] ring-1 ring-white/30 group-hover:bg-white/60 dark:bg-[#e9e6e0] dark:ring-black/30 dark:group-hover:bg-black/50'
         }`}
       />
+      {ghost && (
+        <span aria-hidden className="ghost-year">
+          &apos;{ghost}
+        </span>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{item.period}</p>
         {item.badge && (
@@ -1051,7 +1463,7 @@ function TimelineItem({ item, first }) {
           </span>
         )}
       </div>
-      <p className="mt-3 text-xl md:text-2xl font-extrabold leading-[1.1] tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+      <p className="mt-3 text-xl md:text-2xl font-extrabold leading-[1.1] tracking-tight">
         {item.place}
       </p>
       <p className="mt-2 text-[13px] md:text-sm font-medium text-white/60 dark:text-black/60">{L(item.role)}</p>
@@ -1063,6 +1475,11 @@ function TimelineItem({ item, first }) {
 function Experience() {
   const ref = useReveal(0.08)
   const { t } = useLang()
+
+  const goContact = () => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
       <span data-reveal="fade" aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
@@ -1071,7 +1488,13 @@ function Experience() {
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
         <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-2xl md:text-4xl font-black tracking-tight">{t('exp_title')}</h2>
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_sub')}</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">
+            {t('exp_sub')}
+            <span aria-hidden className="opacity-50">
+              {' '}
+              — {EDUCATION.length} edu · {WORK_EXPERIENCE.length} exp
+            </span>
+          </p>
         </div>
         <p data-reveal className="mt-4 max-w-xl text-sm leading-relaxed text-white/50 dark:text-black/60">
           {t('exp_desc')}
@@ -1080,7 +1503,8 @@ function Experience() {
         <div className="mx-auto mt-10 md:mt-14 grid w-full max-w-6xl gap-10 md:grid-cols-2 md:gap-14">
           <div data-reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_edu')}</p>
-            <ul className="mt-8">
+            <ul data-timeline className="relative mt-8">
+              <span aria-hidden className="timeline-progress" />
               {EDUCATION.map((item, i) => (
                 <TimelineItem key={item.id} item={item} first={i === 0} />
               ))}
@@ -1088,11 +1512,30 @@ function Experience() {
           </div>
           <div data-reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">{t('exp_exp')}</p>
-            <ul className="mt-8">
+            <ul data-timeline className="relative mt-8">
+              <span aria-hidden className="timeline-progress" />
               {WORK_EXPERIENCE.map((item, i) => (
                 <TimelineItem key={item.id} item={item} first={i === 0} />
               ))}
             </ul>
+            {/* Kartu penutup: kolom pendek jadi ajakan, bukan kekosongan */}
+            <button
+              data-reveal
+              onClick={goContact}
+              className="open-card group mt-2 flex w-full items-center gap-4 rounded-2xl border border-dashed border-white/25 p-5 text-left transition-all duration-500 hover:-translate-y-0.5 hover:border-solid hover:border-white/50 dark:border-black/25 dark:hover:border-black/50"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">
+                  {t('open_title')}
+                </span>
+                <span className="mt-1.5 block text-base font-extrabold tracking-tight">
+                  {t('open_desc')}
+                </span>
+              </span>
+              <span aria-hidden className="open-arrow">
+                ↗
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -1109,7 +1552,7 @@ const CONTACT_CARDS = [
   { id: 'linkedin', label: 'LinkedIn', value: 'Pradita Utama', href: 'https://www.linkedin.com/in/praditautama25' },
 ]
 
-function ContactCard({ c, index }) {
+function ContactCard({ c, index, featured }) {
   const [copied, setCopied] = useState(false)
   const { t } = useLang()
 
@@ -1134,12 +1577,17 @@ function ContactCard({ c, index }) {
       <span aria-hidden className="font-mono text-[11px] tracking-[0.2em] text-black/40 transition-colors duration-300 group-hover:text-black dark:text-white/40 dark:group-hover:text-white">
         {String(index + 1).padStart(2, '0')}
       </span>
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/10 bg-zinc-50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-black/30 group-hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)] dark:border-white/10 dark:bg-white/10 dark:group-hover:border-white/30">
-        <SocialIcon label={c.label} className="h-[15px] w-[15px] text-black/70 dark:text-white/70" />
+      <span className={`flex shrink-0 items-center justify-center rounded-full border border-black/10 bg-zinc-50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-black/30 group-hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.3)] dark:border-white/10 dark:bg-white/10 dark:group-hover:border-white/30 ${featured ? 'h-12 w-12' : 'h-10 w-10'}`}>
+        <SocialIcon label={c.label} className={`${featured ? 'h-[18px] w-[18px]' : 'h-[15px] w-[15px]'} text-black/70 dark:text-white/70`} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
+        <span className="flex flex-wrap items-center gap-2 text-base md:text-lg font-extrabold tracking-tight transition-transform duration-300 group-hover:translate-x-1">
           {c.label}
+          {featured && (
+            <span className="rounded-full border border-black/15 px-2.5 py-0.5 font-mono text-[9px] font-medium uppercase tracking-[0.2em] text-black/50 dark:border-white/20 dark:text-white/60">
+              {t('contact_preferred')}
+            </span>
+          )}
         </span>
         <span className="mt-0.5 block truncate font-mono text-[12px] tracking-wide text-black/55 dark:text-white/55">
           {copied ? t('copied') : c.value}
@@ -1163,7 +1611,7 @@ function ContactCard({ c, index }) {
     </>
   )
 
-  const cls = 'group flex w-full items-center gap-4 md:gap-6 border-b border-black/10 py-5 md:py-6 text-left transition-colors duration-300 hover:bg-black/[0.02] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black dark:border-white/10 dark:hover:bg-white/[0.03] dark:focus-visible:outline-white'
+  const cls = `group flex w-full items-center gap-4 md:gap-6 border-b border-black/10 py-5 md:py-6 text-left transition-colors duration-300 hover:bg-black/[0.02] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black dark:border-white/10 dark:hover:bg-white/[0.03] dark:focus-visible:outline-white${featured ? ' contact-featured' : ''}`
 
   if (c.href) {
     return (
@@ -1215,6 +1663,20 @@ function Contact() {
     document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const goTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const goSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const footNav = [
+    { id: 'work', label: t('nav_work') },
+    { id: 'skills', label: t('nav_skills') },
+    { id: 'experience', label: t('nav_experience') },
+  ]
+
   return (
     <section id="contact" ref={ref} className="relative w-full scroll-mt-16 overflow-hidden bg-white dark:bg-[#0b0b0d]">
       <div className="relative mx-auto w-full max-w-[1400px] px-6 md:px-12 py-16 md:py-24">
@@ -1233,7 +1695,7 @@ function Contact() {
 
         <div className="mx-auto mt-8 w-full max-w-6xl border-t border-black/10 dark:border-white/10">
           {CONTACT_CARDS.map((c, i) => (
-            <ContactCard key={c.id} c={c} index={i} />
+            <ContactCard key={c.id} c={c} index={i} featured={c.id === 'email'} />
           ))}
         </div>
 
@@ -1252,40 +1714,73 @@ function Contact() {
                 {t('contact_eyebrow')}
               </p>
               <p className="mt-4 text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">
-                {t('contact_cta_title')}
+                {t('contact_cta_title')
+                  .split(' ')
+                  .map((w, i, arr) => (
+                    <span key={i} data-reveal className="inline-block">
+                      {w}
+                      {i < arr.length - 1 ? ' ' : ''}
+                    </span>
+                  ))}
               </p>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 dark:text-black/60">
                 {t('contact_cta_desc')}
               </p>
             </div>
             <div className="flex shrink-0 flex-col gap-3 sm:flex-row md:flex-col">
-              <button
-                onClick={goWork}
-                className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-7 py-3.5 text-[13px] font-semibold text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-12px_rgba(255,255,255,0.4)] dark:bg-black dark:text-white dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)]"
-              >
-                {t('contact_cta_work')} <span aria-hidden>↗</span>
-              </button>
-              <a
-                href="/cv.pdf"
-                download="Galxtria-CV.pdf"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-[13px] font-semibold text-white/80 transition-all hover:-translate-y-0.5 hover:border-white hover:text-white dark:border-black/20 dark:text-black/70 dark:hover:border-black dark:hover:text-black"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                {t('hero_cv')}
-              </a>
+              <Magnetic>
+                <button
+                  onClick={goWork}
+                  className="btn-shine inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-7 py-3.5 text-[13px] font-semibold text-black transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_32px_-12px_rgba(255,255,255,0.4)] dark:bg-black dark:text-white dark:hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.5)]"
+                >
+                  {t('contact_cta_work')} <span aria-hidden>↗</span>
+                </button>
+              </Magnetic>
+              <Magnetic>
+                <a
+                  href="/cv.pdf"
+                  download="Galxtria-CV.pdf"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-[13px] font-semibold text-white/80 transition-all hover:-translate-y-0.5 hover:border-white hover:text-white dark:border-black/20 dark:text-black/70 dark:hover:border-black dark:hover:text-black"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  {t('hero_cv')}
+                </a>
+              </Magnetic>
             </div>
           </div>
         </div>
 
-        <p className="flex items-center justify-center gap-3 pt-8 pb-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
-          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
-          © 2026 Galxtria
-          <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
-        </p>
+        <div className="flex flex-col items-center justify-between gap-3 pt-8 pb-2 sm:flex-row">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
+            © {new Date().getFullYear()} Galxtria
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
+            Denpasar, ID
+          </p>
+          <nav aria-label="Footer" className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.25em] text-black/30 dark:text-white/30">
+            {footNav.map((l) => (
+              <button
+                key={l.id}
+                onClick={() => goSection(l.id)}
+                className="transition-colors hover:text-black dark:hover:text-white"
+              >
+                {l.label}
+              </button>
+            ))}
+            <button
+              onClick={goTop}
+              aria-label={t('back_top')}
+              title={t('back_top')}
+              className="transition-colors hover:text-black dark:hover:text-white"
+            >
+              <span aria-hidden>↑</span>
+            </button>
+          </nav>
+        </div>
       </div>
     </section>
   )
@@ -1295,6 +1790,7 @@ function Contact() {
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
+  useScrollFx()
 
   useEffect(() => {
     document.title = 'Galxtria'
