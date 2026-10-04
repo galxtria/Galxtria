@@ -1,7 +1,32 @@
 import { useState, useEffect, useRef, cloneElement } from 'react'
 import { createPortal } from 'react-dom'
 import { useTheme } from './ThemeContext.jsx'
-import { useLang, localize } from './LanguageContext.jsx'
+import { useLang, localize, fill } from './LanguageContext.jsx'
+import { burstConfetti } from './confetti.js'
+import { track } from '@vercel/analytics'
+
+// Waktu baca: kata / 200 (EN) atau 180 (ID), minimal 1 menit.
+function readingMinutes(text, lang) {
+  const words = (text || '').trim().split(/\s+/).filter(Boolean).length
+  const wpm = lang === 'id' ? 180 : 200
+  return Math.max(1, Math.ceil(words / wpm))
+}
+
+// Easter egg: 3x copy dalam 5 detik → pesan fun.
+let copyStamps = []
+function isFunCopy() {
+  const now = Date.now()
+  copyStamps = [...copyStamps, now].filter((ts) => now - ts < 5000)
+  return copyStamps.length >= 3
+}
+
+function safeTrack(name, props) {
+  try {
+    track(name, props)
+  } catch {
+    /* abaikan — analytics hanya jalan di prod */
+  }
+}
 
 // ── Thumbnail memakai screenshot asli di public/shots (tanpa import) ──
 
@@ -160,9 +185,10 @@ function SocialIcon({ label, className }) {
   )
 }
 
-// Pill sosmed: Email menyalin alamat saat diklik (dengan status "Copied!")
+// Pill sosmed: Email menyalin alamat saat diklik (dengan status "Copied!" + confetti)
 function SocialPill({ s, className }) {
   const [copied, setCopied] = useState(false)
+  const [fun, setFun] = useState(false)
   const { t } = useLang()
   const EMAIL = 'utamapradita5@gmail.com'
 
@@ -179,6 +205,9 @@ function SocialPill({ s, className }) {
       document.execCommand('copy')
       ta.remove()
     }
+    burstConfetti(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2)
+    safeTrack('copy_email', { source: 'hero' })
+    setFun(isFunCopy())
     setCopied(true)
     setTimeout(() => setCopied(false), 1800)
   }
@@ -199,8 +228,125 @@ function SocialPill({ s, className }) {
       ) : (
         <SocialIcon label={s.label} />
       )}
-      {copied ? t('copied') : s.label}
+      {copied ? (fun ? t('copied_fun') : t('copied')) : s.label}
     </a>
+  )
+}
+
+// ── Modal pratinjau CV: lihat dulu, baru unduh ──
+
+function CvPreviewModal({ onClose }) {
+  const { t } = useLang()
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    safeTrack('cv_preview')
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="backdrop-in fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('cv_preview_title')}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="modal-in relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#141416]"
+      >
+        <div className="flex items-start justify-between gap-4 p-6 md:p-8 pb-0">
+          <div>
+            <h3 className="text-xl md:text-2xl font-extrabold tracking-tight">{t('cv_preview_title')}</h3>
+            <p className="mt-1 text-sm text-black/55 dark:text-white/55">{t('cv_preview_desc')}</p>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label={t('modal_close_details')}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/90 text-black/70 shadow-lg hover:border-black hover:text-black transition-colors dark:border-white/15 dark:bg-black/60 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+        <div className="p-6 md:p-8 pt-4">
+          <div className="hidden sm:block overflow-hidden rounded-2xl border border-black/10 dark:border-white/10">
+            <iframe
+              src="/cv.pdf"
+              title={t('cv_preview_title')}
+              className="h-[60vh] w-full bg-zinc-50 dark:bg-white/5"
+              loading="lazy"
+            />
+          </div>
+          <p className="sm:hidden rounded-2xl border border-dashed border-black/20 px-4 py-3 text-[13px] text-black/60 dark:border-white/20 dark:text-white/60">
+            {t('cv_preview_no_preview')}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a
+              href="/cv.pdf"
+              download="Galxtria-CV.pdf"
+              className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
+            >
+              {t('cv_preview_download')}
+            </a>
+            <a
+              href="/cv.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+            >
+              {t('cv_preview_open_new')} <span aria-hidden>↗</span>
+            </a>
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
+            >
+              {t('modal_close')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Halaman 404 gaya portofolio (untuk route SPA tak dikenal) ──
+
+function NotFound() {
+  const { t } = useLang()
+  const goHome = () => {
+    try {
+      window.history.pushState({}, '', '/')
+      window.dispatchEvent(new PopStateEvent('popstate'))
+    } catch {
+      window.location.pathname = '/'
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  return (
+    <section className="relative flex min-h-[100svh] flex-col items-center justify-center bg-white px-6 text-center dark:bg-[#0b0b0d]">
+      <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-black/40 dark:text-white/40">
+        {t('notfound_eyebrow')}
+      </p>
+      <h1 className="mt-4 max-w-xl text-4xl md:text-6xl font-black tracking-tight leading-[1.02]">
+        {t('notfound_title')}
+      </h1>
+      <p className="mt-4 max-w-md text-sm leading-relaxed text-black/55 dark:text-white/55">
+        {t('notfound_desc')}
+      </p>
+      <button
+        onClick={goHome}
+        className="btn-shine mt-8 inline-flex items-center gap-1.5 rounded-full bg-black px-7 py-3.5 text-[13px] font-semibold text-white transition-all hover:-translate-y-0.5 dark:bg-white dark:text-black"
+      >
+        {t('notfound_home')} <span aria-hidden>↗</span>
+      </button>
+    </section>
   )
 }
 
@@ -675,6 +821,7 @@ function PortraitReveal({ onActiveChange }) {
 function Hero({ visible }) {
   const { t } = useLang()
   const [heroActive, setHeroActive] = useState(false)
+  const [cvOpen, setCvOpen] = useState(false)
   // Stagger wipe kiri → kanan untuk fill-pour (dipertajam 0–350ms)
   const letters = [
     { ch: 'G', cls: 'hl-outline', d: '0ms' },
@@ -734,9 +881,8 @@ function Hero({ visible }) {
               </svg>
               Denpasar, Bali, Indonesia
             </p>
-              <a
-                href="/cv.pdf"
-                download="Galxtria-CV.pdf"
+              <button
+                onClick={() => setCvOpen(true)}
                 className="btn-shine mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -745,7 +891,8 @@ function Hero({ visible }) {
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
                 {t('hero_cv')}
-              </a>
+              </button>
+              {cvOpen && createPortal(<CvPreviewModal onClose={() => setCvOpen(false)} />, document.body)}
           </div>
 
           {/* Foto: tinggi mengikuti layar, badan ditempel ke tepi bawah hero */}
@@ -828,6 +975,7 @@ function Tilt({ className = '', max = 7, reveal, children }) {
 function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused }) {
   const { lang, t } = useLang()
   const L = (v) => localize(lang, v)
+  const scrollRef = useRef(null)
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -837,11 +985,28 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
     }
     window.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
+    safeTrack('project_open', { project: p.short })
     return () => {
       window.removeEventListener('keydown', onKey)
       document.body.style.overflow = ''
     }
-  }, [onClose, onPrev, onNext, paused])
+  }, [onClose, onPrev, onNext, paused, p.short])
+
+  const sections = [
+    { id: 'overview', title: t('toc_overview'), body: L(p.fullDesc) },
+    { id: 'stack', title: t('toc_stack'), body: `${p.tech.join(' · ')} — ${t('role_prefix')}: ${p.role}` },
+    { id: 'outcome', title: t('toc_outcome'), body: L(p.desc) },
+  ]
+  const minutes = readingMinutes(
+    `${L(p.fullDesc)} ${L(p.desc)} ${p.tech.join(' ')} ${p.role}`,
+    lang
+  )
+  const goSection = (id) => {
+    const root = scrollRef.current
+    if (!root) return
+    const el = root.querySelector(`[data-sec="${id}"]`)
+    if (el) root.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' })
+  }
 
   return (
     <div
@@ -852,6 +1017,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
       aria-label={p.title}
     >
       <div
+        ref={scrollRef}
         onClick={(e) => e.stopPropagation()}
         className="modal-in relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#141416]"
       >
@@ -883,11 +1049,30 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
             <span className="rounded-full border border-black/15 px-4 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-black/55 dark:border-white/20 dark:text-white/60">
               {L(p.category)}
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.year} · {L(p.tags)[0]}</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-black/40 dark:text-white/40">{p.year} · {L(p.tags)[0]} · {fill(t('min_read'), { n: minutes })}</span>
           </div>
           <h3 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight">{p.title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-black/60 dark:text-white/60">{L(p.fullDesc)}</p>
-          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-black/40 dark:text-white/40">{t('role_prefix')}: {p.role}</p>
+          <nav aria-label="TOC" className="mt-4 flex gap-2 overflow-x-auto no-scrollbar">
+            {sections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => goSection(s.id)}
+                className="shrink-0 rounded-full border border-black/10 px-4 py-1.5 text-[12px] font-medium text-black/60 hover:border-black hover:text-black transition-colors dark:border-white/10 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
+              >
+                {s.title}
+              </button>
+            ))}
+          </nav>
+          <div className="mt-4 space-y-5">
+            {sections.map((s) => (
+              <div key={s.id} data-sec={s.id} className="scroll-mt-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+                  {s.title}
+                </p>
+                <p className="mt-1.5 text-sm leading-relaxed text-black/60 dark:text-white/60">{s.body}</p>
+              </div>
+            ))}
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {p.tech.map((tech) => (
               <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
@@ -1554,6 +1739,7 @@ const CONTACT_CARDS = [
 
 function ContactCard({ c, index, featured }) {
   const [copied, setCopied] = useState(false)
+  const [fun, setFun] = useState(false)
   const { t } = useLang()
 
   const copyEmail = async (e) => {
@@ -1568,6 +1754,9 @@ function ContactCard({ c, index, featured }) {
       document.execCommand('copy')
       ta.remove()
     }
+    burstConfetti(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2)
+    safeTrack('copy_email', { source: 'contact' })
+    setFun(isFunCopy())
     setCopied(true)
     setTimeout(() => setCopied(false), 1800)
   }
@@ -1590,7 +1779,7 @@ function ContactCard({ c, index, featured }) {
           )}
         </span>
         <span className="mt-0.5 block truncate font-mono text-[12px] tracking-wide text-black/55 dark:text-white/55">
-          {copied ? t('copied') : c.value}
+          {copied ? (fun ? t('copied_fun') : t('copied')) : c.value}
         </span>
       </span>
       <span aria-hidden className="hidden shrink-0 font-mono text-[10px] uppercase tracking-[0.22em] text-black/30 transition-colors duration-300 group-hover:text-black/60 sm:block dark:text-white/30 dark:group-hover:text-white/60">
@@ -1658,6 +1847,7 @@ function BackToTop({ visible }) {
 function Contact() {
   const ref = useReveal(0.08)
   const { t } = useLang()
+  const [cvOpen, setCvOpen] = useState(false)
 
   const goWork = () => {
     document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
@@ -1737,9 +1927,8 @@ function Contact() {
                 </button>
               </Magnetic>
               <Magnetic>
-                <a
-                  href="/cv.pdf"
-                  download="Galxtria-CV.pdf"
+                <button
+                  onClick={() => setCvOpen(true)}
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-[13px] font-semibold text-white/80 transition-all hover:-translate-y-0.5 hover:border-white hover:text-white dark:border-black/20 dark:text-black/70 dark:hover:border-black dark:hover:text-black"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -1748,8 +1937,9 @@ function Contact() {
                     <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
                   {t('hero_cv')}
-                </a>
+                </button>
               </Magnetic>
+              {cvOpen && createPortal(<CvPreviewModal onClose={() => setCvOpen(false)} />, document.body)}
             </div>
           </div>
         </div>
@@ -1790,24 +1980,51 @@ function Contact() {
 
 export default function App() {
   const [loaded, setLoaded] = useState(false)
+  const [path, setPath] = useState(() => {
+    try {
+      return window.location.pathname
+    } catch {
+      return '/'
+    }
+  })
   useScrollFx()
 
   useEffect(() => {
     document.title = 'Galxtria'
   }, [])
 
+  useEffect(() => {
+    const onPop = () => {
+      try {
+        setPath(window.location.pathname)
+      } catch { /* abaikan */ }
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+
+  const isNotFound = path !== '/' && path !== '/index.html'
+
   return (
     <div className="cloud-sky relative min-h-screen text-[#111] dark:text-[#f4f2ed]">
       {!loaded && <Splash onFinish={() => setLoaded(true)} />}
-      <Navbar loaded={loaded} />
-      <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
-        <Hero visible={loaded} />
-        <Work />
-        <Skills />
-        <Experience />
-        <Contact />
-      </main>
-      <BackToTop visible={loaded} />
+      {isNotFound ? (
+        <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+          <NotFound />
+        </main>
+      ) : (
+        <>
+          <Navbar loaded={loaded} />
+          <main className={`relative z-10 transition-opacity duration-700 ${loaded ? 'opacity-100' : 'opacity-0'}`}>
+            <Hero visible={loaded} />
+            <Work />
+            <Skills />
+            <Experience />
+            <Contact />
+          </main>
+          <BackToTop visible={loaded} />
+        </>
+      )}
     </div>
   )
 }
