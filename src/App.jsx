@@ -1362,9 +1362,6 @@ function Work() {
   const [active, setActive] = useState(null)
   const [zoomed, setZoomed] = useState(false)
   const [filter, setFilter] = useState('all')
-  const [railVisible, setRailVisible] = useState(false)
-  const [railActive, setRailActive] = useState(0)
-  const listRef = useRef(null)
   const total = PROJECTS.length
 
   // Kategori unik untuk tabs filter (kunci stabil: nilai EN)
@@ -1372,37 +1369,6 @@ function Work() {
   const visible =
     filter === 'all' ? PROJECTS.map((p, i) => ({ p, i })) : PROJECTS.map((p, i) => ({ p, i })).filter(({ p }) => p.category.en === filter)
   const filterLabel = (f) => (f === 'all' ? t('filter_all') : L(PROJECTS.find((p) => p.category.en === f).category))
-
-  // Index rail: tampil saat section benar-benar dimasuki, sorot kartu yang sedang dibaca
-  useEffect(() => {
-    const section = ref.current
-    if (!section) return
-    const secObs = new IntersectionObserver(([entry]) => setRailVisible(entry.isIntersecting), {
-      rootMargin: '-30% 0px -30% 0px',
-    })
-    secObs.observe(section)
-    return () => secObs.disconnect()
-  }, [ref])
-  useEffect(() => {
-    const root = listRef.current
-    if (!root) return
-    const arts = [...root.querySelectorAll('[data-work-index]')]
-    if (!arts.length) return
-    const artObs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) setRailActive(Number(en.target.dataset.workIndex))
-        })
-      },
-      { rootMargin: '-40% 0px -55% 0px' }
-    )
-    arts.forEach((a) => artObs.observe(a))
-    return () => artObs.disconnect()
-  }, [filter])
-
-  const goCard = (origIndex) => {
-    document.getElementById(`work-card-${origIndex}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
 
   return (
     <section id="work" ref={ref} className="relative w-full scroll-mt-16 bg-white dark:bg-[#0b0b0d]">
@@ -1444,15 +1410,13 @@ function Work() {
           })}
         </div>
 
-        <div ref={listRef} className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
-          {visible.map(({ p, i }, k) => {
+        <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
+          {visible.map(({ p, i }) => {
             const flip = i % 2 === 1
             const [firstWord, ...restWords] = p.title.split(' ')
             return (
               <article
                 key={`${filter}-${p.title}`}
-                id={`work-card-${i}`}
-                data-work-index={k}
                 data-reveal={flip ? 'right' : 'left'}
                 className="group grid items-center gap-6 border-t border-black/10 py-10 last:border-b dark:border-white/10 md:grid-cols-2 md:gap-10 md:py-12"
               >
@@ -1566,31 +1530,6 @@ function Work() {
           {t('work_foot')}
           <span aria-hidden className="h-px w-8 bg-black/15 dark:bg-white/15" />
         </p>
-      </div>
-      {/* Index rail: kapsul blur navigasi antar proyek, hanya desktop lebar */}
-      <div aria-hidden={!railVisible} className={`work-rail ${railVisible ? 'work-rail-on' : ''}`}>
-        <div className="work-rail-box">
-          <span aria-hidden className="work-rail-track">
-            <span
-              aria-hidden
-              className="work-rail-fill"
-              style={{ height: `${(((Math.min(railActive, visible.length - 1) + 1) / Math.max(1, visible.length)) * 100).toFixed(1)}%` }}
-            />
-          </span>
-          <div className="work-rail-nums">
-            {visible.map(({ p, i }, k) => (
-              <button
-                key={p.title}
-                onClick={() => goCard(i)}
-                tabIndex={railVisible ? 0 : -1}
-                aria-label={`${String(i + 1).padStart(2, '0')} — ${p.short}`}
-                className={`work-rail-dot ${k === Math.min(railActive, visible.length - 1) ? 'work-rail-dot-on' : ''}`}
-              >
-                {String(i + 1).padStart(2, '0')}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
       {/* Portal ke body: keluar dari stacking context <main>, jadi tidak ketutup navbar */}
       {active !== null &&
