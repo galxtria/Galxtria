@@ -23,6 +23,36 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="image" href="/portrait-cutout.png" fetchpriority="high" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "name": "Galxtria",
+            "jobTitle": "Frontend Developer",
+            "address": { "@type": "PostalAddress", "addressLocality": "Denpasar", "addressRegion": "Bali", "addressCountry": "ID" },
+            "url": "https://galxtria.vercel.app/",
+            "sameAs": [
+              "https://github.com/galxtria",
+              "https://www.instagram.com/galxtria/",
+              "https://www.linkedin.com/in/praditautama25"
+            ],
+            "knowsAbout": ["React", "TypeScript", "Tailwind CSS", "Laravel", "SQLite", "PWA", "Recharts", "Leaflet", "Zustand"]
+          },
+          {
+            "@type": "ItemList",
+            "name": "Selected Work",
+            "itemListElement": [
+              { "@type": "CreativeWork", "position": 1, "name": "MoneyTrackerV2 - Smart Budget Planner", "url": "https://moneytrackerv2-woad.vercel.app" },
+              { "@type": "CreativeWork", "position": 2, "name": "KostHub Web - Property Platform", "url": "https://github.com/galxtria/KostHub_Web" },
+              { "@type": "CreativeWork", "position": 3, "name": "My Music - Automated Music Player", "url": "https://github.com/galxtria/MyMusic" }
+            ]
+          }
+        ]
+      }
+    </script>
     <script>
       // Terapkan tema sebelum paint agar tidak flicker terang→gelap.
       try {

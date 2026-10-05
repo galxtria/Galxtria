@@ -45,6 +45,31 @@ const PROJECTS = [
       id: 'MoneyTrackerV2 adalah perencana anggaran yang bekerja sepenuhnya offline, dibangun dengan React, TypeScript, dan Tailwind. Dilengkapi pelacakan anggaran bulanan beserta batas belanja harian, pencatatan pengeluaran yang tersimpan lokal melalui Dexie.js (IndexedDB), grafik dengan Recharts, serta dukungan PWA yang dapat diinstal.',
     },
     tech: ['React', 'TypeScript', 'Tailwind', 'Dexie.js', 'Recharts'],
+    highlights: {
+      en: [
+        'Offline-first budgeting with Dexie.js (IndexedDB) persistence',
+        'Daily safe-spend allowance derived from monthly budget',
+        'Recharts insights plus installable PWA support',
+      ],
+      id: [
+        'Anggaran offline-first dengan penyimpanan Dexie.js (IndexedDB)',
+        'Batas belanja harian otomatis dari anggaran bulanan',
+        'Wawasan Recharts plus dukungan PWA yang bisa diinstal',
+      ],
+    },
+    challenge: {
+      en: 'Modeling safe-spend edge cases (early-month overspend, empty days) with no backend to reconcile.',
+      id: 'Memodelkan kasus tepi batas belanja (boros di awal bulan, hari kosong) tanpa backend pembanding.',
+    },
+    learning: {
+      en: 'Local-first state design, IndexedDB schema versioning, and PWA caching.',
+      id: 'Desain state local-first, versioning skema IndexedDB, dan caching PWA.',
+    },
+    runLocal: 'git clone https://github.com/galxtria/MoneyTrackerV2.git; npm i; npm run dev',
+    stackLinks: {
+      'Dexie.js': 'https://dexie.org',
+      Recharts: 'https://recharts.org',
+    },
     tags: { en: ['Mobile App', 'Personal'], id: ['Aplikasi Mobile', 'Personal'] },
     category: { en: 'Real Project', id: 'Proyek Nyata' },
     role: 'Frontend Developer',
@@ -66,7 +91,33 @@ const PROJECTS = [
       en: 'KostHub Web is a full-stack monorepo web app: Laravel 12 REST API with Sanctum auth and SQLite storage, plus a React and Vite frontend with React Router, Zustand, Tailwind, Leaflet maps, and QR code support. Includes an admin dashboard for properties and orders, and a user portal for property discovery and bookings.',
       id: 'KostHub Web adalah aplikasi web full-stack monorepo: REST API Laravel 12 dengan autentikasi Sanctum dan penyimpanan SQLite, serta frontend React dan Vite dengan React Router, Zustand, Tailwind, peta Leaflet, dan dukungan kode QR. Dilengkapi dasbor admin untuk properti dan pesanan, serta portal pengguna untuk pencarian properti dan pemesanan.',
     },
-    tech: ['Laravel', 'React', 'Tailwind', 'SQLite'],
+    tech: ['Laravel', 'React', 'Tailwind', 'SQLite', 'Zustand', 'Leaflet'],
+    highlights: {
+      en: [
+        'Laravel 12 REST API with Sanctum auth and SQLite storage',
+        'React + Router + Zustand client with Leaflet maps and QR support',
+        'Admin dashboard for properties/orders and user booking portal',
+      ],
+      id: [
+        'REST API Laravel 12 dengan auth Sanctum dan penyimpanan SQLite',
+        'Klien React + Router + Zustand dengan peta Leaflet dan QR',
+        'Dasbor admin properti/pesanan dan portal pemesanan pengguna',
+      ],
+    },
+    challenge: {
+      en: 'Keeping Laravel API contracts in sync with the React client across auth, bookings, and QR flows.',
+      id: 'Menjaga kontrak API Laravel tetap sinkron dengan klien React untuk auth, pemesanan, dan alur QR.',
+    },
+    learning: {
+      en: 'Full-stack monorepo auth, SQLite seeding, and map-based UX.',
+      id: 'Auth full-stack monorepo, seeding SQLite, dan UX berbasis peta.',
+    },
+    runLocal: 'git clone https://github.com/galxtria/KostHub_Web.git; composer install; npm i; npm run dev',
+    stackLinks: {
+      Laravel: 'https://laravel.com',
+      Leaflet: 'https://leafletjs.com',
+      Zustand: 'https://zustand.docs.pmnd.rs',
+    },
     tags: { en: ['Web App', 'KostHub'], id: ['Web App', 'KostHub'] },
     category: { en: 'Exploration', id: 'Eksplorasi' },
     role: 'Full-Stack Developer',
@@ -91,6 +142,30 @@ const PROJECTS = [
       id: 'My Music adalah aplikasi pustaka musik Laravel 12 dan React dengan gaya Bootstrap dan Tailwind, navigasi React Router, serta penyimpanan SQLite. Backend-nya menangani pengindeksan pustaka, penguraian metadata, dan penyimpanan preferensi, dibangun dengan konfigurasi Vite.',
     },
     tech: ['Laravel', 'React', 'Bootstrap', 'Tailwind', 'SQLite'],
+    highlights: {
+      en: [
+        'Laravel 12 library indexing with metadata parsing',
+        'React Router library UI with Bootstrap + Tailwind styling',
+        'SQLite-backed preferences with Vite build setup',
+      ],
+      id: [
+        'Pengindeksan pustaka Laravel 12 dengan penguraian metadata',
+        'UI pustaka React Router dengan gaya Bootstrap + Tailwind',
+        'Preferensi berbasis SQLite dengan setup build Vite',
+      ],
+    },
+    challenge: {
+      en: 'Indexing a large local library fast while normalizing inconsistent audio metadata.',
+      id: 'Mengindeks pustaka lokal besar dengan cepat sambil menormalkan metadata audio yang tidak konsisten.',
+    },
+    learning: {
+      en: 'Background indexing, preference persistence, and build tuning.',
+      id: 'Pengindeksan latar, penyimpanan preferensi, dan tuning build.',
+    },
+    runLocal: 'git clone https://github.com/galxtria/MyMusic.git; composer install; npm i; npm run dev',
+    stackLinks: {
+      Laravel: 'https://laravel.com',
+    },
     tags: { en: ['Web App', 'Kumpin Studio'], id: ['Web App', 'Kumpin Studio'] },
     category: { en: 'Real Project', id: 'Proyek Nyata' },
     role: 'Full-Stack Developer',
@@ -471,6 +546,127 @@ function Magnetic({ children, max = 6 }) {
   return cloneElement(children, { ref, onPointerMove, onPointerLeave })
 }
 
+// ── Kursor monokrom: dot + ring invert via blend-difference (desktop only) ──
+
+function Cursor() {
+  const dotRef = useRef(null)
+  const ringRef = useRef(null)
+
+  useEffect(() => {
+    if (window.matchMedia?.('(hover: none)').matches) return
+    if (window.matchMedia?.('(pointer: coarse)').matches) return
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    const dot = dotRef.current
+    const ring = ringRef.current
+    if (!dot || !ring) return
+    document.documentElement.classList.add('has-custom-cursor')
+    let x = -100
+    let y = -100
+    let rx = -100
+    let ry = -100
+    let raf = 0
+    const onMove = (e) => {
+      x = e.clientX
+      y = e.clientY
+      dot.style.translate = `${x}px ${y}px`
+      const t = e.target?.closest?.('a, button, [data-hover]')
+      const hovering = !!t
+      ring.classList.toggle('cursor-ring-on', hovering)
+    }
+    const onDown = () => ring.classList.add('cursor-ring-press')
+    const onUp = () => ring.classList.remove('cursor-ring-press')
+    const loop = () => {
+      // Buntut lerp lembut tanpa overshoot — kalem mengikuti bahasa gerak web.
+      rx += (x - rx) * 0.2
+      ry += (y - ry) * 0.2
+      ring.style.translate = `${rx.toFixed(1)}px ${ry.toFixed(1)}px`
+      raf = requestAnimationFrame(loop)
+    }
+    const onLeave = () => {
+      dot.style.opacity = '0'
+      ring.style.opacity = '0'
+    }
+    const onEnter = () => {
+      dot.style.opacity = ''
+      ring.style.opacity = ''
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onDown, { passive: true })
+    window.addEventListener('pointerup', onUp, { passive: true })
+    document.documentElement.addEventListener('pointerleave', onLeave)
+    document.documentElement.addEventListener('pointerenter', onEnter)
+    raf = requestAnimationFrame(loop)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('pointerup', onUp)
+      document.documentElement.removeEventListener('pointerleave', onLeave)
+      document.documentElement.removeEventListener('pointerenter', onEnter)
+      document.documentElement.classList.remove('has-custom-cursor')
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  return (
+    <div aria-hidden className="cursor-layer">
+      <span ref={dotRef} className="cursor-dot" />
+      <span ref={ringRef} className="cursor-ring" />
+    </div>
+  )
+}
+
+// ── Dots navigasi section (desktop only) ──
+
+const DOT_SECTIONS = ['work', 'skills', 'experience', 'contact']
+
+function SectionDots({ visible }) {
+  const [current, setCurrent] = useState('work')
+  const { t } = useLang()
+
+  useEffect(() => {
+    if (!visible) return
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const en of entries) {
+          if (en.isIntersecting) setCurrent(en.target.id)
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    )
+    DOT_SECTIONS.forEach((id) => {
+      const el = document.getElementById(id)
+      if (el) obs.observe(el)
+    })
+    return () => obs.disconnect()
+  }, [visible])
+
+  if (!visible) return null
+  const label = (id) => {
+    if (id === 'work') return t('nav_work')
+    if (id === 'skills') return t('nav_skills')
+    if (id === 'experience') return t('nav_experience')
+    return t('nav_contact')
+  }
+  return (
+    <nav aria-label={t('nav_menu')} className="section-dots">
+      {DOT_SECTIONS.map((id) => (
+        <button
+          key={id}
+          onClick={() => {
+            setCurrent(id)
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+          }}
+          aria-label={label(id)}
+          aria-current={current === id ? 'true' : undefined}
+          className={`section-dot${current === id ? ' section-dot-on' : ''}`}
+        >
+          <span className="section-dot-tip">{label(id)}</span>
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 // ── Splash tipografi: nama besar fade-blur + garis tipis ──
 
 function Splash({ onFinish }) {
@@ -530,7 +726,11 @@ function LangToggle() {
   const isEN = lang === 'en'
   return (
     <button
-      onClick={() => setLang(isEN ? 'id' : 'en')}
+      onClick={() => {
+        const next = isEN ? 'id' : 'en'
+        setLang(next)
+        safeTrack('switch_lang', { lang: next })
+      }}
       title={isEN ? 'Ganti ke Bahasa Indonesia' : 'Switch to English'}
       aria-label={`${t('lang_label')}: ${lang.toUpperCase()} → ${(isEN ? 'id' : 'en').toUpperCase()}`}
       className="group flex h-9 shrink-0 items-center rounded-full border border-black/10 bg-white/80 p-1 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-px hover:border-black/25 hover:shadow-md active:translate-y-0 active:scale-95 dark:border-white/15 dark:bg-white/[0.06] dark:hover:border-white/35"
@@ -674,7 +874,10 @@ function Navbar({ loaded }) {
           <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
             <LangToggle />
             <button
-              onClick={toggleTheme}
+              onClick={(e) => {
+                toggleTheme(e)
+                safeTrack('switch_theme', { theme: isDark ? 'light' : 'dark' })
+              }}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               title={isDark ? 'Light mode' : 'Dark mode'}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-black/70 shadow-sm transition-all hover:rotate-12 hover:border-black hover:text-black dark:border-white/15 dark:bg-white/5 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
@@ -787,7 +990,7 @@ function PortraitReveal({ onActiveChange }) {
       onPointerEnter={handleEnter}
       onPointerLeave={handleLeave}
       onClick={handleClick}
-      className="portrait-reveal group/portrait relative w-full md:w-fit md:h-full select-none overflow-hidden [@media(hover:hover)]:cursor-crosshair [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]"
+      className="portrait-reveal group/portrait relative w-full md:w-fit md:h-full select-none overflow-hidden [mask-image:linear-gradient(to_bottom,black_97%,transparent_100%)]"
     >
       <div className="grid">
         {/* Lapisan bawah: versi berwarna */}
@@ -976,6 +1179,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
   const { lang, t } = useLang()
   const L = (v) => localize(lang, v)
   const scrollRef = useRef(null)
+  const [copiedCmd, setCopiedCmd] = useState(false)
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -992,13 +1196,28 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
     }
   }, [onClose, onPrev, onNext, paused, p.short])
 
+  const copyRunLocal = async () => {
+    if (!p.runLocal) return
+    try {
+      await navigator.clipboard.writeText(p.runLocal.replace(/; /g, '\n'))
+    } catch {
+      /* abaikan */
+    }
+    safeTrack('copy_run_local', { project: p.short })
+    setCopiedCmd(true)
+    setTimeout(() => setCopiedCmd(false), 1500)
+  }
+
   const sections = [
     { id: 'overview', title: t('toc_overview'), body: L(p.fullDesc) },
     { id: 'stack', title: t('toc_stack'), body: `${p.tech.join(' · ')} — ${t('role_prefix')}: ${p.role}` },
     { id: 'outcome', title: t('toc_outcome'), body: L(p.desc) },
+    ...(p.highlights ? [{ id: 'highlights', title: t('toc_highlights'), list: L(p.highlights) }] : []),
+    ...(p.challenge ? [{ id: 'challenge', title: t('toc_challenge'), body: L(p.challenge) }] : []),
+    ...(p.learning ? [{ id: 'learning', title: t('toc_learning'), body: L(p.learning) }] : []),
   ]
   const minutes = readingMinutes(
-    `${L(p.fullDesc)} ${L(p.desc)} ${p.tech.join(' ')} ${p.role}`,
+    `${L(p.fullDesc)} ${L(p.desc)} ${(L(p.highlights) || []).join(' ')} ${p.tech.join(' ')} ${p.role}`,
     lang
   )
   const goSection = (id) => {
@@ -1069,23 +1288,76 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
                   {s.title}
                 </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-black/60 dark:text-white/60">{s.body}</p>
+                {s.list ? (
+                  <ul className="mt-1.5 space-y-1.5">
+                    {s.list.map((li) => (
+                      <li key={li} className="flex gap-2 text-sm leading-relaxed text-black/60 dark:text-white/60">
+                        <span aria-hidden className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-black/40 dark:bg-white/40" />
+                        {li}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-1.5 text-sm leading-relaxed text-black/60 dark:text-white/60">{s.body}</p>
+                )}
               </div>
             ))}
+            {p.runLocal && (
+              <div data-sec="run" className="scroll-mt-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-black/40 dark:text-white/40">
+                  {t('run_local')}
+                </p>
+                <div className="mt-1.5 flex items-start justify-between gap-3 rounded-2xl border border-black/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-white/5">
+                  <code className="min-w-0 flex-1 whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed text-black/70 dark:text-white/70">
+                    {p.runLocal.replace(/; /g, '\n')}
+                  </code>
+                  <button
+                    onClick={copyRunLocal}
+                    className="shrink-0 rounded-full border border-black/15 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-black/60 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/60 dark:hover:border-white dark:hover:text-white"
+                  >
+                    {copiedCmd ? t('copied_cmd') : t('copy_cmd')}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            {p.tech.map((tech) => (
-              <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
-                {tech}
-              </span>
-            ))}
+            {p.tech.map((tech) => {
+              const href = p.stackLinks?.[tech]
+              const pillCls =
+                'inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80'
+              const inner = (
+                <>
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
+                  {tech}
+                </>
+              )
+              return href ? (
+                <a
+                  key={tech}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => safeTrack('stack_doc_click', { project: p.short, stack: tech })}
+                  title={`${tech} docs`}
+                  className={`${pillCls} transition-colors hover:border-black/30 dark:hover:border-white/30`}
+                >
+                  {inner}
+                  <span aria-hidden className="text-[10px] opacity-50">↗</span>
+                </a>
+              ) : (
+                <span key={tech} className={pillCls}>
+                  {inner}
+                </span>
+              )
+            })}
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
             <a
               href={p.github}
               target="_blank"
               rel="noreferrer"
+              onClick={() => safeTrack('github_click', { project: p.short, source: 'modal' })}
               className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-zinc-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-zinc-200"
             >
               {t('btn_github')} <span aria-hidden>↗</span>
@@ -1095,6 +1367,7 @@ function ProjectModal({ p, index, total, onClose, onZoom, onPrev, onNext, paused
                 href={p.demo}
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => safeTrack('demo_click', { project: p.short, source: 'modal' })}
                 className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 hover:border-black hover:text-black transition-colors dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
               >
                 {t('btn_demo')} <span aria-hidden>↗</span>
@@ -1226,21 +1499,38 @@ const SKILLS = [
 // Normalisasi nama tech agar 'Tailwind CSS' cocok dengan 'Tailwind', dll.
 const normTech = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
 
+// Cocokkan skill → tech proyek (mis. "Tailwind CSS" ↔ "Tailwind", "IndexedDB" ↔ "Dexie.js").
+function matchTech(skillName, techName) {
+  const n = normTech(skillName)
+  const m = normTech(techName)
+  if (!n || !m) return false
+  if (m.includes(n) || n.includes(m)) return true
+  // Alias yang tidak tertangkap substring: IndexedDB diwujudkan via Dexie.js.
+  if ((n.includes('indexeddb') && m.includes('dexie')) || (n.includes('dexie') && m.includes('indexeddb'))) return true
+  return false
+}
+
 // Hitung di berapa proyek sebuah skill terbukti dipakai (data PROJECTS).
 function techUsage(name) {
   const n = normTech(name)
   if (!n) return 0
-  return PROJECTS.filter((p) =>
-    p.tech.some((tech) => {
-      const m = normTech(tech)
-      return m.includes(n) || n.includes(m)
-    })
-  ).length
+  return PROJECTS.filter((p) => p.tech.some((tech) => matchTech(name, tech))).length
+}
+
+function matchesTechFilter(project, techFilter) {
+  if (!techFilter) return true
+  return project.tech.some((tech) => matchTech(techFilter, tech))
 }
 
 function SkillPills({ items }) {
   const { t } = useLang()
-  const goWork = () => {
+  const goWorkWithTech = (skillName) => {
+    safeTrack('skill_to_work', { skill: skillName })
+    try {
+      window.dispatchEvent(new CustomEvent('filter-tech', { detail: skillName }))
+    } catch {
+      /* abaikan */
+    }
     document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })
   }
   return (
@@ -1280,7 +1570,7 @@ function SkillPills({ items }) {
           </>
         )
         return n > 0 ? (
-          <button key={s.name} onClick={goWork} title={t('contact_cta_work')} className={cls}>
+          <button key={s.name} onClick={() => goWorkWithTech(s.name)} title={t('contact_cta_work')} className={cls}>
             {body}
           </button>
         ) : (
@@ -1310,7 +1600,8 @@ function Skills() {
           </p>
         </div>
         <p data-reveal className="relative mt-4 max-w-xl text-sm leading-relaxed text-black/55 dark:text-white/55">
-          {t('skills_desc')}
+          {t('skills_desc')}{' '}
+          <span className="font-mono text-[11px] uppercase tracking-[0.15em] opacity-70">{t('skills_hint')}</span>
         </p>
 
         {/* Daftar grup: nomor + nama di kiri, pills di kanan */}
@@ -1362,12 +1653,26 @@ function Work() {
   const [active, setActive] = useState(null)
   const [zoomed, setZoomed] = useState(false)
   const [filter, setFilter] = useState('all')
+  const [techFilter, setTechFilter] = useState(null)
   const total = PROJECTS.length
+
+  useEffect(() => {
+    const onTech = (e) => {
+      const name = e.detail
+      if (typeof name === 'string' && name) {
+        setTechFilter(name)
+        safeTrack('filter_tech', { tech: name, source: 'skills' })
+      }
+    }
+    window.addEventListener('filter-tech', onTech)
+    return () => window.removeEventListener('filter-tech', onTech)
+  }, [])
 
   // Kategori unik untuk tabs filter (kunci stabil: nilai EN)
   const filters = ['all', ...new Set(PROJECTS.map((p) => p.category.en))]
-  const visible =
+  const byCategory =
     filter === 'all' ? PROJECTS.map((p, i) => ({ p, i })) : PROJECTS.map((p, i) => ({ p, i })).filter(({ p }) => p.category.en === filter)
+  const visible = techFilter ? byCategory.filter(({ p }) => matchesTechFilter(p, techFilter)) : byCategory
   const filterLabel = (f) => (f === 'all' ? t('filter_all') : L(PROJECTS.find((p) => p.category.en === f).category))
 
   return (
@@ -1386,14 +1691,17 @@ function Work() {
           {t('work_sub')}
         </p>
         {/* Filter kategori: state lokal, tanpa backend */}
-        <div data-reveal className="relative mt-6 flex flex-wrap gap-2">
+        <div data-reveal className="relative mt-6 flex flex-wrap items-center gap-2">
           {filters.map((f) => {
             const on = filter === f
             const count = f === 'all' ? total : PROJECTS.filter((p) => p.category.en === f).length
             return (
               <button
                 key={f}
-                onClick={() => setFilter(f)}
+                onClick={() => {
+                  setFilter(f)
+                  safeTrack('filter_category', { category: f })
+                }}
                 aria-pressed={on}
                 className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-[12px] font-medium transition-all duration-300 ${
                   on
@@ -1408,7 +1716,27 @@ function Work() {
               </button>
             )
           })}
+          {techFilter && (
+            <span className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-1.5 text-[12px] font-medium text-white dark:border-white dark:bg-white dark:text-black">
+              {fill(t('tech_filter'), { x: techFilter })}
+              <button
+                onClick={() => setTechFilter(null)}
+                aria-label={t('clear_filter')}
+                className="font-mono text-[12px] leading-none opacity-70 hover:opacity-100"
+              >
+                ✕
+              </button>
+            </span>
+          )}
         </div>
+        {techFilter && visible.length === 0 && (
+          <p className="relative mt-4 text-sm text-black/55 dark:text-white/55">
+            {fill(t('tech_filter'), { x: techFilter })} — 00.{' '}
+            <button onClick={() => setTechFilter(null)} className="font-semibold underline underline-offset-4">
+              {t('clear_filter')}
+            </button>
+          </p>
+        )}
 
         <div className="mx-auto mt-10 md:mt-14 w-full max-w-6xl">
           {visible.map(({ p, i }) => {
@@ -1416,7 +1744,7 @@ function Work() {
             const [firstWord, ...restWords] = p.title.split(' ')
             return (
               <article
-                key={`${filter}-${p.title}`}
+                key={`${filter}-${techFilter || 'all-tech'}-${p.title}`}
                 data-reveal={flip ? 'right' : 'left'}
                 className="group grid items-center gap-6 border-t border-black/10 py-10 last:border-b dark:border-white/10 md:grid-cols-2 md:gap-10 md:py-12"
               >
@@ -1457,10 +1785,18 @@ function Work() {
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {p.tech.slice(0, 4).map((tech) => (
-                      <span key={tech} className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 dark:border-white/10 dark:bg-white/10 dark:text-white/80">
+                      <button
+                        key={tech}
+                        onClick={() => {
+                          setTechFilter(tech)
+                          safeTrack('filter_tech', { tech, source: 'card' })
+                        }}
+                        title={fill(t('tech_filter'), { x: tech })}
+                        className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-zinc-50 px-4 py-1.5 text-[12px] font-medium text-black/75 transition-colors hover:border-black/30 dark:border-white/10 dark:bg-white/10 dark:text-white/80 dark:hover:border-white/30"
+                      >
                         <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-black dark:bg-white" />
                         {tech}
-                      </span>
+                      </button>
                     ))}
                     {p.tech.length > 4 && (
                       <span className="inline-flex items-center rounded-full border border-dashed border-black/20 px-4 py-1.5 font-mono text-[12px] text-black/50 dark:border-white/20 dark:text-white/50">
@@ -1474,6 +1810,7 @@ function Work() {
                       href={p.github}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => safeTrack('github_click', { project: p.short, source: 'card' })}
                       className="btn-shine inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[12px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
                     >
                       {t('btn_github')} <span aria-hidden>↗</span>
@@ -1483,6 +1820,7 @@ function Work() {
                         href={p.demo}
                         target="_blank"
                         rel="noreferrer"
+                        onClick={() => safeTrack('demo_click', { project: p.short, source: 'card' })}
                         className="inline-flex items-center gap-2 rounded-full border border-black/15 px-5 py-2.5 text-[12px] font-semibold text-black/70 transition-all hover:-translate-y-0.5 hover:border-black hover:text-black dark:border-white/15 dark:text-white/70 dark:hover:border-white dark:hover:text-white"
                       >
                         {t('btn_demo')} <span aria-hidden>↗</span>
@@ -1961,6 +2299,8 @@ export default function App() {
             <Experience />
             <Contact />
           </main>
+          <SectionDots visible={loaded} />
+          <Cursor />
           <BackToTop visible={loaded} />
         </>
       )}

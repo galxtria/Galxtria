@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://galxtria.vercel.app/sitemap.xml

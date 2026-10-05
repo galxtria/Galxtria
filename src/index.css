@@ -783,3 +783,121 @@ body {
     transform: scaleY(1);
   }
 }
+
+/* ── Kursor monokrom: putih + blend-difference (invert otomatis) ── */
+.cursor-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cursor-layer { display: block; }
+}
+.cursor-dot,
+.cursor-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+/* Dual-tone tanpa blend-mode: inti gelap + outline terang (dan sebaliknya
+   di ring) → selalu ada sisi kontras di permukaan apa pun. */
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: #111;
+  box-shadow: 0 0 0 1.5px rgba(255,255,255,0.95);
+}
+.cursor-ring {
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,0.95);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.55),
+    inset 0 0 0 1px rgba(0,0,0,0.35);
+  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+}
+.cursor-ring-on { transform: scale(1.8); }
+.cursor-ring-press { transform: scale(0.9); transition-duration: 0.15s; }
+@media (prefers-reduced-motion: reduce) {
+  .cursor-layer { display: none; }
+}
+
+/* Kursor bawaan disembunyikan hanya saat kursor custom aktif
+   (class dipasang via JS: pointer halus + tanpa reduced-motion). */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* ── Dots navigasi section: kanan tengah, desktop only ── */
+.section-dots {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 40;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+@media (min-width: 1024px) {
+  .section-dots { display: flex; }
+}
+.section-dot {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+}
+.section-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.3;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.section-dot:hover::before { opacity: 0.7; }
+.section-dot-on::before {
+  opacity: 1;
+  transform: scale(1.5);
+}
+.section-dot-tip {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  translate: 0 -50%;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.9);
+  color: rgba(0,0,0,0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.dark .section-dot-tip {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.7);
+  color: rgba(255,255,255,0.7);
+}
+.section-dot:hover .section-dot-tip { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .section-dot::before { transition: none; }
+}
