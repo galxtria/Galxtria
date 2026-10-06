@@ -2,7 +2,6 @@
 
 Frontend Developer crafting clean, component-driven interfaces with intuitive interactions.
 
-- Focus on React, Mobile & Cross-Platform Apps
 - Currently building multi-platform apps & exploring AI integration
 - Open for projects and collaboration
 
