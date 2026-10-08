@@ -1,4 +1,4 @@
-# Hi, I'm Galxtria
+# Hi, I'm Galxtria.
 
 Frontend Developer crafting clean, component-driven interfaces with intuitive interactions.
 
