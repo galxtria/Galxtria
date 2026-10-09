@@ -784,58 +784,6 @@ body {
   }
 }
 
-/* ── Kursor monokrom: putih + blend-difference (invert otomatis) ── */
-.cursor-layer {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  pointer-events: none;
-  display: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .cursor-layer { display: block; }
-}
-.cursor-dot,
-.cursor-ring {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-/* Dual-tone tanpa blend-mode: inti gelap + outline terang (dan sebaliknya
-   di ring) → selalu ada sisi kontras di permukaan apa pun. */
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 999px;
-  background: #111;
-  box-shadow: 0 0 0 1.5px rgba(255,255,255,0.95);
-}
-.cursor-ring {
-  width: 28px;
-  height: 28px;
-  margin: -14px 0 0 -14px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(255,255,255,0.95);
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.55),
-    inset 0 0 0 1px rgba(0,0,0,0.35);
-  transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
-}
-.cursor-ring-on { transform: scale(1.8); }
-.cursor-ring-press { transform: scale(0.9); transition-duration: 0.15s; }
-@media (prefers-reduced-motion: reduce) {
-  .cursor-layer { display: none; }
-}
-
-/* Kursor bawaan disembunyikan hanya saat kursor custom aktif
-   (class dipasang via JS: pointer halus + tanpa reduced-motion). */
-.has-custom-cursor,
-.has-custom-cursor * {
-  cursor: none !important;
-}
-
 /* ── Dots navigasi section: kanan tengah, desktop only ── */
 .section-dots {
   position: fixed;

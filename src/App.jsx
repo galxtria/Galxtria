@@ -546,75 +546,6 @@ function Magnetic({ children, max = 6 }) {
   return cloneElement(children, { ref, onPointerMove, onPointerLeave })
 }
 
-// ── Kursor monokrom: dot + ring invert via blend-difference (desktop only) ──
-
-function Cursor() {
-  const dotRef = useRef(null)
-  const ringRef = useRef(null)
-
-  useEffect(() => {
-    if (window.matchMedia?.('(hover: none)').matches) return
-    if (window.matchMedia?.('(pointer: coarse)').matches) return
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-    const dot = dotRef.current
-    const ring = ringRef.current
-    if (!dot || !ring) return
-    document.documentElement.classList.add('has-custom-cursor')
-    let x = -100
-    let y = -100
-    let rx = -100
-    let ry = -100
-    let raf = 0
-    const onMove = (e) => {
-      x = e.clientX
-      y = e.clientY
-      dot.style.translate = `${x}px ${y}px`
-      const t = e.target?.closest?.('a, button, [data-hover]')
-      const hovering = !!t
-      ring.classList.toggle('cursor-ring-on', hovering)
-    }
-    const onDown = () => ring.classList.add('cursor-ring-press')
-    const onUp = () => ring.classList.remove('cursor-ring-press')
-    const loop = () => {
-      // Buntut lerp lembut tanpa overshoot — kalem mengikuti bahasa gerak web.
-      rx += (x - rx) * 0.2
-      ry += (y - ry) * 0.2
-      ring.style.translate = `${rx.toFixed(1)}px ${ry.toFixed(1)}px`
-      raf = requestAnimationFrame(loop)
-    }
-    const onLeave = () => {
-      dot.style.opacity = '0'
-      ring.style.opacity = '0'
-    }
-    const onEnter = () => {
-      dot.style.opacity = ''
-      ring.style.opacity = ''
-    }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    window.addEventListener('pointerdown', onDown, { passive: true })
-    window.addEventListener('pointerup', onUp, { passive: true })
-    document.documentElement.addEventListener('pointerleave', onLeave)
-    document.documentElement.addEventListener('pointerenter', onEnter)
-    raf = requestAnimationFrame(loop)
-    return () => {
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerdown', onDown)
-      window.removeEventListener('pointerup', onUp)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
-      document.documentElement.removeEventListener('pointerenter', onEnter)
-      document.documentElement.classList.remove('has-custom-cursor')
-      cancelAnimationFrame(raf)
-    }
-  }, [])
-
-  return (
-    <div aria-hidden className="cursor-layer">
-      <span ref={dotRef} className="cursor-dot" />
-      <span ref={ringRef} className="cursor-ring" />
-    </div>
-  )
-}
-
 // ── Dots navigasi section (desktop only) ──
 
 const DOT_SECTIONS = ['work', 'skills', 'experience', 'contact']
@@ -2300,7 +2231,6 @@ export default function App() {
             <Contact />
           </main>
           <SectionDots visible={loaded} />
-          <Cursor />
           <BackToTop visible={loaded} />
         </>
       )}
