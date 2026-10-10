@@ -205,7 +205,7 @@ const WORK_EXPERIENCE = [
   {
     id: 'arcom',
     period: 'Okt 2026 — Present',
-    badge: { en: 'Full-time', id: 'Penuh Waktu' },
+    badge: { en: 'Internship', id: 'Magang' },
     place: 'PT Teknologi Arcom Mediaksa',
     role: 'Frontend Developer',
     desc: {
