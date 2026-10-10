@@ -203,6 +203,17 @@ const EDUCATION = [
 
 const WORK_EXPERIENCE = [
   {
+    id: 'arcom',
+    period: 'Okt 2026 — Present',
+    badge: { en: 'Full-time', id: 'Penuh Waktu' },
+    place: 'PT Teknologi Arcom Mediaksa',
+    role: 'Frontend Developer',
+    desc: {
+      en: 'Building and maintaining responsive frontend interfaces, collaborating with the team to ship clean and usable web experiences.',
+      id: 'Membangun dan memelihara antarmuka frontend yang responsif, berkolaborasi dengan tim untuk menghadirkan pengalaman web yang bersih dan mudah digunakan.',
+    },
+  },
+  {
     id: 'benlaris',
     period: 'Des 2022 – Feb 2023 • Jun 2023 – Sep 2023',
     badge: { en: 'Internship', id: 'Magang' },
@@ -1869,10 +1880,6 @@ function Experience() {
   const ref = useReveal(0.08)
   const { t } = useLang()
 
-  const goContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <section id="experience" ref={ref} className="relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-[#131315] text-white dark:bg-[#e9e6e0] dark:text-[#161614]">
       <span data-reveal="fade" aria-hidden className="watermark pointer-events-none absolute top-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-[clamp(3.5rem,11vw,8rem)] font-black tracking-tight text-white/[0.05] dark:text-black/[0.06]">
@@ -1911,24 +1918,6 @@ function Experience() {
                 <TimelineItem key={item.id} item={item} first={i === 0} />
               ))}
             </ul>
-            {/* Kartu penutup: kolom pendek jadi ajakan, bukan kekosongan */}
-            <button
-              data-reveal
-              onClick={goContact}
-              className="open-card group mt-2 flex w-full items-center gap-4 rounded-2xl border border-dashed border-white/25 p-5 text-left transition-all duration-500 hover:-translate-y-0.5 hover:border-solid hover:border-white/50 dark:border-black/25 dark:hover:border-black/50"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.22em] text-white/40 dark:text-black/50">
-                  {t('open_title')}
-                </span>
-                <span className="mt-1.5 block text-base font-extrabold tracking-tight">
-                  {t('open_desc')}
-                </span>
-              </span>
-              <span aria-hidden className="open-arrow">
-                ↗
-              </span>
-            </button>
           </div>
         </div>
       </div>
