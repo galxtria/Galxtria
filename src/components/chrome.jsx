@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLang } from '../LanguageContext.jsx'
+import { safeTrack } from '../utils/helpers.js'
 
 const DOT_SECTIONS = ['work', 'skills', 'experience', 'contact']
 

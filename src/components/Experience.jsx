@@ -1,5 +1,6 @@
 import { useLang, localize } from '../LanguageContext.jsx'
 import { EDUCATION, WORK_EXPERIENCE } from '../data/portfolio.js'
+import { spotMove } from '../utils/helpers.js'
 import { useReveal } from '../hooks/hooks.js'
 
 export function TimelineItem({ item, first }) {
