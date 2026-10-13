@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLang } from '../LanguageContext.jsx'
 import { isFunCopy, safeTrack } from '../utils/helpers.js'
