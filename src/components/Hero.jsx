@@ -8,12 +8,16 @@ import { CvPreviewModal } from './CvModal.jsx'
 export function PortraitReveal({ onActiveChange }) {
   const { t } = useLang()
   const [src, setSrc] = useState('/portrait-cutout.png')
+  const [failed, setFailed] = useState(false)
   const [active, setActive] = useState(false)
   const timer = useRef(null)
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
-  const onFail = () => setSrc((s) => (s === '/portrait-cutout.png' ? '/potrait.png' : 'placeholder'))
+  const onFail = () => {
+    if (src === '/portrait-cutout.png') setSrc('/potrait.png')
+    else setFailed(true)
+  }
 
   const setBoth = (v) => {
     setActive(v)
@@ -35,7 +39,7 @@ export function PortraitReveal({ onActiveChange }) {
     timer.current = setTimeout(() => setBoth(false), 1500)
   }
 
-  if (src === 'placeholder') {
+  if (failed) {
     return (
       <div className="portrait-breathe relative overflow-hidden rounded-t-full bg-gradient-to-b from-zinc-200 via-zinc-300 to-zinc-500 aspect-[3/4] flex items-end justify-center">
         <span className="absolute top-8 text-[64px] md:text-[84px] font-black text-white/60 select-none">G</span>

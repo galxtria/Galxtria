@@ -34,7 +34,7 @@ export function Thumbnail({ p, zoom = true, vivid = false, fill = false, fit = '
   // Tanpa fill = pakai aspect ratio.
   const box = fill ? 'h-full w-full' : 'aspect-[16/9] w-full'
   return (
-    <img src={p.shot} alt={p.short} loading="lazy" decoding="async" className={`${box} ${fit} ${tone} ${motion} ${imgClass}`} />
+    <img src={p.shot} alt={p.short ?? p.title ?? 'Project preview'} loading="lazy" decoding="async" className={`${box} ${fit} ${tone} ${motion} ${imgClass}`} />
   )
 }
 
