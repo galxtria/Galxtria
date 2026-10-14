@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1584" height="396" viewBox="0 0 1584 396">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a0a0c"/>
+      <stop offset="0.4" stop-color="#101014"/>
+      <stop offset="0.7" stop-color="#0c0c0f"/>
+      <stop offset="1" stop-color="#08080a"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="30"/>
+    </filter>
+  </defs>
+
+  <!-- base -->
+  <rect width="1584" height="396" fill="url(#bg)"/>
+
+  <!-- cloud glows ala .dark .cloud-sky -->
+  <ellipse cx="190" cy="32" rx="450" ry="240" fill="url(#glow1)"/>
+  <ellipse cx="1345" cy="60" rx="350" ry="210" fill="url(#glow2)"/>
+  <ellipse cx="792" cy="178" rx="500" ry="300" fill="url(#glow2)"/>
+  <ellipse cx="317" cy="336" rx="400" ry="250" fill="url(#glow1)"/>
+  <ellipse cx="1426" cy="317" rx="350" ry="225" fill="url(#glow2)"/>
+
+  <!-- subtle grid -->
+  <g stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <line x1="0" y1="99" x2="1584" y2="99"/>
+    <line x1="0" y1="198" x2="1584" y2="198"/>
+    <line x1="0" y1="297" x2="1584" y2="297"/>
+    <line x1="264" y1="0" x2="264" y2="396"/>
+    <line x1="528" y1="0" x2="528" y2="396"/>
+    <line x1="792" y1="0" x2="792" y2="396"/>
+    <line x1="1056" y1="0" x2="1056" y2="396"/>
+    <line x1="1320" y1="0" x2="1320" y2="396"/>
+  </g>
+
+  <!-- left zone: intentionally near-empty (avatar safe-area) -->
+  <circle cx="150" cy="60" r="120" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1.5"/>
+  <circle cx="150" cy="60" r="70" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+
+  <!-- right decorative rings (clear of headline text) -->
+  <g fill="none" stroke="#ffffff">
+    <circle cx="1495" cy="198" r="120" stroke-opacity="0.08" stroke-width="1.5"/>
+    <circle cx="1495" cy="198" r="82" stroke-opacity="0.06" stroke-width="1"/>
+    <circle cx="1495" cy="198" r="46" stroke-opacity="0.07" stroke-width="1"/>
+    <circle cx="1495" cy="198" r="3.5" fill="#f4f2ed" fill-opacity="0.5" stroke="none"/>
+  </g>
+  <g stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.5">
+    <line x1="1180" y1="52" x2="1204" y2="52"/>
+    <line x1="1192" y1="40" x2="1192" y2="64"/>
+  </g>
+
+  <!-- content block (x > 520, clear of avatar) -->
+  <g font-family="Archivo, Inter, 'Segoe UI', Arial, sans-serif">
+    <text x="560" y="112" font-size="25" letter-spacing="7" fill="#f4f2ed" fill-opacity="0.55" font-weight="600">GALXTRIA — PORTFOLIO</text>
+    <text x="556" y="208" font-size="94" font-weight="800" letter-spacing="0.5" fill="#f4f2ed">Frontend Developer</text>
+    <text x="560" y="256" font-size="29" letter-spacing="3.5" fill="#f4f2ed" fill-opacity="0.72" font-weight="500">CLEAN  •  FAST  •  USABLE  INTERFACES</text>
+    <rect x="560" y="282" width="72" height="3" fill="#f4f2ed" fill-opacity="0.65"/>
+    <rect x="644" y="282" width="560" height="1.5" fill="#ffffff" fill-opacity="0.16"/>
+    <text x="560" y="326" font-size="26" letter-spacing="1" fill="#f4f2ed" fill-opacity="0.8" font-weight="500">React  •  TypeScript  •  Tailwind  •  Laravel    |    galxtria.vercel.app</text>
+  </g>
+
+  <!-- bottom-right tag -->
+  <g font-family="Archivo, Inter, 'Segoe UI', Arial, sans-serif">
+    <text x="1560" y="368" text-anchor="end" font-size="19" letter-spacing="4" fill="#f4f2ed" fill-opacity="0.38" font-weight="600">DENPASAR, BALI — ID</text>
+  </g>
+
+  <!-- top + bottom hairlines -->
+  <rect x="0" y="0" width="1584" height="1.5" fill="#ffffff" fill-opacity="0.09"/>
+  <rect x="0" y="394.5" width="1584" height="1.5" fill="#000000" fill-opacity="0.55"/>
+</svg>
