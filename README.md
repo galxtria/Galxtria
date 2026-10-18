@@ -1,4 +1,4 @@
-# Hi, I'm Galxtria
+# Hi, I'm Galxtria.
 
 Frontend Developer crafting clean, component-driven interfaces with intuitive interactions.
 
@@ -9,7 +9,7 @@ Frontend Developer crafting clean, component-driven interfaces with intuitive in
 
 ### About Me
 
-I enjoy turning ideas into fast, accessible, and delightful web experiences. My main tools are React, TypeScript, and Tailwind CSS, with experience in Laravel for full-stack projects.
+I enjoy turning ideas into fast, accessible, and delightful web experiences.
 
 - Location: Denpasar, Bali, Indonesia
 - Portfolio: [galxtria.vercel.app](https://galxtria.vercel.app/)
